@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>你現在的光景，適合讀哪篇詩篇？｜教會小本本</title>
-<meta name="description" content="20 個關於「最近」的問題，陪你找到一篇可以慢慢讀的詩篇。">
-<meta name="theme-color" content="#FAF4E8">
+<meta name="description" content="回答 20 道關於此刻心境的問題，探索你正在經歷的生命季節，找到一篇適合現在的詩篇。">
+<meta name="theme-color" content="#FFF8EA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -14,131 +14,250 @@
 <body>
 <a class="skip-link" href="#main">跳到主要內容</a>
 
+<!-- 圖示 -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <filter id="paper" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" result="n"/>
-      <feColorMatrix in="n" type="matrix" values="0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .15  0 0 0 .10 0" result="g"/>
-      <feComposite in="g" in2="SourceGraphic" operator="in" result="gi"/>
-      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gi"/></feMerge>
-    </filter>
-    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-book" viewBox="0 0 32 32"><path d="M16 9c-3-2.4-7.4-3-12-2.4v17c4.6-.6 9 0 12 2.4 3-2.4 7.4-3 12-2.4v-17C23.4 6 19 6.6 16 9z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M16 9v17" stroke="currentColor" stroke-width="2.6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-task" viewBox="0 0 32 32"><rect x="5" y="7" width="20" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M10 17l4 4 11-12" fill="none" stroke="#4EBB48" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-sprout" viewBox="0 0 32 32"><path d="M16 28V15" stroke="#4EBB48" stroke-width="2.6" stroke-linecap="round"/><path d="M16 16c0-6-4-9-10-9 0 6 4 9 10 9zM16 16c0-6 4-9 10-9 0 6-4 9-10 9z" fill="#8CC263"/></symbol>
+    <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="6" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="19" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8.3 10.8l7.4-4.4M8.3 13.2l7.4 4.4" stroke="currentColor" stroke-width="2.2"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19C5 10 11 5 20 4c0 9-5 15-14 15z" fill="#8CC263"/><path d="M5 19l9-9" stroke="#4EBB48" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#F26B00" stroke-width="2.4"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="#F26B00" stroke-width="2.4"/><circle cx="12" cy="12" r="1.6" fill="#F26B00"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z" fill="none" stroke="#F26B00" stroke-width="2.3" stroke-linejoin="round"/><circle cx="7.5" cy="8.5" r="1.6" fill="#F26B00"/></symbol>
+    <symbol id="i-bars" viewBox="0 0 24 24"><rect x="3" y="13" width="4.5" height="8" rx="1" fill="#FFB52E"/><rect x="9.8" y="8" width="4.5" height="13" rx="1" fill="#F26B00"/><rect x="16.5" y="3" width="4.5" height="18" rx="1" fill="#F26B00"/></symbol>
+    <symbol id="i-quote" viewBox="0 0 24 24"><path d="M5 18c3-1 5-3.5 5-7V6H4v6h3c0 2-1 3.5-3 4.5zM15 18c3-1 5-3.5 5-7V6h-6v6h3c0 2-1 3.5-3 4.5z" fill="#FFD978"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0112 7.7 4.3 4.3 0 0119.5 10c0 5.4-7.5 10-7.5 10z" fill="none" stroke="#F26B00" stroke-width="2.3" stroke-linejoin="round"/></symbol>
+    <!-- 頁面底部的小山丘裝飾 -->
+    <symbol id="ground" viewBox="0 0 400 90" preserveAspectRatio="none">
+      <path d="M0 52 C60 20 120 30 170 46 C220 62 260 28 320 30 C360 32 384 44 400 50 V90 H0Z" fill="#FFD978" opacity=".55"/>
+      <path d="M0 64 C50 40 110 44 160 60 C210 76 270 46 330 50 C364 52 388 60 400 66 V90 H0Z" fill="#8CC263" opacity=".75"/>
+      <path d="M0 76 C70 60 130 66 190 78 C250 88 320 66 400 74 V90 H0Z" fill="#4EBB48" opacity=".8"/>
+    </symbol>
   </defs>
 </svg>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="#/" aria-label="教會小本本，回首頁"><svg class="logo-ic" aria-hidden="true"><use href="#i-book"/></svg><span>教會小本本</span></a>
+    <nav class="nav" id="nav" aria-label="主選單">
+      <a href="#/">詩篇測驗</a>
+      <a href="#/about">關於網站</a>
+      <button type="button" class="nav-share" id="nav-share">分享給朋友</button>
+    </nav>
+    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="開啟選單"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+  </div>
+</header>
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
 
 <main id="main" tabindex="-1">
 
   <!-- 首頁 -->
-  <section id="view-home" class="view" data-view="home" hidden>
-    <div class="hero" id="hero" aria-hidden="true">
-      <svg class="hero-art" viewBox="0 0 400 330" preserveAspectRatio="xMidYMax meet" role="presentation" focusable="false">
-        <g class="sky-dots">
-          <circle cx="62" cy="58" r="3" fill="#E8BE65"/><circle cx="330" cy="40" r="2.4" fill="#DC9551"/>
-          <circle cx="300" cy="96" r="1.8" fill="#78945A"/><circle cx="96" cy="120" r="2" fill="#C9684B"/>
-          <circle cx="210" cy="26" r="2.2" fill="#78945A"/>
-        </g>
-        <!-- 攤開的書（底） -->
-        <g class="book" filter="url(#paper)">
-          <path d="M40 268 Q120 246 200 262 Q280 246 360 268 L360 292 Q280 272 200 290 Q120 272 40 292 Z" fill="#C9684B"/>
-          <path class="page-l" d="M52 262 Q124 240 200 256 L200 284 Q124 266 52 286 Z" fill="#FFFDF7"/>
-          <path class="page-r" d="M348 262 Q276 240 200 256 L200 284 Q276 266 348 286 Z" fill="#FFFDF7"/>
-          <path d="M200 256 L200 288" stroke="#E7D8BE" stroke-width="1.5"/>
-          <g stroke="#EADFCB" stroke-width="1" fill="none">
-            <path d="M70 270 Q130 254 190 266"/><path d="M76 277 Q132 262 190 273"/>
-            <path d="M330 270 Q270 254 210 266"/><path d="M324 277 Q268 262 210 273"/>
-          </g>
-        </g>
-        <!-- 書頁升起的地景，由後到前 -->
-        <g class="layer l1" filter="url(#paper)">
-          <path d="M60 258 C90 190 130 170 160 200 C180 150 230 128 262 176 C290 150 330 170 344 258 Z" fill="#E8BE65"/>
-        </g>
-        <g class="layer l2" filter="url(#paper)">
-          <!-- 向上流進天空的河 -->
-          <path d="M196 256 C176 214 236 196 214 150 C196 112 250 92 236 46" fill="none" stroke="#DC9551" stroke-width="14" stroke-linecap="round"/>
-          <path d="M196 256 C176 214 236 196 214 150 C196 112 250 92 236 46" fill="none" stroke="#FAF4E8" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"/>
-          <ellipse cx="236" cy="40" rx="34" ry="12" fill="#FFFDF7"/>
-        </g>
-        <g class="layer l3" filter="url(#paper)">
-          <!-- 紙摺成的台地與階梯 -->
-          <path d="M84 258 L84 214 L104 214 L104 198 L124 198 L124 182 L150 182 L150 258 Z" fill="#C9684B"/>
-          <path d="M150 258 L150 182 L162 190 L162 258 Z" fill="#A9523A"/>
-        </g>
-        <g class="layer l4" filter="url(#paper)">
-          <!-- 一片葉子長成的樹 -->
-          <path d="M292 258 C268 220 270 160 300 120 C332 160 334 220 306 258 Z" fill="#78945A"/>
-          <path d="M299 252 L300 128" stroke="#5F7A45" stroke-width="2.2"/>
-          <path d="M300 170 L284 156 M300 196 L318 182 M300 220 L286 208" stroke="#5F7A45" stroke-width="1.6"/>
-        </g>
-        <g class="layer l5" filter="url(#paper)">
-          <path d="M40 262 Q110 236 170 252 Q120 270 40 274 Z" fill="#A6B98A"/>
-          <path d="M360 262 Q300 238 236 254 Q290 270 360 274 Z" fill="#E3C98E"/>
-        </g>
-      </svg>
-    </div>
+  <section id="view-home" class="view view-home" data-view="home" hidden>
+    <div class="home-grid">
+      <div class="hero" id="hero" aria-hidden="true">
+        <svg class="hero-art" viewBox="0 0 800 620" preserveAspectRatio="xMidYMax slice" focusable="false">
+          <defs>
+            <radialGradient id="g-sky" cx="58%" cy="30%" r="70%"><stop offset="0" stop-color="#FFF0C4"/><stop offset=".55" stop-color="#FFF6E0"/><stop offset="1" stop-color="#FFF8EA" stop-opacity="0"/></radialGradient>
+            <radialGradient id="g-sun" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#FFE48A"/><stop offset=".7" stop-color="#FFC23A"/><stop offset="1" stop-color="#FFAA22"/></radialGradient>
+            <radialGradient id="g-glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFE7A0" stop-opacity=".9"/><stop offset="1" stop-color="#FFE7A0" stop-opacity="0"/></radialGradient>
+            <linearGradient id="g-or" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB547"/><stop offset="1" stop-color="#FF8A1F"/></linearGradient>
+            <linearGradient id="g-ye" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE596"/><stop offset="1" stop-color="#FFC74E"/></linearGradient>
+            <linearGradient id="g-gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B5DC72"/><stop offset="1" stop-color="#6DB443"/></linearGradient>
+            <linearGradient id="g-gr2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ACF5E"/><stop offset="1" stop-color="#4EAA3E"/></linearGradient>
+            <linearGradient id="g-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4FAF6"/><stop offset="1" stop-color="#9FE0D7"/></linearGradient>
+            <linearGradient id="g-cliff" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6A54B"/><stop offset="1" stop-color="#DC7A2C"/></linearGradient>
+            <linearGradient id="g-page" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFBF0"/><stop offset="1" stop-color="#F8E4BC"/></linearGradient>
+            <pattern id="p-stripe" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(-28)"><rect width="14" height="14" fill="none"/><rect width="5" height="14" fill="#fff" opacity=".18"/></pattern>
+          </defs>
 
-    <div class="home-copy wrap">
-      <p class="brand-mark">教會小本本</p>
-      <h1 class="home-title">你現在的光景，<br>適合讀哪篇詩篇？</h1>
-      <p class="home-sub" data-copy="homeSub"></p>
-      <ul class="home-facts">
-        <li>約 5–8 分鐘</li>
-        <li>每題都可以略過</li>
-        <li>作答只在你的裝置上計算</li>
-      </ul>
-      <div class="home-actions">
-        <button class="btn btn-primary" id="btn-start" type="button">開始探索</button>
-        <button class="btn btn-quiet" id="btn-resume" type="button" hidden>繼續上次的作答</button>
+          <rect width="800" height="620" fill="url(#g-sky)"/>
+          <g class="h-in h-sun"><g class="h-glow"><circle cx="470" cy="170" r="200" fill="url(#g-glow)"/></g><circle cx="470" cy="172" r="112" fill="url(#g-sun)"/></g>
+
+          <g class="h-in h-clouds-back"><g class="h-drift">
+            <path d="M60 300c-30 0-40-30-10-38 6-26 46-30 60-10 20-16 56-4 54 22 26 2 26 26 0 26z" fill="#FFFDF6"/>
+            <path d="M600 262c-24 0-30-24-6-30 6-22 40-24 50-6 18-12 46-2 44 18 22 2 22 18 0 18z" fill="#FFFDF6"/>
+          </g></g>
+
+          <g class="h-in h-far"><g class="h-parallax">
+            <path d="M-20 400 C40 300 110 250 180 300 C230 250 300 240 350 330 L350 420 L-20 420Z" fill="url(#g-or)"/>
+            <path d="M-20 400 C40 300 110 250 180 300 C230 250 300 240 350 330 L350 420 L-20 420Z" fill="url(#p-stripe)"/>
+            <path d="M540 360 C600 280 690 250 820 300 L820 430 L540 430Z" fill="url(#g-ye)"/>
+            <path d="M520 400 C590 330 660 320 720 370 C760 340 800 340 820 360 L820 440 L520 440Z" fill="url(#g-or)"/>
+            <path d="M520 400 C590 330 660 320 720 370 C760 340 800 340 820 360 L820 440 L520 440Z" fill="url(#p-stripe)"/>
+          </g></g>
+
+          <g class="h-in h-mid">
+            <path d="M60 470 C120 360 200 330 270 380 C310 340 360 330 410 380 L410 480 L60 480Z" fill="url(#g-gr)"/>
+            <path d="M60 470 C120 360 200 330 270 380 C310 340 360 330 410 380 L410 480 L60 480Z" fill="url(#p-stripe)"/>
+            <path d="M600 470 C640 390 720 370 820 400 L820 480 L600 480Z" fill="url(#g-gr2)"/>
+            <path d="M600 470 C640 390 720 370 820 400 L820 480 L600 480Z" fill="url(#p-stripe)"/>
+          </g>
+
+          <g class="h-in h-ground">
+            <path d="M-20 456 C140 424 300 432 400 452 C520 430 690 424 820 458 L820 620 L-20 620Z" fill="url(#g-ye)" opacity=".75"/>
+            <path d="M-20 476 C160 452 300 462 400 476 C520 460 680 452 820 478 L820 620 L-20 620Z" fill="#FFF1CF"/>
+            <path d="M-20 520 C50 474 150 470 250 530 L250 620 L-20 620Z" fill="url(#g-gr2)"/>
+            <path d="M-20 520 C50 474 150 470 250 530 L250 620 L-20 620Z" fill="url(#p-stripe)"/>
+            <path d="M560 534 C650 470 750 470 820 500 L820 620 L560 620Z" fill="url(#g-gr)"/>
+            <path d="M560 534 C650 470 750 470 820 500 L820 620 L560 620Z" fill="url(#p-stripe)"/>
+          </g>
+
+          <!-- 台地與拱橋、瀑布 -->
+          <g class="h-in h-cliff">
+            <path d="M420 300 C460 286 560 284 660 296 L660 312 L420 316Z" fill="url(#g-gr)"/>
+            <path d="M424 314 L656 310 L656 392 L424 392Z" fill="url(#g-cliff)"/>
+            <g fill="#C9631F">
+              <path d="M530 392v-36a12 12 0 0124 0v36z"/><path d="M566 392v-36a12 12 0 0124 0v36z"/>
+              <path d="M602 392v-36a12 12 0 0124 0v36z"/><path d="M636 392v-30a10 10 0 0118 0v30z"/>
+            </g>
+            <path d="M424 392 C470 404 560 404 656 392 L656 404 C560 418 470 418 424 404Z" fill="url(#g-gr2)"/>
+          </g>
+          <g class="h-in h-water">
+            <path d="M462 312 L508 312 C510 350 512 380 516 420 L458 420 C460 380 461 350 462 312Z" fill="url(#g-water)"/>
+            <g class="h-fall" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="14 18" opacity=".9">
+              <path d="M472 316 L470 418"/><path d="M486 316 L486 418"/><path d="M499 316 L502 418"/>
+            </g>
+            <ellipse cx="487" cy="424" rx="44" ry="10" fill="#E9FBF8"/>
+            <path d="M487 426 C452 450 520 470 470 500 C440 518 420 520 402 540" fill="none" stroke="url(#g-water)" stroke-width="22" stroke-linecap="round"/>
+            <path class="h-flow" d="M487 426 C452 450 520 470 470 500 C440 518 420 520 402 540" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="6 16" opacity=".95"/>
+          </g>
+
+          <!-- 樹 -->
+          <g class="h-in h-tree"><g class="h-sway">
+            <path d="M598 300 C600 270 596 250 590 232 M594 258 C584 248 570 244 560 246 M596 250 C608 240 622 238 632 240" fill="none" stroke="#9A5B2E" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="560" cy="226" r="26" fill="#8CC263"/><circle cx="592" cy="206" r="32" fill="#9FD26A"/>
+            <circle cx="628" cy="222" r="26" fill="#7CBB4F"/><circle cx="606" cy="236" r="20" fill="#B9DE78"/>
+            <circle cx="574" cy="200" r="18" fill="#C9E486"/><circle cx="640" cy="200" r="14" fill="#FFD978"/>
+          </g></g>
+
+          <!-- 浮島 -->
+          <g class="h-in h-island"><g class="h-bob">
+            <path d="M110 120 C140 110 200 110 230 120 L176 196Z" fill="url(#g-cliff)"/>
+            <path d="M176 196 L152 140 L176 150Z" fill="#C9631F" opacity=".5"/>
+            <path d="M104 122 C140 104 202 104 236 122 C206 132 136 132 104 122Z" fill="url(#g-gr)"/>
+            <path d="M172 112 L172 82 L180 74 L188 82 L188 112Z" fill="#F6A54B"/><path d="M176 68 L180 58 L184 68Z" fill="#FFB52E"/>
+            <circle cx="132" cy="110" r="10" fill="#8CC263"/><circle cx="212" cy="110" r="8" fill="#9FD26A"/>
+          </g></g>
+
+          <g class="h-in h-clouds-front"><g class="h-drift2">
+            <path d="M-10 500c-30 0-34-30-4-36 8-26 52-28 64-6 22-14 60-2 58 24 28 2 28 26 0 26z" fill="#FFFDF6"/>
+            <path d="M690 500c-26 0-30-26-4-32 8-24 46-26 56-6 20-12 52-2 50 20 24 2 24 22 0 22z" fill="#FFFDF6"/>
+          </g></g>
+
+          <!-- 書本 -->
+          <g class="h-in h-book"><g class="h-bookbob">
+            <path d="M120 548 C220 520 330 520 400 548 C470 520 580 520 680 548 L692 590 C590 566 470 568 400 596 C330 568 210 566 108 590Z" fill="#F08A24"/>
+            <g class="h-pages">
+              <path d="M136 540 C230 504 334 506 400 538 L400 578 C330 552 228 552 128 576Z" fill="url(#g-page)"/>
+              <path d="M664 540 C570 504 466 506 400 538 L400 578 C470 552 572 552 672 576Z" fill="url(#g-page)"/>
+              <path d="M150 530 C240 494 336 496 400 528 L400 540 C334 508 230 506 136 540Z" fill="#FFF4DC"/>
+              <path d="M650 530 C560 494 464 496 400 528 L400 540 C466 508 570 506 664 540Z" fill="#FFF4DC"/>
+              <g stroke="#EED9B0" stroke-width="2" fill="none">
+                <path d="M170 548 C250 524 330 526 386 548"/><path d="M178 560 C254 538 330 540 386 560"/>
+                <path d="M630 548 C550 524 470 526 414 548"/><path d="M622 560 C546 538 470 540 414 560"/>
+              </g>
+              <path d="M400 528 L400 590" stroke="#E2C493" stroke-width="2.5"/>
+            </g>
+          </g></g>
+
+          <!-- 邊角葉片 -->
+          <g class="h-in h-leaves">
+            <g class="h-leafsway-l"><path d="M-6 600 C30 560 60 540 96 532" stroke="#4EAA3E" stroke-width="4" fill="none"/>
+              <path d="M40 556 c-6-22 6-38 26-40 4 20-6 36-26 40z" fill="#8CC263"/><path d="M66 540 c4-22 22-30 40-24-4 20-20 28-40 24z" fill="#B5DC72"/><path d="M14 580 c-10-18-4-36 14-42 8 18 2 34-14 42z" fill="#6DB443"/></g>
+            <g class="h-leafsway-r"><path d="M820 40 C780 60 760 86 748 120" stroke="#4EAA3E" stroke-width="4" fill="none"/>
+              <path d="M772 72 c-22-2-34-18-30-38 20 0 32 16 30 38z" fill="#8CC263"/><path d="M756 102 c-20 6-38-4-40-24 20-6 36 4 40 24z" fill="#B5DC72"/><path d="M796 52 c-4-20 8-34 26-36 2 20-8 34-26 36z" fill="#6DB443"/></g>
+          </g>
+        </svg>
       </div>
-      <p class="fine" data-copy="disclaimer"></p>
+
+      <div class="home-copy">
+        <p class="kicker"><span>詩篇測驗</span></p>
+        <h1 class="home-title"><span class="u-swoosh">你現在的光景，<br>適合讀哪篇詩篇？</span></h1>
+        <p class="home-sub" data-copy="homeSub"></p>
+        <button class="btn btn-primary btn-cta" id="btn-start" type="button"><span id="start-label">開始測驗</span><svg class="ic" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+        <button class="btn btn-ghost" id="btn-resume" type="button" hidden></button>
+        <ul class="stats" aria-label="測驗內容">
+          <li><svg aria-hidden="true"><use href="#i-task"/></svg><span>20 道問題</span></li>
+          <li><svg aria-hidden="true"><use href="#i-sprout"/></svg><span>9 種生命光景</span></li>
+          <li><svg aria-hidden="true" class="ic-book"><use href="#i-book"/></svg><span>150 篇詩篇</span></li>
+        </ul>
+        <p class="fine home-fine" data-copy="disclaimer"></p>
+      </div>
     </div>
   </section>
 
   <!-- 答題 -->
-  <section id="view-quiz" class="view" data-view="quiz" hidden>
+  <section id="view-quiz" class="view view-ground" data-view="quiz" hidden>
     <div class="wrap quiz">
-      <div class="quiz-top">
-        <button class="btn-text" id="btn-prev" type="button">上一題</button>
-        <p class="quiz-count" id="quiz-count" aria-live="polite"></p>
-        <button class="btn-text" id="btn-home" type="button">離開</button>
-      </div>
+      <p class="quiz-count" id="quiz-count" aria-live="polite"></p>
       <div class="progress" role="progressbar" aria-label="作答進度" aria-valuemin="0" aria-valuemax="20" id="progress"><span id="progress-bar"></span></div>
       <h2 class="q-text" id="q-text" tabindex="-1"></h2>
-      <div class="options" id="options" role="group" aria-labelledby="q-text"></div>
+      <div class="options" id="options" role="radiogroup" aria-labelledby="q-text"></div>
       <button class="btn-skip" id="btn-skip" type="button"></button>
-      <p class="fine kbd-hint">鍵盤：按 1–4 選擇，0 略過，← 回上一題</p>
+      <div class="quiz-nav">
+        <button class="btn btn-outline" id="btn-prev" type="button"><svg class="ic" aria-hidden="true"><use href="#i-chev-l"/></svg>上一題</button>
+        <button class="btn btn-primary" id="btn-next" type="button">下一題<svg class="ic" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+      </div>
+      <p class="fine kbd-hint">鍵盤：按 1–4 選擇，0 略過，← → 切換題目</p>
     </div>
+    <svg class="ground" aria-hidden="true"><use href="#ground"/></svg>
   </section>
 
   <!-- 資訊不足 -->
-  <section id="view-insufficient" class="view" data-view="insufficient" hidden>
-    <div class="wrap narrow">
-      <h2 class="section-title" tabindex="-1">還差一點資訊</h2>
+  <section id="view-insufficient" class="view view-ground" data-view="insufficient" hidden>
+    <div class="wrap narrow pad-top">
+      <h2 class="section-title big" tabindex="-1">還差一點資訊</h2>
       <p>目前回答到的面向少於五個，還不足以找出適合的詩篇。可以回去補答幾題，被略過的題目都還在。</p>
-      <div class="home-actions">
+      <div class="btn-row">
         <button class="btn btn-primary" id="btn-back-fill" type="button">回去補答</button>
-        <button class="btn btn-quiet" id="btn-restart-ins" type="button">重新開始</button>
+        <button class="btn btn-outline" id="btn-restart-ins" type="button">重新開始</button>
       </div>
     </div>
+    <svg class="ground" aria-hidden="true"><use href="#ground"/></svg>
   </section>
 
   <!-- 結果 -->
-  <section id="view-result" class="view" data-view="result" hidden>
+  <section id="view-result" class="view view-ground" data-view="result" hidden>
     <div class="wrap result" id="result-root"></div>
+    <svg class="ground" aria-hidden="true"><use href="#ground"/></svg>
   </section>
 
   <!-- 經文閱讀 -->
-  <section id="view-read" class="view" data-view="read" hidden>
+  <section id="view-read" class="view view-ground" data-view="read" hidden>
     <div class="reader-bar">
       <div class="wrap reader-bar-inner">
-        <button class="btn-text" id="btn-read-back" type="button">返回結果</button>
+        <button class="btn-back" id="btn-read-back" type="button"><svg class="ic" aria-hidden="true"><use href="#i-chev-l"/></svg><span>返回結果</span></button>
         <div class="reader-tools" role="group" aria-label="閱讀設定">
           <button class="tool" id="font-dec" type="button" aria-label="縮小字級">A−</button>
           <button class="tool" id="font-inc" type="button" aria-label="放大字級">A＋</button>
-          <button class="tool" id="toggle-vnum" type="button" aria-pressed="true">節數</button>
+          <button class="tool tool-sm" id="toggle-vnum" type="button" aria-pressed="true">節數</button>
         </div>
       </div>
     </div>
     <article class="wrap narrow reader" id="reader"></article>
+    <svg class="ground" aria-hidden="true"><use href="#ground"/></svg>
+  </section>
+
+  <!-- 關於 -->
+  <section id="view-about" class="view view-ground" data-view="about" hidden>
+    <div class="wrap narrow pad-top about">
+      <h2 class="section-title big" tabindex="-1"><span class="u-swoosh">關於這個網站</span></h2>
+      <p>這是《教會小本本》做的詩篇閱讀引導。你回答 20 道關於「最近」的問題，我們從八個面向整理你此刻的狀態，再從 150 篇詩篇裡，找出和你現在最接近的一篇。</p>
+      <h3>八個面向</h3>
+      <p id="about-dims"></p>
+      <h3>你的作答去了哪裡</h3>
+      <p>所有計算都在你的裝置上完成，作答不會傳到任何伺服器。分享圖也不會出現你的題目或選項。</p>
+      <h3>請記得</h3>
+      <p data-copy="disclaimer"></p>
+      <p class="fine">經文：《新標點和合本》詩篇。</p>
+      <div class="btn-row"><a class="btn btn-primary" href="#/">回到首頁</a></div>
+    </div>
+    <svg class="ground" aria-hidden="true"><use href="#ground"/></svg>
   </section>
 
 </main>
@@ -147,7 +266,7 @@
 <div class="sheet" id="share-sheet" role="dialog" aria-modal="true" aria-labelledby="share-title" hidden>
   <div class="sheet-panel">
     <div class="sheet-head">
-      <h2 id="share-title">分享我的生命光景</h2>
+      <h2 id="share-title">產生分享圖片</h2>
       <button class="btn-text" id="share-close" type="button">關閉</button>
     </div>
     <div class="seg" role="radiogroup" aria-label="樣式">
@@ -160,9 +279,9 @@
     </div>
     <p class="fine" id="share-note">分享圖只包含詩篇與光景，不會出現你的作答內容。</p>
     <div class="share-preview"><canvas id="share-canvas" aria-label="分享圖預覽"></canvas></div>
-    <div class="home-actions">
+    <div class="btn-row">
       <button class="btn btn-primary" id="share-save" type="button">儲存圖片</button>
-      <button class="btn btn-quiet" id="share-native" type="button" hidden>分享到…</button>
+      <button class="btn btn-outline" id="share-native" type="button" hidden><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg>分享</button>
     </div>
   </div>
 </div>

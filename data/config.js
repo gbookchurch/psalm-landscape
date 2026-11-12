@@ -34,6 +34,12 @@ window.CONFIG = {
   illustrationPath: (n) => `assets/psalms/psalm-${String(n).padStart(3, '0')}.webp`,
   homeIllustration: null, // 首頁主視覺目前以程式繪製（hero），之後可換成正式動態資產
 
+  /*
+   * 結果卡引用的經文節數，例如 { 1: 2, 23: 1 }。
+   * 未指定時暫取經文錨點內第一節長度適中的經文；建議主編逐篇指定。
+   */
+  keyVerse: {},
+
   /* 本機暫存作答進度（只存在這台裝置的瀏覽器，不會上傳）。 */
   saveProgress: true,
 };
