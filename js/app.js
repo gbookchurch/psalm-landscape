@@ -166,6 +166,7 @@
     const v = good || list[0];
     let text = join(v);
     if (!good && text.length > 46) text = v.lines.filter((l) => l).slice(0, 2).join('') + '……';
+    text = text.replace(/[，；：、]$/, '……'); // 句子還沒結束時用刪節號
     return { text, ref: `詩篇 ${n}:${v.v}` };
   }
 
@@ -184,9 +185,17 @@
       .sort((a, b) => C.weights[b.d] * Math.abs(b.x) - C.weights[a.d] * Math.abs(a.x)).slice(0, 3)
       .map((r) => `${T.dimNames[r.d]}：你最近偏向「${T.dimEnds[r.d][r.x > 0 ? 1 : 0]}」，這篇詩篇也落在這一側。`);
   }
-  function illus(img, n, stage) {
-    img.onerror = () => { img.onerror = null; img.src = Art.landscapeURL(n, stage, 800, 600); };
-    img.src = C.illustrationPath(n);
+  /** 繪本式插畫：圖片填滿容器，以紙張邊緣遮罩融入奶油色背景，不改動原圖。 */
+  function storybook(box, img, n, stage) {
+    const real = C.illustration(n);
+    // web-0.5：以 CSS 漸層融入奶油色紙底，保留原圖，不再套用硬邊紙張遮罩。
+
+    const placeholder = () => { img.onerror = null; img.alt = ''; box.classList.remove('real'); img.src = Art.landscapeURL(n, stage, 900, 900); };
+    if (!real) return placeholder();
+    box.classList.add('real');
+    img.alt = `詩篇第 ${n} 篇插畫`;
+    img.onerror = placeholder;
+    img.src = real.src;
   }
 
   function renderResult(forcePsalm) {
@@ -210,66 +219,65 @@
     const rows = DIMS.map((d) => `<tr><td>${d} ${T.dimNames[d]}</td><td>${res.scores[d] === undefined ? '未作答' : fmt(res.scores[d])}</td><td>${fmt(p[d])}</td></tr>`).join('');
 
     $('result-root').innerHTML = `
-      <div class="r-hello">
-        <p class="kicker r-kicker"><span>你的生命光景是</span></p>
+      <header class="r-hello">
+        <p class="kicker r-kicker"><span>我的生命光景</span></p>
         <h1 class="r-stage" id="r-stage" tabindex="-1">${esc(stageName(p.stage))}<span class="swoosh-line" aria-hidden="true"></span></h1>
-        <ul class="tags" aria-label="心境標籤">${tags.map((t) => `<li>${esc(t.text)}</li>`).join('')}</ul>
-      </div>
+        ${tags.length ? `<ul class="tags" aria-label="心境標籤">${tags.map((t) => `<li>${esc(t.text)}</li>`).join('')}</ul>` : ''}
+        <p class="r-line">${esc(st.line)}</p>
+      </header>
       ${isAlt ? `<p class="note">你正在看「也可能共鳴」的詩篇。<button class="btn-text" id="back-main" type="button">回到主要結果：詩篇第 ${res.best.psalm} 篇</button></p>` : ''}
-      <div class="r-art"><img id="r-img" alt="" decoding="async"></div>
-      <div class="psalm-card">
-        <p class="pc-label">${icon('i-book')}此刻適合閱讀的詩篇</p>
-        <p class="pc-num"><span class="u-mark">詩篇 第 ${n} 篇</span></p>
+
+      <figure class="storybook" id="r-book">
+        <span class="paper-back" aria-hidden="true"></span>
+        <span class="ill"><img id="r-img" alt="" decoding="async"></span>
+      </figure>
+
+      <section class="psalm-card" aria-labelledby="pc-num">
+        <p class="pc-label">${icon('i-book')}推薦你閱讀的詩篇</p>
+        <h2 class="pc-num" id="pc-num"><span class="u-mark">詩篇 第 ${n} 篇</span></h2>
         <p class="pc-title">${esc(p.title)}</p>
         ${kv ? `<p class="pc-quote">「${esc(kv.text)}」</p><p class="pc-ref">— ${esc(kv.ref)}</p>` : ''}
-      </div>
-      <div class="r-actions">
-        <button class="btn btn-primary" id="btn-read" type="button">${icon('i-book', 'ic')}閱讀完整詩篇${icon('i-chev-r', 'ic')}</button>
-        <button class="btn btn-green" id="btn-share" type="button">${icon('i-share', 'ic')}產生分享圖片</button>
-      </div>
-      <button class="scroll-hint" id="scroll-more" type="button" aria-label="往下看更多">${icon('i-chev-d')}</button>
+      </section>
 
       ${deep ? supportBlock(true) : ''}
 
-      <section class="block" id="r-more" aria-labelledby="h-scene">
-        <h2 class="section-title" id="h-scene">${icon('i-leaf')}你的此刻光景</h2>
-        <p class="lead">${esc(st.line)}</p>
-        <p>${esc(p.body)}</p>
-        <p class="fine">經文錨點：詩篇 ${esc(p.anchor)}</p>
+      <section class="block" aria-labelledby="h-now">
+        <h2 class="section-title" id="h-now">${icon('i-heart')}給此刻的你</h2>
+        <div class="card soft">
+          <p class="now-body">${esc(p.body)}</p>
+          <p class="reflect">${icon('i-quote')}<span>${esc(p.reflection)}</span></p>
+        </div>
       </section>
-
-      ${rs.length ? `<section class="block" aria-labelledby="h-why">
-        <h2 class="section-title" id="h-why">${icon('i-target')}為什麼推薦這篇詩篇？</h2>
-        <ul class="reasons">${rs.map((r) => `<li><span class="tick" aria-hidden="true">${icon('i-check')}</span><span>${esc(r)}</span></li>`).join('')}</ul>
-      </section>` : ''}
-
-      ${tags.length ? `<section class="block" aria-labelledby="h-tags">
-        <h2 class="section-title" id="h-tags">${icon('i-tag')}你的心境標籤</h2>
-        <ul class="hashtags">${[stageName(p.stage), ...tags.map((t) => t.text)].map((t) => `<li>#${esc(t)}</li>`).join('')}</ul>
-      </section>` : ''}
 
       <section class="block" aria-labelledby="h-chart">
         <h2 class="section-title" id="h-chart">${icon('i-bars')}我的八維圖譜</h2>
-        <div class="card chart-wrap">
+        <div class="card soft chart-wrap">
           ${Art.radarSVG([
             { values: res.scores, color: '#4EBB48', fill: 'rgba(140,194,99,.38)', width: 2.6 },
             { values: Object.fromEntries(DIMS.map((d) => [d, p[d]])), color: '#F26B00', dashed: true, width: 2, dot: 2.6 },
           ], T.dimNames, { label: `八維圖譜：你的分數與詩篇第 ${n} 篇的座標`, showValues: true })}
           <ul class="legend"><li><i style="background:#4EBB48"></i>你最近的位置</li><li><i style="background:#F26B00"></i>詩篇第 ${n} 篇</li></ul>
-          <p class="fine chart-note">數字是 −2 到 +2 的分數，中間虛線為 0。這是相似程度的參考，不是心理測量。</p>
+          ${rs.length ? `<h3 class="sub-title">這篇和你相近的地方</h3><ul class="reasons">${rs.map((r) => `<li><span class="tick" aria-hidden="true">${icon('i-check')}</span><span>${esc(r)}</span></li>`).join('')}</ul>` : ''}
+          <p class="fine chart-note">數字依你的作答，用正式計分方式算出，範圍 −2 到 +2，中間虛線為 0。這是相似程度的參考，不是心理測量。</p>
           <details class="more"><summary>查看八個維度的分數</summary>
             <table class="dim-table"><thead><tr><th scope="col">維度</th><th scope="col">你</th><th scope="col">這篇</th></tr></thead><tbody>${rows}</tbody></table>
           </details>
         </div>
       </section>
 
-      <section class="block" aria-labelledby="h-q">
-        <h2 class="section-title" id="h-q">${icon('i-heart')}留給自己的一個問題</h2>
-        <p class="reflect">${icon('i-quote')}<span>${esc(p.reflection)}</span></p>
+      <section class="block read-entry" aria-labelledby="h-read">
+        <h2 class="section-title" id="h-read">${icon('i-book', 'ic-o')}完整經文</h2>
+        <div class="card soft">
+          <p>讀一讀詩篇第 ${n} 篇全文。這次推薦的段落是詩篇 ${esc(p.anchor)}，會用底色標示出來。</p>
+          <div class="r-actions">
+            <button class="btn btn-primary" id="btn-read" type="button">${icon('i-book', 'ic')}閱讀詩篇第 ${n} 篇${icon('i-chev-r', 'ic')}</button>
+            <button class="btn btn-green" id="btn-share" type="button">${icon('i-share', 'ic')}產生分享圖片</button>
+          </div>
+        </div>
       </section>
 
       ${near.length || res.tied.length > 1 ? `<section class="block" aria-labelledby="h-near">
-        <h2 class="section-title" id="h-near">${icon('i-book', '')}也可能和你共鳴的詩篇</h2>
+        <h2 class="section-title" id="h-near">${icon('i-leaf')}也可能和你共鳴的詩篇</h2>
         ${res.tied.length > 1 ? `<p class="note">有 ${res.tied.length} 篇詩篇和你的距離完全相同，排列順序不代表哪一篇比較準。</p>` : ''}
         <ul class="near-list">${near.map((r) => `<li><button type="button" data-psalm="${r.psalm}"><span class="n">詩篇 ${r.psalm}</span><span class="t">${esc(byNum[r.psalm].title)}<span>${esc(stageName(byNum[r.psalm].stage))}</span></span>${icon('i-chev-r')}</button></li>`).join('')}</ul>
       </section>` : ''}
@@ -281,10 +289,9 @@
         <button class="btn btn-outline" id="btn-edit" type="button">回去修改答案</button>
       </div>`;
 
-    illus($('r-img'), n, p.stage);
-    $('scroll-more').onclick = () => $('r-more').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    storybook($('r-book'), $('r-img'), n, p.stage);
     $('btn-read').onclick = () => go(`#/read/${n}`);
-    $('btn-share').onclick = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, imgSrc: C.illustrationPath(n) });
+    $('btn-share').onclick = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
     $('btn-again').onclick = () => { clear(); lastResult = null; go('#/'); };
     $('btn-edit').onclick = () => { state.step = 0; state.done = false; save(); go('#/quiz'); };
     if ($('back-main')) $('back-main').onclick = () => renderResult();
@@ -335,7 +342,7 @@
       return `<p class="verse${isAnchor ? ' anchor' : ''}${gap}"><span class="vn${v.v.length > 2 ? ' wide' : ''}">${v.v}</span>${lines}</p>`;
     }).join('');
     $('reader').innerHTML = `
-      <div class="reader-art"><img id="read-img" alt="" decoding="async"></div>
+      <figure class="storybook reader-book" id="read-book"><span class="paper-back" aria-hidden="true"></span><span class="ill"><img id="read-img" alt="" decoding="async"></span></figure>
       <h1 tabindex="-1" id="read-title">${icon('i-book')}詩篇 第 ${n} 篇</h1>
       <span class="swoosh-line" aria-hidden="true"></span>
       ${S.title ? `<p class="sup">${esc(S.title)}</p>` : ''}
@@ -343,7 +350,7 @@
       <div class="verses">${vhtml}</div>
       ${S.notes.length ? `<div class="footnotes">${S.notes.map((f) => `<p>${esc(f.ref)}　${esc(f.text)}</p>`).join('')}</div>` : ''}
       <p class="source">經文：《新標點和合本》詩篇。</p>`;
-    illus($('read-img'), n, p.stage);
+    storybook($('read-book'), $('read-img'), n, p.stage);
     applyReadPrefs();
     $('read-title').focus({ preventScroll: true });
   }

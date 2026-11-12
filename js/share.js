@@ -23,7 +23,7 @@
     const lines = []; let line = '';
     for (const ch of text) {
       if (c.measureText(line + ch).width > maxW && line) {
-        if (/[，。、；：！？」』）]/.test(ch)) { lines.push(line + ch); line = ''; continue; }
+        if (/[，。、；：！？」』）…]/.test(ch)) { line += ch; continue; } // 標點不放行首，先接在本行
         lines.push(line); line = ch;
       } else line += ch;
     }
@@ -57,10 +57,11 @@
   async function drawArt(c, d, x, y, w, h, r) {
     c.save(); rr(c, x, y, w, h, r); c.clip();
     let ok = false;
-    const real = await loadImage(d.imgSrc);
+    const real = d.img ? await loadImage(d.img.src) : null;
     const im = real || await loadImage(Art.landscapeURL(d.psalm.psalm, d.stage, 1200, 900));
     if (im) {
-      const s = Math.max(w / im.width, h / im.height);
+      // 正式插畫完整顯示不裁切（圖內可能有篇號）；佔位圖則填滿
+      const s = real ? Math.min(w / im.width, h / im.height) : Math.max(w / im.width, h / im.height);
       c.drawImage(im, x + (w - im.width * s) / 2, y + (h - im.height * s) / 2, im.width * s, im.height * s);
       try { c.getImageData(x, y, 1, 1); ok = true; } catch (e) { ok = false; }
     }
@@ -68,18 +69,19 @@
     c.restore();
   }
 
-  function card(c, d, x, y, w, sc, withQuote) {
+  function card(c, d, x, y, w, sc, withQuote, dry) {
     // 先量高度
     const pad = 40 * sc;
     font(c, 900, 76 * sc); const numH = 92 * sc;
     font(c, 700, 38 * sc); const tLines = wrap(c, d.psalm.title, w - pad * 2).slice(0, 2);
     font(c, 500, 34 * sc); const qLines = withQuote && d.verse ? wrap(c, `「${d.verse.text}」`, w - pad * 2).slice(0, 3) : [];
     const h = pad + 44 * sc + numH + tLines.length * 54 * sc + (qLines.length ? 20 * sc + qLines.length * 50 * sc + 46 * sc : 0) + pad * 0.7;
-    c.save(); c.shadowColor = 'rgba(170,110,40,.18)'; c.shadowBlur = 40 * sc; c.shadowOffsetY = 10 * sc;
-    rr(c, x, y, w, h, 34 * sc); c.fillStyle = '#fff'; c.fill(); c.restore();
+    if (dry) return h;
+    c.save(); c.shadowColor = 'rgba(150,100,40,.10)'; c.shadowBlur = 36 * sc; c.shadowOffsetY = 8 * sc;
+    rr(c, x, y, w, h, 34 * sc); c.fillStyle = '#FFFDF8'; c.fill(); c.restore();
     let yy = y + pad + 30 * sc; const cx = x + w / 2;
     font(c, 700, 34 * sc); c.textAlign = 'left';
-    const label = '此刻適合閱讀的詩篇', lw = c.measureText(label).width + 52 * sc;
+    const label = '推薦你閱讀的詩篇', lw = c.measureText(label).width + 52 * sc;
     bookIcon(c, cx - lw / 2, yy - 34 * sc, 40 * sc, BRAND); c.fillStyle = INK; c.fillText(label, cx - lw / 2 + 52 * sc, yy);
     yy += numH;
     font(c, 900, 76 * sc); const num = `詩篇 第 ${d.psalm.psalm} 篇`; mark(c, num, cx - c.measureText(num).width / 2, yy, 76 * sc);
@@ -126,52 +128,95 @@
     }
   }
 
+  /** 繪本式插畫：米色紙底＋紙張邊緣遮罩融入背景（與結果頁同一套遮罩）。 */
+  async function storybook(c, d, x, y, w, h) {
+    const real = d.img ? await loadImage(d.img.src) : null;
+    const im = real || await loadImage(Art.landscapeURL(d.psalm.psalm, d.stage, 1200, 1200));
+    if (!im) return;
+    // web-0.5：分享卡也使用柔和羽化；不修改原圖像素檔。
+    const o = document.createElement('canvas');
+    o.width = Math.max(1, Math.round(w)); o.height = Math.max(1, Math.round(h));
+    const oc = o.getContext('2d');
+    const s = Math.max(o.width / im.width, o.height / im.height);
+    const dw = im.width * s, dh = im.height * s;
+    oc.drawImage(im, (o.width - dw) / 2, (o.height - dh) * .39, dw, dh);
+    oc.globalCompositeOperation = 'destination-in';
+    const fade = oc.createRadialGradient(o.width*.5,o.height*.48,o.width*.29,o.width*.5,o.height*.48,o.width*.67);
+    fade.addColorStop(0,'rgba(0,0,0,1)');
+    fade.addColorStop(.48,'rgba(0,0,0,1)');
+    fade.addColorStop(.73,'rgba(0,0,0,.90)');
+    fade.addColorStop(.90,'rgba(0,0,0,.40)');
+    fade.addColorStop(1,'rgba(0,0,0,0)');
+    oc.fillStyle = fade; oc.fillRect(0,0,o.width,o.height);
+    c.drawImage(o,x,y,w,h);
+  }
+
+  function pillsCenter(c, tags, cx, y, s) {
+    font(c, 700, s);
+    const ws = tags.map((t) => c.measureText(t).width + s * 1.3), gap = s * 0.5;
+    let xx = cx - (ws.reduce((a, b) => a + b, 0) + gap * (tags.length - 1)) / 2;
+    tags.forEach((t, i) => {
+      rr(c, xx, y - s * 1.05, ws[i], s * 1.55, s * 0.78); c.fillStyle = '#FFEDB8'; c.fill();
+      c.fillStyle = '#7A4A12'; c.textAlign = 'left'; c.fillText(t, xx + s * 0.65, y); xx += ws[i] + gap;
+    });
+  }
+  function kickerCenter(c, cx, y, s, text) {
+    font(c, 700, s); const w = c.measureText(text).width, dash = s * 1.2, total = w + dash * 2 + s;
+    const x = cx - total / 2; c.fillStyle = INK; c.textAlign = 'left';
+    c.fillRect(x, y - s * 0.36, dash, 3); c.fillText(text, x + dash + s * 0.5, y); c.fillRect(x + dash + s + w, y - s * 0.36, dash, 3);
+  }
+
   async function draw(d) {
     const my = ++drawing;
     const [W, H] = SIZES[opts.ratio];
     const off = document.createElement('canvas'); off.width = W; off.height = H;
     const c = off.getContext('2d');
     const name = d.stage.replace(/^\d\s*/, '');
-    const allText = T().shareTitle + name + d.stageLine + d.psalm.title + '詩篇第篇此刻適合閱讀的教會小本本給此刻的你' + (d.verse ? d.verse.text + d.verse.ref : '') + d.tags.join('') + T().shareFooter + Object.values(T().dimNames).join('') + '0123456789+-.ABCDEFGH未答—「」';
+    const allText = T().shareTitle + name + d.stageLine + d.psalm.title + '詩篇第篇推薦你閱讀的教會小本本給此刻的你' + (d.verse ? d.verse.text + d.verse.ref : '') + d.tags.join('') + T().shareFooter + Object.values(T().dimNames).join('') + '0123456789+-.ABCDEFGH未答—「」…';
     await fontsReady(allText);
-    const story = opts.ratio === 'story', M = 72;
-    const bg = c.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#FFF6E0'); bg.addColorStop(1, CREAM);
-    c.fillStyle = bg; c.fillRect(0, 0, W, H);
+    const story = opts.ratio === 'story', M = 72, cx = W / 2;
+    Art.paintPaper(c, W, H, d.psalm.psalm);
     c.textBaseline = 'alphabetic';
 
-    logo(c, M, story ? 128 : 96, story ? 56 : 48);
-    kicker(c, M, story ? 250 : 182, story ? 40 : 34, T().shareTitle);
-    const nameSize = story ? 190 : 150;
-    font(c, 900, nameSize); c.fillStyle = INK; c.textAlign = 'left';
-    const nameY = story ? 470 : 360;
-    c.fillText(name, M - 6, nameY);
-    swoosh(c, M, nameY + (story ? 36 : 30), Math.max(c.measureText(name).width, 260), story ? 16 : 13);
+    // 1 品牌 → 2 我的生命光景 → 3 光景名稱 → 4 標籤與簡述（與結果頁相同順序）
+    logo(c, M, story ? 116 : 88, story ? 52 : 44);
+    let y = story ? 232 : 168;
+    kickerCenter(c, cx, y, story ? 38 : 32, T().shareTitle);
+    const ns = story ? 180 : 132;
+    y += story ? 196 : 146;
+    font(c, 900, ns); c.fillStyle = INK; c.textAlign = 'center'; c.fillText(name, cx, y);
+    const nw = Math.max(c.measureText(name).width, 240);
+    swoosh(c, cx - nw / 2, y + (story ? 34 : 26), nw, story ? 15 : 12);
+    const tags = d.tags.slice(0, 3);
+    if (tags.length) { y += story ? 112 : 84; pillsCenter(c, tags, cx, y, story ? 34 : 28); }
+    y += story ? 78 : 58;
+    font(c, 500, story ? 38 : 30); c.fillStyle = SOFT; c.textAlign = 'center';
+    for (const l of wrap(c, d.stageLine, W - 2 * M).slice(0, 2)) { c.fillText(l, cx, y); y += story ? 56 : 44; }
 
     if (opts.style === 'scene') {
-      font(c, 500, story ? 42 : 34); c.fillStyle = SOFT;
-      const lines = wrap(c, d.stageLine, story ? 620 : W - 2 * M).slice(0, 2);
-      let ly = nameY + (story ? 120 : 92);
-      for (const l of lines) { c.fillText(l, M, ly); ly += story ? 62 : 48; }
-      const artY = ly + (story ? 10 : 8), artH = story ? 1440 - ly : 1000 - ly;
-      await drawArt(c, d, M, artY, W - 2 * M, artH, 44);
-      card(c, d, M + 36, artY + artH - (story ? 120 : 110), W - 2 * M - 72, story ? 1 : 0.78, true);
+      // 5 插畫 → 6 推薦詩篇
+      const sc = story ? 0.92 : 0.72;
+      const cardW = W - 2 * M, cardH = card(c, d, M, 0, cardW, sc, true, true);
+      const footY = H - (story ? 66 : 42);
+      const cardY = footY - (story ? 54 : 36) - cardH;
+      const artTop = y - (story ? 10 : 8);
+      const artH = Math.min(W, cardY - artTop + (story ? 70 : 54)); // 卡片只壓在插畫已淡出的下緣
+      await storybook(c, d, 0, artTop, W, artH);
+      c.textAlign = 'left';
+      card(c, d, M, cardY, cardW, sc, true);
     } else {
-      pills(c, [name, ...d.tags].slice(0, 4), M, nameY + (story ? 116 : 92), story ? 36 : 30);
       if (story) {
-        const cy0 = 660, ch = card(c, d, M, cy0, W - 2 * M, 0.82, false);
-        const R = 220, ry = cy0 + ch + R * 1.3 + 70;
-        radar(c, d.scores, W / 2, ry, R, 30);
-        let ty = ry + R * 1.3 + 110;
-        font(c, 900, 40); c.fillStyle = INK; c.textAlign = 'left'; c.fillText('給此刻的你', M, ty); ty += 62;
-        font(c, 500, 36); c.fillStyle = SOFT;
-        for (const l of wrap(c, d.stageLine, W - 2 * M).slice(0, 2)) { c.fillText(l, M, ty); ty += 54; }
+        await storybook(c, d, 140, y - 10, W - 280, 430);
+        const cy0 = y + 360, ch = card(c, d, M, cy0, W - 2 * M, 0.78, false);
+        const R = 170, ry = cy0 + ch + R * 1.3 + 60;
+        radar(c, d.scores, cx, ry, R, 28);
       } else {
-        radar(c, d.scores, W / 2, 745, 158, 24);
-        card(c, d, M, 1000, W - 2 * M, 0.64, false);
+        radar(c, d.scores, cx, y + 210, 140, 22);
+        card(c, d, M, y + 440, W - 2 * M, 0.6, false);
       }
     }
-    font(c, 500, story ? 28 : 24); c.fillStyle = SOFT; c.textAlign = 'left';
-    c.fillText(T().shareFooter, M, H - (story ? 70 : 44));
+    font(c, 500, story ? 26 : 22); c.fillStyle = SOFT; c.textAlign = 'center';
+    c.fillText(T().shareFooter, cx, H - (story ? 66 : 42));
 
     if (my !== drawing) return; // 使用者已切換樣式
     const cv = $('share-canvas'); cv.width = W; cv.height = H; cv.getContext('2d').drawImage(off, 0, 0);

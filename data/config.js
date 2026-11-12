@@ -3,7 +3,7 @@
  * 狀態依據：Claude 開發交接 V1 ＋ V2.147 交接包 README。
  */
 window.CONFIG = {
-  version: 'web-0.1（開發預覽）',
+  version: 'web-0.5（奶油色插畫融合修正版）',
 
   /* 八維距離權重：沿用 V2.44 原型與 V2.146/V2.147 模擬所用的既有距離函數，未新增規則。 */
   weights: { A: 1.3, B: 1.15, C: 0.65, D: 1.0, E: 0.85, F: 0.7, G: 1.3, H: 1.0 },
@@ -30,8 +30,11 @@ window.CONFIG = {
   /* 八維圖譜：只顯示 -2 到 +2 的原始分數，不換算成百分比（換算公式尚未核准）。 */
   chart: { showPercent: false },
 
-  /* 結果插畫路徑；缺圖時自動顯示品牌色佔位。 */
-  illustrationPath: (n) => `assets/psalms/psalm-${String(n).padStart(3, '0')}.webp`,
+  /*
+   * 結果插畫：只依 data/images.js（psalm-images.json）查詢，有列出的篇章才顯示圖片，
+   * 其他篇章一律顯示中性佔位，不推測檔名、不載入候選圖。
+   */
+  illustration: (n) => (window.PSALM_IMAGES && window.PSALM_IMAGES[n]) || null,
   homeIllustration: null, // 首頁主視覺目前以程式繪製（hero），之後可換成正式動態資產
 
   /*

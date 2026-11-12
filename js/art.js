@@ -108,5 +108,43 @@
     return s + `</svg>`;
   }
 
-  root.Art = { landscapeSVG, landscapeURL, radarSVG };
+
+  /**
+   * 紙張邊緣遮罩：白色不規則形狀＋柔和羽化，四周透明。
+   * 同一個 SVG 同時給 CSS mask-image 與分享卡 canvas 使用，兩邊看起來一致。
+   * inset：邊緣內縮比例；soft：羽化程度；rough：撕紙起伏幅度。
+   */
+  function paperMaskSVG(seed, o = {}) {
+    const inset = o.inset ?? 60, soft = o.soft ?? 16, rough = o.rough ?? 60, fiber = o.fiber ?? 16;
+    const S = 1000, r = o.radius ?? 60;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" preserveAspectRatio="none">` +
+      `<defs><filter id="f" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">` +
+      `<feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="2" seed="${seed}" result="n1"/>` +
+      `<feDisplacementMap in="SourceGraphic" in2="n1" scale="${rough}" xChannelSelector="R" yChannelSelector="G" result="d1"/>` +
+      `<feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="2" seed="${seed + 7}" result="n2"/>` +
+      `<feDisplacementMap in="d1" in2="n2" scale="${fiber}" xChannelSelector="R" yChannelSelector="G" result="d2"/>` +
+      `<feGaussianBlur in="d2" stdDeviation="${soft}"/></filter></defs>` +
+      `<rect x="${inset}" y="${inset}" width="${S - inset * 2}" height="${S - inset * 2}" rx="${r}" fill="#fff" filter="url(#f)"/></svg>`;
+  }
+  const svgURL = (svg) => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  const paperMaskURL = (seed, o) => svgURL(paperMaskSVG(seed, o));
+
+  /** 細緻紙張紋理（給 canvas 用）：細顆粒＋大片淡淡的米色暈染。 */
+  function paintPaper(c, W, H, seed) {
+    const r = rng(seed || 3);
+    c.fillStyle = '#FFF8EA'; c.fillRect(0, 0, W, H);
+    for (let i = 0; i < 7; i++) {
+      const x = r() * W, y = r() * H, rad = (0.25 + r() * 0.35) * Math.max(W, H);
+      const g = c.createRadialGradient(x, y, 0, x, y, rad);
+      g.addColorStop(0, i % 2 ? 'rgba(246,228,190,.35)' : 'rgba(255,252,242,.55)'); g.addColorStop(1, 'rgba(255,248,234,0)');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+    }
+    const t = document.createElement('canvas'); t.width = t.height = 160;
+    const tc = t.getContext('2d'), img = tc.createImageData(160, 160);
+    for (let i = 0; i < img.data.length; i += 4) { const v = 120 + r() * 80; img.data[i] = v; img.data[i + 1] = v * 0.85; img.data[i + 2] = v * 0.6; img.data[i + 3] = r() * 14; }
+    tc.putImageData(img, 0, 0);
+    c.fillStyle = c.createPattern(t, 'repeat'); c.fillRect(0, 0, W, H);
+  }
+
+  root.Art = { landscapeSVG, landscapeURL, radarSVG, paperMaskSVG, paperMaskURL, svgURL, paintPaper };
 })(window);
