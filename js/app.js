@@ -40,6 +40,7 @@
     if (h.startsWith('#/result')) return renderResult(state.altPsalm);
     if (h.startsWith('#/about')) return renderAbout();
     if ((m = h.match(/^#\/read\/(\d{1,3})/))) return renderReader(+m[1]);
+    if (h !== '#/' && h !== '#' && !h.startsWith('#/')) return; // 頁內錨點，維持目前畫面
     return renderHome();
   }
 
@@ -91,7 +92,7 @@
     $('progress').setAttribute('aria-valuenow', state.step + 1);
     $('progress-bar').style.width = `${((state.step + 1) / total) * 100}%`;
     $('btn-prev').disabled = state.step === 0;
-    $('btn-next').disabled = !(q.id in state.answers);
+    $('btn-next').disabled = false;
     $('btn-next').firstChild.textContent = state.step === total - 1 ? '看結果' : '下一題';
     $('q-text').textContent = q.text;
     $('options').innerHTML = q.options.map((o, i) => `
@@ -120,7 +121,11 @@
     else { state.done = true; save(); go('#/result'); }
   }
   $('btn-skip').onclick = () => answer(null);
-  $('btn-next').onclick = () => { if (visibleQ[state.step].id in state.answers) next(); };
+  $('btn-next').onclick = () => {
+    const id = visibleQ[state.step].id;
+    if (!(id in state.answers)) { state.answers[id] = null; save(); } // 沒選就前進，視為略過
+    next();
+  };
   $('btn-prev').onclick = () => { if (state.step > 0) { state.step--; save(); renderQuiz(); } };
   document.addEventListener('keydown', (e) => {
     if ($('view-quiz').hidden || e.metaKey || e.ctrlKey || e.altKey) return;
@@ -185,6 +190,9 @@
   }
 
   function renderResult(forcePsalm) {
+    try { return renderResultInner(forcePsalm); } catch (e) { showError(e); }
+  }
+  function renderResultInner(forcePsalm) {
     const res = Scoring.rank(state.answers, Q, P, C);
     if (res.status === 'insufficient') { show('insufficient'); document.querySelector('#view-insufficient .section-title').focus(); return; }
     show('result');
@@ -219,7 +227,7 @@
         <button class="btn btn-primary" id="btn-read" type="button">${icon('i-book', 'ic')}閱讀完整詩篇${icon('i-chev-r', 'ic')}</button>
         <button class="btn btn-green" id="btn-share" type="button">${icon('i-share', 'ic')}產生分享圖片</button>
       </div>
-      <a class="scroll-hint" href="#r-more" aria-label="往下看更多">${icon('i-chev-d')}</a>
+      <button class="scroll-hint" id="scroll-more" type="button" aria-label="往下看更多">${icon('i-chev-d')}</button>
 
       ${deep ? supportBlock(true) : ''}
 
@@ -274,6 +282,7 @@
       </div>`;
 
     illus($('r-img'), n, p.stage);
+    $('scroll-more').onclick = () => $('r-more').scrollIntoView({ behavior: 'smooth', block: 'start' });
     $('btn-read').onclick = () => go(`#/read/${n}`);
     $('btn-share').onclick = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, imgSrc: C.illustrationPath(n) });
     $('btn-again').onclick = () => { clear(); lastResult = null; go('#/'); };
@@ -282,6 +291,15 @@
     document.querySelectorAll('.near-list button').forEach((b) => (b.onclick = () => renderResult(+b.dataset.psalm)));
     $('r-stage').focus({ preventScroll: true });
   }
+
+  function showError(e) {
+    show('result');
+    $('result-root').innerHTML = `<div class="pad-top"><h2 class="section-title big">結果暫時無法顯示</h2>
+      <p>很抱歉，產生結果時發生問題。請截圖這個畫面回報給我們，或重新整理後再試一次。</p>
+      <p class="note">${esc((e && (e.stack || e.message)) || e)}<br>${esc(navigator.userAgent)}</p>
+      <div class="btn-row"><button class="btn btn-primary" type="button" onclick="location.reload()">重新整理</button></div></div>`;
+  }
+  window.addEventListener('error', (ev) => { if (!$('view-result').hidden || location.hash.startsWith('#/result')) showError(ev.error || ev.message); });
 
   function supportBlock(prominent) {
     const s = T.support;
