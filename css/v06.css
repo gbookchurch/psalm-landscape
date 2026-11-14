@@ -1,0 +1,34 @@
+/* web-0.6｜品牌孔版印刷首頁、題目、結果頁：僅視覺層 */
+:root{--brand:#FF7900;--brand-btn:#FF7900;--brand-deep:#D95600;--yellow:#FFD400;--yellow-soft:#FFF0A5;--green:#58A548;--green-deep:#187640;--green-ink:#176D3B;--green-soft:#EAF5E5;--cream:#F9F9F5;--paper:#fff;--line:#E4E9DF;--ink:#203B2D;--ink-soft:#53685A;--ink-faint:#728176;--shadow:0 12px 32px rgba(21,79,48,.08)}
+body{background:#F9F9F5;background-image:none;color:var(--ink)}
+.topbar,.reader-bar{background:rgba(249,249,245,.96);border-bottom:1px solid #E5EAE2}
+.logo{color:var(--green-ink)}.logo-ic{color:var(--brand)}
+.btn-primary{background:var(--green-deep);color:white;box-shadow:0 7px 18px rgba(24,118,64,.18)}
+.btn-primary:hover:not(:disabled){background:#10552C}
+.btn-outline{box-shadow:inset 0 0 0 1.5px #BBD5BF}
+.view-ground{padding-bottom:90px}.ground{opacity:.25}
+/* 首頁：不含人物，品牌橘黃綠、強烈平面印刷構圖 */
+.view-home{background:#F9F9F5}.home-grid{gap:0;align-items:stretch;max-width:1250px;padding:24px 20px 64px}
+.hero{height:440px;min-height:300px;border-radius:28px;overflow:hidden;mask-image:none!important;-webkit-mask-image:none!important;background:#187640;box-shadow:0 18px 34px rgba(19,91,47,.13)}
+.hero-art{object-fit:cover}.hero *{animation:none!important}.home-copy{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 16px}
+.kicker{color:var(--green-ink)}.home-title{color:var(--green-ink);font-size:clamp(32px,6vw,57px)}.home-sub{color:var(--ink-soft)}
+.btn-cta{background:var(--yellow);color:#183F27;box-shadow:0 5px 0 #F2B900,0 12px 22px rgba(168,112,0,.12)}.btn-cta:hover:not(:disabled){background:#FFE04A}
+.stats li{color:var(--green-ink)}.stats svg{color:var(--brand)}
+@media(min-width:900px){.home-grid{grid-template-columns:1fr 1fr;gap:32px}.hero{order:1;height:690px}.home-copy{order:2;text-align:left;align-items:flex-start;padding:35px 24px}.kicker{justify-content:flex-start}.home-sub{margin-left:0}.stats{margin-left:0}.home-fine{margin-left:0}}
+/* 題目：品牌色專用的獨立小插圖與清晰的答題卡 */
+.quiz{max-width:720px;padding-top:28px}.quiz-visual{height:135px;display:grid;place-items:center;margin:0 auto 18px;overflow:hidden}.quiz-visual svg{height:130px;width:min(320px,100%);filter:drop-shadow(0 7px 0 rgba(24,118,64,.05))}
+.quiz-count{color:var(--green-ink);font-size:15px;letter-spacing:.12em}.progress{height:9px;background:#E1ECDD;margin:9px 0 20px}.progress span{background:var(--brand)}
+.q-text{color:var(--green-ink);font-size:clamp(24px,5vw,32px);margin-bottom:24px}.opt{background:white;border:1.5px solid #DCE8DA;box-shadow:0 5px 18px rgba(21,79,48,.045);border-radius:18px;min-height:72px}.opt:hover{border-color:var(--green-deep)}.opt[aria-checked=true]{border-color:var(--green-deep);background:#ECF7E7;box-shadow:0 0 0 2px rgba(24,118,64,.07)}.opt .radio{border-color:#94B99C}.opt[aria-checked=true] .radio{border-color:var(--green-deep)}.opt .radio::after{background:var(--green-deep)}
+/* 結果頁：白底承托自由色插畫，透明素材不再被圓形漸層破壞 */
+.result{max-width:800px;padding-top:32px}.r-stage{color:var(--green-ink);font-size:clamp(44px,11vw,72px)}.r-line{color:var(--ink-soft)}
+.tags li{background:#FFF0A5;color:#456B2C}.tags li:nth-child(3n+2){background:#E3F2DD}.tags li:nth-child(3n){background:#FFE1C7}
+.storybook{aspect-ratio:1/.76;max-width:680px;margin:20px auto 0;isolation:isolate}.storybook::before{background:none}.storybook .paper-back{display:none}.storybook .ill{inset:0;overflow:visible;mask-image:none!important;-webkit-mask-image:none!important}.storybook .ill img{object-fit:contain;object-position:center;filter:none;width:100%;height:100%}
+.storybook.placeholder{aspect-ratio:1/.60}.storybook.placeholder .ill{display:grid;place-items:center}.storybook.placeholder img{width:100%;height:100%;object-fit:contain}
+.storybook+.psalm-card{margin:0 auto;max-width:660px;z-index:2;position:relative}
+.psalm-card,.card,.card.soft{background:#fff;border-radius:24px;box-shadow:0 9px 30px rgba(20,73,43,.07);border:1px solid #E8EEE6}
+.pc-num,.pc-label,.section-title{color:var(--green-ink)}.pc-quote{color:var(--ink-soft)}.card .reflect{background:#F2F7EC}
+.chart-wrap svg.radar{max-width:410px}.block{margin-top:30px}
+.reader-art.real img{mask-image:none!important;-webkit-mask-image:none!important}
+.share-preview{background:var(--cream)}
+@media(max-width:520px){.home-grid{padding:12px 12px 32px}.hero{height:320px;border-radius:22px}.home-copy{padding:28px 14px}.quiz-visual{height:110px}.quiz-visual svg{height:105px}.result{padding-top:22px}.storybook{aspect-ratio:1/.82;margin-left:-10px;margin-right:-10px}.storybook.placeholder{aspect-ratio:1/.64}.storybook+.psalm-card{margin-top:0}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important}}

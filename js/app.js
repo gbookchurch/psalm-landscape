@@ -190,9 +190,9 @@
     const real = C.illustration(n);
     // web-0.5：以 CSS 漸層融入奶油色紙底，保留原圖，不再套用硬邊紙張遮罩。
 
-    const placeholder = () => { img.onerror = null; img.alt = ''; box.classList.remove('real'); img.src = Art.landscapeURL(n, stage, 900, 900); };
+    const placeholder = () => { img.onerror = null; img.alt = '品牌色抽象裝飾；此篇正式插畫尚待完成'; box.classList.remove('real'); box.classList.add('placeholder'); img.src = 'assets/pending-illustration.svg'; };
     if (!real) return placeholder();
-    box.classList.add('real');
+    box.classList.remove('placeholder'); box.classList.add('real');
     img.alt = `詩篇第 ${n} 篇插畫`;
     img.onerror = placeholder;
     img.src = real.src;
@@ -232,6 +232,7 @@
         <span class="ill"><img id="r-img" alt="" decoding="async"></span>
       </figure>
 
+      ${!C.illustration(n) ? '<p class="fine" style="text-align:center;margin:0 auto 12px">插畫製作中・目前顯示品牌裝飾圖</p>' : ''}
       <section class="psalm-card" aria-labelledby="pc-num">
         <p class="pc-label">${icon('i-book')}推薦你閱讀的詩篇</p>
         <h2 class="pc-num" id="pc-num"><span class="u-mark">詩篇 第 ${n} 篇</span></h2>
