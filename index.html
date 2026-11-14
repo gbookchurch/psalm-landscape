@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/v06.css">
+<link rel="stylesheet" href="css/v08.css">
 </head>
 <body>
 <a class="skip-link" href="#main">跳到主要內容</a>
@@ -59,24 +60,13 @@
 
   <!-- 首頁 -->
   <section id="view-home" class="view view-home" data-view="home" hidden>
-    <div class="home-grid">
-      <div class="hero" id="hero" aria-hidden="true">
-        <img class="hero-art" src="assets/hero-risograph-brand.webp" alt="" width="1024" height="1536" decoding="async" fetchpriority="high">
+    <div class="home-poster-shell">
+      <div class="home-poster">
+        <img class="home-poster-image" src="assets/home-reference-poster.webp" alt="教會小本本詩篇測驗：橘黃綠孔版印刷風格的山丘、河流與植物海報，標題為你現在活在哪一篇詩篇裡？" width="560" height="916" fetchpriority="high">
+        <button class="home-poster-start" id="btn-start" type="button" aria-label="開始測驗"><span class="sr-only">開始測驗</span></button>
       </div>
-
-      <div class="home-copy">
-        <p class="kicker"><span>詩篇測驗</span></p>
-        <h1 class="home-title"><span class="u-swoosh">你現在的光景，<br>適合讀哪篇詩篇？</span></h1>
-        <p class="home-sub" data-copy="homeSub"></p>
-        <button class="btn btn-primary btn-cta" id="btn-start" type="button"><span id="start-label">開始測驗</span><svg class="ic" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
-        <button class="btn btn-ghost" id="btn-resume" type="button" hidden></button>
-        <ul class="stats" aria-label="測驗內容">
-          <li><svg aria-hidden="true"><use href="#i-task"/></svg><span>20 道問題</span></li>
-          <li><svg aria-hidden="true"><use href="#i-sprout"/></svg><span>9 種生命光景</span></li>
-          <li><svg aria-hidden="true" class="ic-book"><use href="#i-book"/></svg><span>150 篇詩篇</span></li>
-        </ul>
-        <p class="fine home-fine" data-copy="disclaimer"></p>
-      </div>
+      <button class="btn btn-ghost" id="btn-resume" type="button" hidden></button>
+      <p class="home-poster-note">20 個情境題，探索當下的生命光景，找到適合陪伴你的詩篇。</p>
     </div>
   </section>
 
