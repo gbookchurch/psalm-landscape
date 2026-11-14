@@ -32,3 +32,10 @@ body{background:#F9F9F5;background-image:none;color:var(--ink)}
 .share-preview{background:var(--cream)}
 @media(max-width:520px){.home-grid{padding:12px 12px 32px}.hero{height:320px;border-radius:22px}.home-copy{padding:28px 14px}.quiz-visual{height:110px}.quiz-visual svg{height:105px}.result{padding-top:22px}.storybook{aspect-ratio:1/.82;margin-left:-10px;margin-right:-10px}.storybook.placeholder{aspect-ratio:1/.64}.storybook+.psalm-card{margin-top:0}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important}}
+
+/* web-0.7: true risograph image, no crop or SVG filter artifacts */
+.hero{background:#F9F9F5!important;box-shadow:none!important;overflow:hidden!important;display:flex;align-items:center;justify-content:center}
+.hero-art{position:relative!important;inset:auto!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;display:block}
+@media(min-width:900px){.hero{height:min(690px,72vw)!important}}
+@media(max-width:899px){.hero{height:clamp(280px,55vw,480px)!important}}
+@media(max-width:520px){.hero{height:clamp(260px,80vw,380px)!important}}
