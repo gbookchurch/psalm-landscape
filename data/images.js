@@ -1,0 +1,4 @@
+/* 自動產生，請勿手改。來源：psalm-images.json（圖片接手包 V8）。
+ * 只有這裡列出的篇章會顯示插畫；其他篇章一律用中性佔位，不推測檔名。
+ * 路徑已從 "/images/..." 改成相對路徑 "images/..."，才能在 GitHub Pages 子目錄下正常載入。 */
+window.PSALM_IMAGES={"1": {"src": "images/psalms/psalm_001.png", "w": 1254, "h": 1254, "quality": "original_individual_image"}, "38": {"src": "images/psalms/psalm_038.png", "w": 512, "h": 512, "quality": "low_resolution_collage_crop"}, "45": {"src": "images/psalms/psalm_045.png", "w": 512, "h": 512, "quality": "low_resolution_collage_crop"}, "63": {"src": "images/psalms/psalm_063.png", "w": 512, "h": 512, "quality": "low_resolution_collage_crop"}, "81": {"src": "images/psalms/psalm_081.png", "w": 512, "h": 512, "quality": "low_resolution_collage_crop"}, "104": {"src": "images/psalms/psalm_104.png", "w": 512, "h": 512, "quality": "low_resolution_collage_crop"}};
