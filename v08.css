@@ -1,0 +1,11 @@
+/* web-0.8 — 使用使用者確認的首頁視覺參考，取代左右分欄與錯誤圖片。 */
+.view-home{background:#f9f9f5!important}
+.home-poster-shell{width:min(100%,610px);margin:0 auto;padding:12px 12px 40px;text-align:center}
+.home-poster{position:relative;width:100%;aspect-ratio:560/916;overflow:hidden;border-radius:3px;background:#167d60;box-shadow:0 12px 36px rgba(19,80,45,.12)}
+.home-poster-image{display:block;width:100%;height:100%;object-fit:contain}
+.home-poster-start{position:absolute;left:34%;top:62%;width:40%;height:8%;border:0;background:transparent;cursor:pointer;border-radius:100px;touch-action:manipulation}
+.home-poster-start:focus-visible{outline:4px solid #123e29;outline-offset:4px;background:rgba(255,255,255,.15)}
+.home-poster-start:hover{background:rgba(255,255,255,.1)}
+.home-poster-note{margin:18px auto 0;max-width:36em;font-size:14px;color:#245a3a;line-height:1.7}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:600px){.home-poster-shell{padding:0 0 24px}.home-poster{border-radius:0;box-shadow:none}.home-poster-note{padding:0 20px}}
