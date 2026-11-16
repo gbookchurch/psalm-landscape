@@ -1,8 +1,0 @@
-/* web-0.10: cross-project brand signature + remove redundant bottom description */
-.project-brand-strip{box-sizing:border-box;width:100%;min-height:30px;padding:5px max(16px,calc((100vw - 1160px)/2));display:flex;align-items:center;gap:9px;background:#f9f9f5;color:#77776e;font-family:"Noto Sans TC",sans-serif;font-size:12px;font-weight:500;letter-spacing:.015em;line-height:1.5}
-.project-brand-dots{display:inline-flex;align-items:center;gap:4px;flex-shrink:0}
-.project-brand-dots i{display:block;width:8px;height:8px;border-radius:50%;background:#d77747}
-.project-brand-dots i:nth-child(2){background:#e6ae4b}
-.project-brand-dots i:nth-child(3){background:#c7bd85}
-.project-brand-dots i:nth-child(4){background:#91a48a}
-@media(max-width:600px){.project-brand-strip{min-height:28px;padding:5px 14px;font-size:11px}.project-brand-dots i{width:7px;height:7px}}
