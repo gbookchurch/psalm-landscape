@@ -1,0 +1,61 @@
+# 每次推送到 main：先依 images/psalms/ 重新產生插畫清單，再把網站部署到 GitHub Pages。
+# 需要先到 repo 的 Settings → Pages，把 Source 改成「GitHub Actions」（只要設定一次）。
+name: 部署網站並更新插畫清單
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # 把更新後的 data/images.js 存回 repo
+  pages: write      # 部署到 GitHub Pages
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 取得檔案
+        uses: actions/checkout@v4
+
+      - name: 重新產生插畫清單
+        continue-on-error: true   # 就算這一步出錯，也照樣部署網站，不會讓網站卡在舊版
+        run: |
+          if [ -f tools/build-images.mjs ]; then
+            node tools/build-images.mjs
+          else
+            echo "::warning::找不到 tools/build-images.mjs，這次沒有更新插畫清單（網站照樣部署）。請把 tools 資料夾一起上傳。"
+          fi
+
+      - name: 把更新後的清單存回 repo
+        continue-on-error: true   # 存不回去也不影響這次部署，部署用的是剛產生的清單
+        run: |
+          if git diff --quiet -- data/images.js; then
+            echo "清單沒有變動，不需要存回。"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/images.js
+          git commit -m "自動更新插畫清單"
+          git push
+
+      - name: 準備 GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 打包網站
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: 部署
+        id: deployment
+        uses: actions/deploy-pages@v4
