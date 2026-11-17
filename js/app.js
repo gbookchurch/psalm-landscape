@@ -122,28 +122,33 @@
     $('options').querySelectorAll('.opt').forEach((b) => (b.onclick = () => select(+b.dataset.i)));
     $('q-text').focus({ preventScroll: true });
   }
-  /** 選一個選項：只標示選取，不自動跳題，按「下一題」才前進（選錯可以直接改）。 */
+  /** 選一個選項：先標示選取，停一下讓人看到，再自動到下一題。選錯可以按「上一題」回來改。 */
+  let advancing = false;
   function select(i) {
+    if (advancing) return;
     const q = visibleQ[state.step];
     if (!q.options[i]) return;
     state.answers[q.id] = i;
     save();
     $('options').querySelectorAll('.opt').forEach((b) => b.setAttribute('aria-checked', +b.dataset.i === i));
     $('btn-skip').setAttribute('aria-pressed', 'false');
+    advancing = true;
+    setTimeout(() => { advancing = false; if (!$('view-quiz').hidden && visibleQ[state.step] === q) next(); }, 350);
   }
   function next() {
     if (state.step < visibleQ.length - 1) { state.step++; save(); renderQuiz(); }
     else { state.done = true; save(); go('#/result'); }
   }
   /** 略過：記為 null 並直接到下一題。 */
-  function skip() { state.answers[visibleQ[state.step].id] = null; save(); next(); }
+  function skip() { if (advancing) return; state.answers[visibleQ[state.step].id] = null; save(); next(); }
   $('btn-skip').onclick = skip;
   $('btn-next').onclick = () => {
+    if (advancing) return;
     const id = visibleQ[state.step].id;
     if (!(id in state.answers)) { state.answers[id] = null; save(); } // 沒選就前進，視為略過
     next();
   };
-  $('btn-prev').onclick = () => { if (state.step > 0) { state.step--; save(); renderQuiz(); } };
+  $('btn-prev').onclick = () => { if (advancing) return; if (state.step > 0) { state.step--; save(); renderQuiz(); } };
   document.addEventListener('keydown', (e) => {
     if ($('view-quiz').hidden || e.metaKey || e.ctrlKey || e.altKey) return;
     if (/^[1-9]$/.test(e.key)) { e.preventDefault(); select(+e.key - 1); }
@@ -269,16 +274,13 @@
     $('result-root').innerHTML = `
       <header class="r-hero">
         <div class="r-hero-text">
-          <div>
-            <p class="r-kicker">你現在的生命光景</p>
-            <p class="r-of">九種光景之一</p>
-          </div>
+          <p class="r-kicker">你現在的生命光景</p>
           <div>
             <p class="r-line">${PsalmText.stageLines(st.line).map(esc).join('<br>')}</p>
             ${tags.length ? `<ul class="tags" aria-label="心境標籤">${tags.map((t) => `<li>${esc(t.text)}</li>`).join('')}</ul>` : ''}
           </div>
         </div>
-        <h1 class="r-stage" id="r-stage" tabindex="-1">${esc(name)}</h1>
+        <h1 class="r-stage${[...name].length >= 3 ? ' long' : ''}" id="r-stage" tabindex="-1">${esc(name)}</h1>
       </header>
       ${isAlt ? `<p class="note">你正在看「也可能共鳴」的詩篇。<button class="btn-link" id="back-main" type="button">回到主要結果：詩篇第 ${res.best.psalm} 篇</button></p>` : ''}
 
@@ -311,10 +313,6 @@
         <div class="r-head"><span class="no" aria-hidden="true">壹</span><h2 id="h-now">這篇詩想對你說</h2></div>
         <p class="r-body">${esc(p.body)}</p>
       </section>
-      <section class="reflect" aria-labelledby="h-reflect">
-        <p class="eyebrow" id="h-reflect">留給你的一個問題</p>
-        <p>${esc(p.reflection)}</p>
-      </section>
 
       <section class="r-block" aria-labelledby="h-why">
         <div class="r-head"><span class="no" aria-hidden="true">貳</span><h2 id="h-why">為什麼是這一篇</h2></div>
@@ -336,7 +334,6 @@
       </section>` : ''}
 
       <div class="r-end">
-        ${deep ? '' : supportBlock(false)}
         <p class="fine">${esc(T.disclaimer)}</p>
         <div class="end-actions">
           <button class="btn-link" id="btn-again" type="button">重新作答</button>

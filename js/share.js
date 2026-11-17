@@ -106,8 +106,10 @@
   }
 
   /** 直排光景名稱＋右側的黃色螢光筆底。right 是右邊界，回傳佔用的高度。 */
-  function stageName(c, name, right, y, size) {
-    const n = [...name].length, h = n * size * 1.04;
+  function stageName(c, name, right, y, size, maxH) {
+    const n = [...name].length;
+    if (maxH) size = Math.min(size, maxH / (n * 1.04));
+    const h = n * size * 1.04;
     c.fillStyle = YELLOW; c.fillRect(right - size * 0.36, y, size * 0.28, h);
     c.fillStyle = INK; serif(c, 900, size);
     vText(c, name, right - size / 2, y, size, 0.04);
@@ -237,7 +239,7 @@
   /** 數據版上半部：插畫（左）、篇號與經文（中）、直排光景名稱（右）。 */
   async function dataTop(c, d, name, y, imgS, nameS, k) {
     await art(c, d, M, y, imgS);
-    stageName(c, name, R, y, nameS);
+    stageName(c, name, R, y, nameS, imgS);
     const x = M + imgS + 26, maxW = R - nameS - 26 - x;
     const num = numeral(c, d.psalm.psalm, x, 0, 112 * k, 28 * k, maxW, true);
     const o = { ref: 20 * k, title: 21 * k, maxLen: 9 };
@@ -254,7 +256,7 @@
     header(c, 82, 1);
     const top = 140, s = 736;
     await art(c, d, M, top, s);
-    const nh = stageName(c, name, R, top, 150);
+    const nh = stageName(c, name, R, top, 150, 330);
     // 直排的光景說明，接在光景名稱下面
     c.fillStyle = SOFT; serif(c, 500, 28);
     const colW = 28 * 1.8, y0 = top + nh + 44, maxChars = Math.max(6, Math.floor((top + s - y0) / (28 * 1.1)));
@@ -268,7 +270,7 @@
   async function storyScene(c, d, name) {
     header(c, 154, 34 / 30);
     const top = 228, rowH = 420;
-    stageName(c, name, R, top, 200);
+    stageName(c, name, R, top, 200, 420);
     // 左欄由下往上排：心境標籤、光景說明、短線
     const maxW = R - 200 - 40 - M;
     let y = top + rowH;
