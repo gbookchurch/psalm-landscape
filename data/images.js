@@ -1,6 +1,6 @@
-/* 依 images/psalms/ 內實際存在的 psalm-NNN-*.webp 產生（共 39 篇）。
+/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 39 篇）。
  * 只有這裡列出的篇章會顯示插畫；其他篇章一律用中性佔位，不推測檔名。
- * 新增插畫時：把 webp 放進 images/psalms/，再照同樣格式加一行即可。
+ * 新增插畫：把 webp 上傳到 images/psalms/ 就好，推送後 GitHub 會自動重新產生這個檔案並部署。
  * 路徑是相對路徑，才能在 GitHub Pages 子目錄下正常載入。 */
 window.PSALM_IMAGES = {
   1: {"src": "images/psalms/psalm-001-life-tree.webp", "w": 1254, "h": 1254},

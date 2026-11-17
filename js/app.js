@@ -236,6 +236,15 @@
     img.src = real.src;
   }
 
+  /** 依使用者自己的作答判斷要不要把求助專線放在醒目位置（門檻在 CONFIG.supportProminent）。 */
+  function needsCare(scores) {
+    const r = C.supportProminent;
+    if (!r) return false;
+    const g = scores.G, a = scores.A;
+    if (g === undefined) return false;
+    return g <= r.hopeAlone || (a !== undefined && g <= r.hopeAndMood && a <= r.hopeAndMood);
+  }
+
   function renderResult(forcePsalm) {
     try { return renderResultInner(forcePsalm); } catch (e) { showError(e); }
   }
@@ -250,7 +259,7 @@
     const name = stageName(p.stage);
     const tags = moodTags(res.scores);
     const rs = reasons(res.scores, p);
-    const deep = p.stage.startsWith('7');
+    const deep = p.stage.startsWith('7') || needsCare(res.scores); // 求助專線是否放在醒目位置
     const isAlt = forcePsalm && forcePsalm !== res.best.psalm;
     state.altPsalm = isAlt ? forcePsalm : null;
     const kv = keyVerse(n);
