@@ -25,7 +25,14 @@ window.CONFIG = {
    * 並把「與第一名距離差 ≤ nearWindow」的詩篇列為「也可能共鳴」。
    * 這不是已核准的正式規則。
    */
-  tieRule: { status: 'provisional', tieEpsilon: 1e-6, nearWindow: 0.10, maxNear: 3 },
+  /*
+   * web-0.7 調整（仍屬暫行）：pick: 'spread'。
+   * 150 篇裡有 12 組、共 37 篇的八維座標完全相同；原本同分一律給篇號最小的，
+   * 其中 25 篇永遠不會成為主結果。改成 'spread' 後，同分時依作答內容在這幾篇裡固定挑一篇
+   * （同一份作答永遠是同一篇），讓同座標的詩篇都有機會出現。
+   * 要回到原型作法，把 pick 改回 'lowest' 即可。
+   */
+  tieRule: { status: 'provisional', tieEpsilon: 1e-6, nearWindow: 0.10, maxNear: 3, pick: 'spread' },
 
   /* 八維圖譜：只顯示 -2 到 +2 的原始分數，不換算成百分比（換算公式尚未核准）。 */
   chart: { showPercent: false },

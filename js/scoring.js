@@ -39,6 +39,17 @@
     return Math.sqrt(total / den);
   }
 
+  /** 把一份作答換成固定的整數（FNV-1a），只用來在同分的詩篇之間做穩定的挑選。 */
+  function answerHash(answers, questions) {
+    let h = 0x811c9dc5;
+    for (const q of questions) {
+      const a = answers[q.id];
+      const s = q.id + ':' + (Number.isInteger(a) ? a : '-') + ';';
+      for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+    }
+    return h >>> 0;
+  }
+
   /** 排序全部 150 篇，回傳主結果、完全同分、近分候選。 */
   function rank(answers, questions, psalms, config) {
     const scores = scoreAnswers(answers, questions, config);
@@ -48,15 +59,18 @@
     }
     const ranked = psalms
       .map((p) => ({ psalm: p.psalm, stage: p.stage, distance: distance(scores, p, config) }))
-      .sort((a, b) => a.distance - b.distance || a.psalm - b.psalm); // 暫行：同距離時篇號小者在前
-    const best = ranked[0];
+      .sort((a, b) => a.distance - b.distance || a.psalm - b.psalm);
     const t = config.tieRule;
-    const tied = ranked.filter((r) => Math.abs(r.distance - best.distance) < t.tieEpsilon);
+    const tied = ranked.filter((r) => Math.abs(r.distance - ranked[0].distance) < t.tieEpsilon);
+    // 同分時挑哪一篇：'lowest' 永遠給篇號最小的（原型作法）；
+    // 'spread' 依這份作答算出一個固定的數字，在同分的幾篇裡輪流挑，
+    // 同一份作答永遠得到同一篇，但不同人會分散到同分的各篇。
+    const best = t.pick === 'spread' && tied.length > 1 ? tied[answerHash(answers, questions) % tied.length] : ranked[0];
     const near = ranked.filter((r) => r.psalm !== best.psalm && r.distance <= best.distance + t.nearWindow + 1e-9).slice(0, t.maxNear);
     return { status: 'ok', scores, best, tied, near, ranked };
   }
 
-  const api = { DIMS, scoreAnswers, distance, rank };
+  const api = { DIMS, scoreAnswers, distance, rank, answerHash };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Scoring = api;
 })(typeof window !== 'undefined' ? window : globalThis);
