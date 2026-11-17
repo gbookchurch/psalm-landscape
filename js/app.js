@@ -28,7 +28,9 @@
 
   /* ---------- 路由 ---------- */
   function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
+  let prevView = '';
   function show(name) {
+    prevView = document.body.dataset.view || '';
     document.querySelectorAll('.view').forEach((v) => (v.hidden = v.dataset.view !== name));
     document.body.dataset.view = name; // 樣式用：答題頁會收起頁首
     closeMenu();
@@ -40,6 +42,7 @@
     if (h.startsWith('#/quiz')) return renderQuiz();
     if (h.startsWith('#/result')) return renderResult(state.altPsalm);
     if (h.startsWith('#/about')) return renderAbout();
+    if (h.startsWith('#/mine')) return renderMine();
     if ((m = h.match(/^#\/read\/(\d{1,3})/))) return renderReader(+m[1]);
     if (h !== '#/' && h !== '#' && !h.startsWith('#/')) return; // 頁內錨點，維持目前畫面
     return renderHome();
@@ -74,6 +77,9 @@
     $('btn-resume').hidden = !(n > 0 && !state.done);
     $('btn-resume').textContent = `${T.resume}（已答 ${n} 題）`;
     $('start-label').textContent = n > 0 ? '重新開始' : T.start;
+    const got = new Set(loadCol().map((x) => x.n)).size;
+    $('home-mine').hidden = !got;
+    $('home-mine').textContent = `我的詩篇（已集 ${got} 篇）`;
   }
   document.querySelectorAll('[data-copy]').forEach((el) => (el.textContent = T[el.dataset.copy]));
   $('home-meta').innerHTML = (T.homeMetaShort || []).map((t) => `<li>${esc(t)}</li>`).join('');
@@ -270,6 +276,7 @@
     const kv = keyVerse(n);
     const near = (isAlt ? [res.best, ...res.near.filter((r) => r.psalm !== n)] : res.near).slice(0, C.tieRule.maxNear);
     const pod = T.podcast;
+    const saved = record(n, isAlt ? 'near' : 'result');
 
     $('result-root').innerHTML = `
       <header class="r-hero">
@@ -300,6 +307,7 @@
       <div class="r-cta">
         <button class="btn btn-primary btn-block" id="btn-read" type="button">讀詩篇第 ${n} 篇全文${icon('i-arrow-r')}</button>
         <button class="btn-link" id="btn-share" type="button">${icon('i-share')}做成圖片分享</button>
+        ${saved ? `<p class="fine saved-note">這篇已收進<a href="#/mine">我的詩篇</a>，之後可以回來再讀</p>` : ''}
       </div>
 
       <section class="journey">
@@ -386,7 +394,9 @@
     show('read');
     const S = window.SCRIPTURE && window.SCRIPTURE[n];
     const p = byNum[n];
-    $('btn-read-back').querySelector('span').textContent = lastResult || state.done ? '返回結果' : '回到首頁';
+    if (prevView !== 'read') readFrom = prevView;
+    $('btn-read-back').querySelector('span').textContent = readFrom === 'mine' ? '回到我的詩篇' : lastResult || state.done ? '返回結果' : '回到首頁';
+    record(n, 'read');
     if (!S) { $('reader').innerHTML = '<p>經文資料載入中，請稍候再試。</p>'; return; }
     let hits = anchorVerses(p.anchor, n);
     const last = S.verses.reduce((m, v) => Math.max(m, +v.v.split('-').pop()), 0);
@@ -424,7 +434,75 @@
   $('font-dec').onclick = () => { readPrefs.size = Math.max(15, readPrefs.size - 2); applyReadPrefs(); };
   $('font-inc').onclick = () => { readPrefs.size = Math.min(30, readPrefs.size + 2); applyReadPrefs(); };
   $('toggle-vnum').onclick = () => { readPrefs.vnum = !readPrefs.vnum; applyReadPrefs(); };
-  $('btn-read-back').onclick = () => go(lastResult || state.done ? '#/result' : '#/');
+  let readFrom = '';
+  $('btn-read-back').onclick = () => go(readFrom === 'mine' ? '#/mine' : lastResult || state.done ? '#/result' : '#/');
+
+  /* ---------- 我的詩篇：開過的詩篇紀錄（只存在這台裝置的瀏覽器） ---------- */
+  const CKEY = 'psalm-collection-v1';
+  const HOW = { result: '測驗結果', near: '也可能共鳴', read: '讀過全文' };
+  const IN_APP = /\bLine\/|FBAN|FBAV|Instagram|Barcelona|MicroMessenger|KAKAOTALK/i.test(navigator.userAgent);
+  function loadCol() {
+    try { const a = JSON.parse(localStorage.getItem(CKEY) || '[]'); return Array.isArray(a) ? a.filter((x) => x && byNum[x.n]) : []; } catch (e) { return []; }
+  }
+  function saveCol(a) {
+    try { localStorage.setItem(CKEY, JSON.stringify(a.slice(0, 500))); return true; } catch (e) { return false; }
+  }
+  const dayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const dayLabel = (k) => { const [y, m, d] = k.split('-').map(Number); const now = new Date(); return (y === now.getFullYear() ? '' : `${y} 年 `) + `${m} 月 ${d} 日` + (k === dayKey() ? '（今天）' : ''); };
+  /** 記錄開過的詩篇。同一天同一篇只留一筆，會合併「怎麼開到的」並移到最前面。回傳是否存成功。 */
+  function record(n, how) {
+    const a = loadCol(), day = dayKey();
+    const i = a.findIndex((x) => x.n === n && x.day === day);
+    if (i >= 0) { const x = a.splice(i, 1)[0]; x.how = [...new Set([...(x.how || []), how])]; x.t = Date.now(); a.unshift(x); }
+    else a.unshift({ n, day, t: Date.now(), how: [how] });
+    return saveCol(a);
+  }
+  let confirmClear = false;
+  function renderMine() {
+    show('mine');
+    const a = loadCol();
+    const got = new Set(a.map((x) => x.n));
+    let ok = true; try { localStorage.setItem('psalm-ls-test', '1'); localStorage.removeItem('psalm-ls-test'); } catch (e) { ok = false; }
+    const days = [];
+    for (const x of a) { let g = days.find((d) => d.day === x.day); if (!g) days.push((g = { day: x.day, items: [] })); g.items.push(x); }
+    const cells = Array.from({ length: 150 }, (_, i) => {
+      const n = i + 1, p = byNum[n], img = C.illustration(n);
+      if (!got.has(n)) return `<li class="stamp" aria-hidden="true"><span>${n}</span></li>`;
+      return `<li><a class="stamp got${img ? ' has-img' : ''}" href="#/read/${n}" aria-label="詩篇第 ${n} 篇：${esc(p.title)}（${esc(stageName(p.stage))}）">${img ? `<img src="${esc(img.src)}" alt="" loading="lazy" decoding="async">` : ''}<span>${n}</span></a></li>`;
+    }).join('');
+    $('mine-root').innerHTML = `
+      <h1 class="page-title" tabindex="-1" id="mine-title">我的詩篇</h1>
+      ${!ok ? '<p class="note">這個瀏覽器目前無法保存紀錄（可能是無痕模式），所以這裡不會留下你開過的詩篇。</p>' : ''}
+      ${IN_APP ? '<p class="note">你現在是在 App 裡開啟這個網頁。App 內建的瀏覽器有時會自動清除資料，而且跟手機的 Safari、Chrome 是分開的。想長期保存，建議用手機瀏覽器打開，或加到主畫面。</p>' : ''}
+      <section aria-labelledby="h-stamps">
+        <div class="mine-count"><h2 id="h-stamps">詩篇集章</h2><p><b>${got.size}</b> ／ 150</p></div>
+        <p class="fine">做測驗、點開共鳴的詩篇、讀全文，開過的詩篇就會在這裡亮起來。點亮起來的格子可以再讀一次。</p>
+        <ol class="stamps" aria-label="150 篇詩篇集章，已收集 ${got.size} 篇">${cells}</ol>
+      </section>
+      <section class="r-block mine-list" aria-labelledby="h-log">
+        <div class="r-head"><h2 id="h-log">開過的詩篇</h2></div>
+        ${a.length ? days.map((g) => `<h3 class="day">${esc(dayLabel(g.day))}</h3>
+          <ul class="recs">${g.items.map((x) => { const p = byNum[x.n]; return `<li>
+            <a class="rec" href="#/read/${x.n}"><span class="n">${x.n}</span><span class="t">${esc(p.shortTitle || p.title)}<small>${esc(stageName(p.stage))}・${(x.how || []).map((h) => HOW[h] || '').filter(Boolean).join('・')}</small></span></a>
+            <button class="icon-btn rec-del" type="button" data-t="${x.t}" aria-label="刪除這筆紀錄：詩篇第 ${x.n} 篇，${esc(dayLabel(x.day))}"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+          </li>`; }).join('')}</ul>`).join('')
+        : `<p class="why-intro">還沒有紀錄。做完一次測驗，結果的詩篇就會收進這裡。</p><div class="btn-row"><a class="btn btn-primary" href="#/">去做測驗</a></div>`}
+      </section>
+      ${a.length ? `<div class="mine-end">
+        <p class="fine">紀錄只存在這台裝置的這個瀏覽器，不會上傳。清除瀏覽資料、換手機或換瀏覽器，就看不到這些紀錄。</p>
+        <button class="btn-link" id="mine-clear" type="button">${confirmClear ? '確定要全部清除嗎？再按一次就會清除' : '全部清除'}</button>
+      </div>` : ''}`;
+    document.querySelectorAll('.rec-del').forEach((b) => (b.onclick = () => {
+      saveCol(loadCol().filter((x) => String(x.t) !== b.dataset.t));
+      confirmClear = false; renderMineKeepScroll(); toast('已刪除這筆紀錄');
+    }));
+    if ($('mine-clear')) $('mine-clear').onclick = () => {
+      if (!confirmClear) { confirmClear = true; renderMineKeepScroll(); $('mine-clear').focus(); return; }
+      confirmClear = false; saveCol([]); renderMine(); toast('紀錄已全部清除');
+    };
+    $('mine-title').focus({ preventScroll: true });
+  }
+  function renderMineKeepScroll() { const y = window.scrollY; renderMine(); window.scrollTo(0, y); }
 
   /* ---------- 關於 ---------- */
   function renderAbout() {

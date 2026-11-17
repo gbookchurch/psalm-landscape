@@ -243,6 +243,36 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 .podcast .btn:hover{background:var(--yellow);color:var(--ink)}
 .podcast :focus-visible{outline-color:var(--yellow)}
 
+/* ---------- 我的詩篇 ---------- */
+.mine .note{margin:0 0 18px}
+.mine-count{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.mine-count h2{font-size:22px;letter-spacing:.06em}
+.mine-count p{margin:0;font-family:var(--serif);font-size:16px;color:var(--soft)}
+.mine-count b{font-size:34px;font-weight:900;color:var(--orange)}
+.mine .fine{margin:8px 0 0}
+.stamps{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:5px}
+.stamps>li:not(.stamp){display:block}
+.stamp{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;border-radius:50%;border:1.5px dashed #D9C6A2;font-family:var(--serif);font-size:12px;color:#A8936F;overflow:hidden;text-decoration:none}
+.stamp.got{border:0;background:var(--yellow-soft);color:var(--ink);font-size:14px;font-weight:900}
+.stamp.got:hover{color:var(--ink);box-shadow:0 0 0 2px var(--orange)}
+.stamp.got img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply}
+.stamp.got.has-img span{position:absolute;left:50%;bottom:3px;transform:translateX(-50%);padding:0 4px;border-radius:6px;background:rgba(255,247,232,.92);font-size:11px;line-height:1.4}
+.mine-list{padding:0;margin-top:48px}
+.mine-list .day{margin:22px 0 4px;font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--soft)}
+.recs{list-style:none;margin:0;padding:0}
+.recs li{display:flex;align-items:center;gap:4px;border-bottom:2px solid var(--line)}
+.rec{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:16px;min-height:72px;padding:12px 0;color:var(--ink);text-decoration:none}
+.rec:hover{color:var(--ink)}
+.rec:hover .t{text-decoration:underline;text-underline-offset:5px;text-decoration-color:var(--line-2)}
+.rec .n{flex:0 0 58px;font-family:var(--serif);font-size:30px;line-height:1;font-weight:900;color:var(--orange);letter-spacing:0}
+.rec .t{flex:1 1 0;min-width:0;font-family:var(--serif);font-size:16px;font-weight:700;line-height:1.55}
+.rec .t small{display:block;margin-top:2px;font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:.06em;color:var(--soft)}
+.rec-del{flex:0 0 44px;color:var(--soft)}
+.rec-del svg{width:18px;height:18px}
+.mine-end{margin-top:30px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.mine-end .btn-link{color:var(--soft)}
+.saved-note{margin:6px 0 0;text-align:center}
+
 /* ---------- 經文閱讀 ---------- */
 .reader-bar{position:sticky;top:0;z-index:5;background:rgba(255,247,232,.94);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
 .reader-bar-inner{display:flex;align-items:center;justify-content:space-between;min-height:52px}
