@@ -1,222 +1,333 @@
 /*
- * 分享卡：「我的生命光景」風景版／數據版 × 限時動態 9:16／貼文 4:5（依視覺設計稿排版）。
- * 只畫出光景、詩篇與（數據版的）八維位置，不包含任何題目或選項內容。
+ * 分享圖：「我的生命光景」風景版／數據版 × 限時動態 9:16／貼文 4:5。
+ * web-0.7 折衷版：米色紙底、深綠襯線字、直排光景名稱、插畫以「印在紙上」的方式疊合。
+ * 只畫出光景、詩篇與（數據版的）八個面向位置，不包含任何題目或選項內容。
  * 繪製前先等字體載入，避免分享圖用到備用字體。
  */
 (function (root) {
   const T = () => window.COPY;
   const SIZES = { story: [1080, 1920], post: [1080, 1350] };
-  const FONT = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
-  const INK = '#3B2A1E', SOFT = '#6B5747', BRAND = '#F26B00', CREAM = '#FFF8EA', YELLOW = '#FFD978', GREEN = '#4EBB48';
+  const SERIF = '"Noto Serif TC","Noto Serif CJK TC","Songti TC","PMingLiU",serif';
+  const SANS = '"Noto Sans TC","Noto Sans CJK TC","PingFang TC","Microsoft JhengHei",sans-serif';
+  const INK = '#17402A', SOFT = '#45604C', ORANGE = '#EB5A0C', YELLOW = '#FFD24D', PAPER = '#FFF7E8', LINE = '#E3CFA6', TRACK = '#B9C7AE';
+  const DOTS = ['#D77747', '#E6AE4B', '#C7BD85', '#91A48A'];
+  const DIMS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+  const M = 72, W = 1080, R = W - M; // 左右邊界
   let opts = { style: 'scene', ratio: 'story' }, lastBlob = null, lastFocus = null, data = null, drawing = 0;
   const $ = (id) => document.getElementById(id);
 
   async function fontsReady(text) {
     if (!document.fonts || !document.fonts.load) return;
     const t = text.replace(/\s/g, '');
-    const jobs = ['500', '700', '900'].map((w) => document.fonts.load(`${w} 40px "Noto Sans TC"`, t));
-    await Promise.race([Promise.all(jobs), new Promise((r) => setTimeout(r, 3500))]);
+    const jobs = [
+      ...['500', '700', '900'].map((w) => document.fonts.load(`${w} 40px "Noto Serif TC"`, t)),
+      ...['500', '700'].map((w) => document.fonts.load(`${w} 40px "Noto Sans TC"`, t)),
+    ];
+    await Promise.race([Promise.all(jobs).catch(() => {}), new Promise((r) => setTimeout(r, 3500))]);
   }
   const loadImage = (src) => new Promise((res) => { if (!src) return res(null); const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
 
+  /* ---------- 基本繪圖工具 ---------- */
+  const serif = (c, w, s) => (c.font = `${w} ${s}px ${SERIF}`);
+  const sans = (c, w, s) => (c.font = `${w} ${s}px ${SANS}`);
+  /** 設定字距（瀏覽器不支援時自動略過，不影響排版正確性）。 */
+  const spacing = (c, px) => { try { c.letterSpacing = `${px}px`; } catch (e) { /* 略過 */ } };
+
+  /** 依寬度斷行；標點不放行首。 */
   function wrap(c, text, maxW) {
     const lines = []; let line = '';
     for (const ch of text) {
       if (c.measureText(line + ch).width > maxW && line) {
-        if (/[，。、；：！？」』）…]/.test(ch)) { line += ch; continue; } // 標點不放行首，先接在本行
+        if (/[，。、；：！？」』）…]/.test(ch)) { line += ch; continue; }
         lines.push(line); line = ch;
       } else line += ch;
     }
     if (line) lines.push(line);
     return lines;
   }
-  function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
-  const font = (c, w, s) => (c.font = `${w} ${s}px ${FONT}`);
-
-  function bookIcon(c, x, y, s, color) {
-    c.save(); c.translate(x, y); c.scale(s / 32, s / 32); c.strokeStyle = color; c.lineWidth = 2.8; c.lineJoin = 'round';
-    c.beginPath(); c.moveTo(16, 9); c.bezierCurveTo(13, 6.6, 8.6, 6, 4, 6.6); c.lineTo(4, 23.6); c.bezierCurveTo(8.6, 23, 13, 23.6, 16, 26); c.bezierCurveTo(19, 23.6, 23.4, 23, 28, 23.6); c.lineTo(28, 6.6); c.bezierCurveTo(23.4, 6, 19, 6.6, 16, 9); c.closePath(); c.stroke();
-    c.beginPath(); c.moveTo(16, 9); c.lineTo(16, 26); c.stroke(); c.restore();
-  }
-  function logo(c, x, y, s) { bookIcon(c, x, y - s * 0.82, s, BRAND); c.fillStyle = INK; font(c, 900, s * 0.72); c.textAlign = 'left'; c.fillText('教會小本本', x + s * 1.18, y); }
-  function kicker(c, x, y, s, text) {
-    font(c, 700, s); c.fillStyle = INK; c.textAlign = 'left';
-    const w = c.measureText(text).width, dash = s * 1.2;
-    c.fillRect(x, y - s * 0.36, dash, 3); c.fillText(text, x + dash + s * 0.5, y); c.fillRect(x + dash + s + w, y - s * 0.36, dash, 3);
-  }
-  function swoosh(c, x, y, w, t) {
-    c.save(); c.strokeStyle = '#FFC93C'; c.lineWidth = t; c.lineCap = 'round';
-    c.beginPath(); c.moveTo(x, y); c.bezierCurveTo(x + w * 0.3, y - t * 1.1, x + w * 0.7, y - t * 1.3, x + w, y - t * 0.4); c.stroke(); c.restore();
-  }
-  function mark(c, text, x, y, size) {
-    const w = c.measureText(text).width;
-    c.fillStyle = YELLOW; c.fillRect(x - 6, y - size * 0.32, w + 12, size * 0.34);
-    c.fillStyle = INK; c.fillText(text, x, y);
-  }
-
-  async function drawArt(c, d, x, y, w, h, r) {
-    c.save(); rr(c, x, y, w, h, r); c.clip();
-    let ok = false;
-    const real = d.img ? await loadImage(d.img.src) : null;
-    const im = real || await loadImage(Art.landscapeURL(d.psalm.psalm, d.stage, 1200, 900));
-    if (im) {
-      // 正式插畫完整顯示不裁切（圖內可能有篇號）；佔位圖則填滿
-      const s = real ? Math.min(w / im.width, h / im.height) : Math.max(w / im.width, h / im.height);
-      c.drawImage(im, x + (w - im.width * s) / 2, y + (h - im.height * s) / 2, im.width * s, im.height * s);
-      try { c.getImageData(x, y, 1, 1); ok = true; } catch (e) { ok = false; }
+  /** 斷行後讓各行長度接近，避免最後一行只剩一兩個字。 */
+  function wrapEven(c, text, maxW) {
+    const greedy = wrap(c, text, maxW);
+    if (greedy.length < 2) return greedy;
+    const chars = [...text], per = Math.ceil(chars.length / greedy.length);
+    const lines = [];
+    for (let i = 0; i < chars.length;) {
+      let j = Math.min(chars.length, i + per);
+      while (j < chars.length && /[，。、；：！？」』）…]/.test(chars[j])) j++; // 標點不放行首
+      lines.push(chars.slice(i, j).join('')); i = j;
     }
-    if (!ok) { const g = c.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, '#FFF0C4'); g.addColorStop(1, '#B5DC72'); c.fillStyle = g; c.fillRect(x, y, w, h); }
-    c.restore();
+    return lines.every((l) => c.measureText(l).width <= maxW) ? lines : greedy;
+  }
+  /** 經文：先依標點切短句，再確保每行不超過寬度。 */
+  function verseWrap(c, text, maxW, maxLen) {
+    const out = [];
+    for (const l of PsalmText.verseLines(text, maxLen)) out.push(...wrapEven(c, l, maxW));
+    return out;
   }
 
-  function card(c, d, x, y, w, sc, withQuote, dry) {
-    // 先量高度
-    const pad = 40 * sc;
-    font(c, 900, 76 * sc); const numH = 92 * sc;
-    font(c, 700, 38 * sc); const tLines = wrap(c, d.psalm.title, w - pad * 2).slice(0, 2);
-    font(c, 500, 34 * sc); const qLines = withQuote && d.verse ? wrap(c, `「${d.verse.text}」`, w - pad * 2).slice(0, 3) : [];
-    const h = pad + 44 * sc + numH + tLines.length * 54 * sc + (qLines.length ? 20 * sc + qLines.length * 50 * sc + 46 * sc : 0) + pad * 0.7;
-    if (dry) return h;
-    c.save(); c.shadowColor = 'rgba(150,100,40,.10)'; c.shadowBlur = 36 * sc; c.shadowOffsetY = 8 * sc;
-    rr(c, x, y, w, h, 34 * sc); c.fillStyle = '#FFFDF8'; c.fill(); c.restore();
-    let yy = y + pad + 30 * sc; const cx = x + w / 2;
-    font(c, 700, 34 * sc); c.textAlign = 'left';
-    const label = '推薦你閱讀的詩篇', lw = c.measureText(label).width + 52 * sc;
-    bookIcon(c, cx - lw / 2, yy - 34 * sc, 40 * sc, BRAND); c.fillStyle = INK; c.fillText(label, cx - lw / 2 + 52 * sc, yy);
-    yy += numH;
-    font(c, 900, 76 * sc); const num = `詩篇 第 ${d.psalm.psalm} 篇`; mark(c, num, cx - c.measureText(num).width / 2, yy, 76 * sc);
-    yy += 58 * sc; font(c, 700, 38 * sc); c.fillStyle = INK;
-    for (const l of tLines) { c.fillText(l, cx - c.measureText(l).width / 2, yy); yy += 54 * sc; }
-    if (qLines.length) {
-      yy += 14 * sc; font(c, 500, 34 * sc); c.fillStyle = SOFT;
-      for (const l of qLines) { c.fillText(l, cx - c.measureText(l).width / 2, yy); yy += 50 * sc; }
-      font(c, 500, 28 * sc); c.fillStyle = '#9C8775'; c.textAlign = 'right'; c.fillText(`— ${d.verse.ref}`, x + w - pad, yy + 4 * sc); c.textAlign = 'left';
+  function paper(c, H) {
+    c.fillStyle = PAPER; c.fillRect(0, 0, W, H);
+    const t = document.createElement('canvas'); t.width = t.height = 14;
+    const tc = t.getContext('2d'); tc.fillStyle = 'rgba(23,64,42,.08)'; tc.beginPath(); tc.arc(7, 7, 2, 0, Math.PI * 2); tc.fill();
+    c.fillStyle = c.createPattern(t, 'repeat'); c.fillRect(0, 0, W, H);
+  }
+
+  /** 頁首：四個品牌圈＋教會小本本（左），我的生命光景（右）。cy 是這一列的垂直中心。 */
+  function header(c, cy, k) {
+    const r = 9 * k; let x = M + r;
+    for (const col of DOTS) { c.fillStyle = col; c.beginPath(); c.arc(x, cy, r, 0, Math.PI * 2); c.fill(); x += r * 2 + 8 * k; }
+    c.textBaseline = 'middle'; c.textAlign = 'left'; c.fillStyle = INK;
+    serif(c, 900, 30 * k); spacing(c, 30 * k * 0.08); c.fillText(T().brand, x + 10 * k - r, cy + 1);
+    sans(c, 700, 24 * k); spacing(c, 24 * k * 0.22); c.fillStyle = SOFT; c.textAlign = 'right';
+    c.fillText(T().shareTitle, R + 24 * k * 0.22, cy + 1); // 補回最後一個字後面的字距
+    spacing(c, 0); c.textBaseline = 'alphabetic';
+  }
+
+  /** 頁尾：左邊一句話、右邊網址。 */
+  function footer(c, y, s) {
+    c.textBaseline = 'alphabetic'; c.fillStyle = SOFT;
+    serif(c, 700, s); spacing(c, s * 0.08); c.textAlign = 'left'; c.fillText(T().shareFooterLeft || '', M, y);
+    sans(c, 500, s); spacing(c, 0); c.textAlign = 'right'; c.fillText(T().shareUrl || '', R, y);
+  }
+
+  /** 直排文字。xc 是這一行的水平中心，y 是第一個字的頂端。逗號、頓號、句號移到格子右上。 */
+  function vText(c, text, xc, y, size, gapEm = 0) {
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    const step = size * (1 + gapEm);
+    let i = 0;
+    for (const ch of text) {
+      const cy = y + size / 2 + i * step;
+      if (/[，。、]/.test(ch)) c.fillText(ch, xc + size * 0.56, cy - size * 0.56);
+      else c.fillText(ch, xc, cy);
+      i++;
     }
+    c.textBaseline = 'alphabetic';
+    return i * step;
+  }
+
+  /** 直排光景名稱＋右側的黃色螢光筆底。right 是右邊界，回傳佔用的高度。 */
+  function stageName(c, name, right, y, size) {
+    const n = [...name].length, h = n * size * 1.04;
+    c.fillStyle = YELLOW; c.fillRect(right - size * 0.36, y, size * 0.28, h);
+    c.fillStyle = INK; serif(c, 900, size);
+    vText(c, name, right - size / 2, y, size, 0.04);
     return h;
   }
 
-  function radar(c, scores, cx, cy, R, fs) {
-    const dims = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'], names = T().dimNames;
-    const pt = (i, v) => { const a = -Math.PI / 2 + (i * 2 * Math.PI) / 8, r = R * ((v + 2) / 4); return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
-    const fmt = (n) => (n === undefined ? '未答' : (n > 0 ? '+' : '') + (Math.round(n * 10) / 10).toFixed(1).replace('-0.0', '0.0').replace('+0.0', '0.0'));
-    c.save();
-    for (const lv of [2, 1, 0, -1]) {
-      c.beginPath(); dims.forEach((_, i) => { const [x, y] = pt(i, lv); i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.closePath();
-      if (lv === 2) { c.fillStyle = '#F7FBF0'; c.fill(); }
-      c.strokeStyle = lv === 0 ? '#C9DDB0' : '#E3EDD5'; c.lineWidth = lv === 0 ? 3 : 2; c.setLineDash(lv === 0 ? [8, 10] : []); c.stroke();
+  /** 把光景說明排成直排的幾行（由右到左），每行最多 maxChars 個字。 */
+  function vColumns(text, maxChars) {
+    const cols = [];
+    for (const part of PsalmText.stageLines(text)) {
+      let s = part;
+      while ([...s].length > maxChars) { cols.push([...s].slice(0, maxChars).join('')); s = [...s].slice(maxChars).join(''); }
+      if (s) cols.push(s);
     }
-    c.setLineDash([]);
-    dims.forEach((d, i) => {
-      const [x, y] = pt(i, 2); c.strokeStyle = '#E3EDD5'; c.lineWidth = 2; c.beginPath(); c.moveTo(cx, cy); c.lineTo(x, y); c.stroke();
-      const [lx, ly] = pt(i, 3.05);
-      c.textAlign = Math.abs(lx - cx) < 10 ? 'center' : lx > cx ? 'left' : 'right';
-      font(c, 700, fs); c.fillStyle = INK; c.fillText(`${d} ${names[d]}`, lx, ly - 4);
-      c.fillStyle = '#2F8A2B'; c.fillText(fmt(scores[d]), lx, ly + fs + 2);
-    });
-    c.beginPath(); dims.forEach((d, i) => { const [x, y] = pt(i, scores[d] ?? 0); i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.closePath();
-    c.fillStyle = 'rgba(140,194,99,.42)'; c.fill(); c.strokeStyle = GREEN; c.lineWidth = 5; c.lineJoin = 'round'; c.stroke();
-    dims.forEach((d, i) => { if (scores[d] === undefined) return; const [x, y] = pt(i, scores[d]); c.beginPath(); c.arc(x, y, 8, 0, 7); c.fillStyle = GREEN; c.fill(); });
-    c.restore();
+    return cols;
   }
 
-  function pills(c, tags, x, y, s) {
-    font(c, 700, s); let xx = x;
-    for (const t of tags) {
-      const w = c.measureText(t).width + s * 1.3;
-      rr(c, xx, y - s * 1.05, w, s * 1.55, s * 0.78); c.fillStyle = '#FFEDB8'; c.fill();
-      c.fillStyle = '#7A4A12'; c.textAlign = 'left'; c.fillText(t, xx + s * 0.65, y); xx += w + s * 0.5;
-    }
-  }
-
-  /** 繪本式插畫：米色紙底＋紙張邊緣遮罩融入背景（與結果頁同一套遮罩）。 */
-  async function storybook(c, d, x, y, w, h) {
+  /** 插畫：等比例放進 s×s 的方塊，邊緣淡出，再以「色彩增值」疊到紙上，讓紙的顆粒透出來。 */
+  async function art(c, d, x, y, s) {
     const real = d.img ? await loadImage(d.img.src) : null;
     const im = real || await loadImage(Art.landscapeURL(d.psalm.psalm, d.stage, 1200, 1200));
     if (!im) return;
-    // web-0.5：分享卡也使用柔和羽化；不修改原圖像素檔。
-    const o = document.createElement('canvas');
-    o.width = Math.max(1, Math.round(w)); o.height = Math.max(1, Math.round(h));
+    const o = document.createElement('canvas'); o.width = o.height = Math.round(s);
     const oc = o.getContext('2d');
-    const s = Math.max(o.width / im.width, o.height / im.height);
-    const dw = im.width * s, dh = im.height * s;
-    oc.drawImage(im, (o.width - dw) / 2, (o.height - dh) * .39, dw, dh);
+    const k = Math.min(s / im.width, s / im.height);
+    oc.drawImage(im, (s - im.width * k) / 2, (s - im.height * k) / 2, im.width * k, im.height * k);
     oc.globalCompositeOperation = 'destination-in';
-    const fade = oc.createRadialGradient(o.width*.5,o.height*.48,o.width*.29,o.width*.5,o.height*.48,o.width*.67);
-    fade.addColorStop(0,'rgba(0,0,0,1)');
-    fade.addColorStop(.48,'rgba(0,0,0,1)');
-    fade.addColorStop(.73,'rgba(0,0,0,.90)');
-    fade.addColorStop(.90,'rgba(0,0,0,.40)');
-    fade.addColorStop(1,'rgba(0,0,0,0)');
-    oc.fillStyle = fade; oc.fillRect(0,0,o.width,o.height);
-    c.drawImage(o,x,y,w,h);
+    const g = oc.createRadialGradient(s / 2, s / 2, (s / 2) * 0.78, s / 2, s / 2, s / 2);
+    g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    oc.fillStyle = g; oc.fillRect(0, 0, s, s);
+    c.save(); c.globalCompositeOperation = 'multiply'; c.drawImage(o, x, y); c.restore();
   }
 
-  function pillsCenter(c, tags, cx, y, s) {
-    font(c, 700, s);
-    const ws = tags.map((t) => c.measureText(t).width + s * 1.3), gap = s * 0.5;
-    let xx = cx - (ws.reduce((a, b) => a + b, 0) + gap * (tags.length - 1)) / 2;
-    tags.forEach((t, i) => {
-      rr(c, xx, y - s * 1.05, ws[i], s * 1.55, s * 0.78); c.fillStyle = '#FFEDB8'; c.fill();
-      c.fillStyle = '#7A4A12'; c.textAlign = 'left'; c.fillText(t, xx + s * 0.65, y); xx += ws[i] + gap;
-    });
+  /** 「詩篇 第 N 篇」：N 是橘色大字。超過 maxW 時整組等比例縮小。回傳寬度。yb 是基線。 */
+  function numeral(c, n, x, yb, big, small, maxW, dry) {
+    const measure = (b, s) => {
+      serif(c, 900, s); const w1 = c.measureText('詩篇 第').width, w3 = c.measureText('篇').width;
+      serif(c, 900, b); const w2 = c.measureText(String(n)).width;
+      const gap = b * 0.08;
+      return { w1, w2, w3, gap, total: w1 + gap + w2 + gap + w3 };
+    };
+    let m = measure(big, small);
+    if (maxW && m.total > maxW) { const k = maxW / m.total; big *= k; small *= k; m = measure(big, small); }
+    if (dry) return { w: m.total, big };
+    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+    c.fillStyle = INK; serif(c, 900, small); c.fillText('詩篇 第', x, yb);
+    c.fillStyle = ORANGE; serif(c, 900, big); c.fillText(String(n), x + m.w1 + m.gap, yb);
+    c.fillStyle = INK; serif(c, 900, small); c.fillText('篇', x + m.w1 + m.gap + m.w2 + m.gap, yb);
+    return { w: m.total, big };
   }
-  function kickerCenter(c, cx, y, s, text) {
-    font(c, 700, s); const w = c.measureText(text).width, dash = s * 1.2, total = w + dash * 2 + s;
-    const x = cx - total / 2; c.fillStyle = INK; c.textAlign = 'left';
-    c.fillRect(x, y - s * 0.36, dash, 3); c.fillText(text, x + dash + s * 0.5, y); c.fillRect(x + dash + s + w, y - s * 0.36, dash, 3);
+
+  /**
+   * 經文（主）＋出處＋標題（次）排成一欄，自動挑能放進 maxH 的最大字級。
+   * align: 'left' | 'center'。回傳實際高度。dry 只量不畫。
+   */
+  function verseBlock(c, d, x, y, maxW, maxH, sizes, o = {}) {
+    const refS = o.ref || 22, titleS = o.title || 26, align = o.align || 'left';
+    let pick = null;
+    for (const s of sizes) {
+      serif(c, 700, s);
+      const lines = d.verse ? verseWrap(c, d.verse.text, maxW, o.maxLen || 11) : [];
+      serif(c, 500, titleS);
+      const tl = wrapEven(c, d.psalm.title, maxW).slice(0, 2);
+      const lh = s * 1.6;
+      const h = lines.length * lh + (lines.length ? refS * 1.9 : 0) + (lines.length ? titleS * 0.6 : 0) + tl.length * titleS * 1.6;
+      pick = { s, lines, tl, lh, h };
+      if (h <= maxH) break;
+    }
+    if (o.dry) return pick.h;
+    const ax = align === 'center' ? x + maxW / 2 : x;
+    c.textAlign = align; c.textBaseline = 'alphabetic';
+    let yy = y;
+    c.fillStyle = INK; serif(c, 700, pick.s);
+    for (const l of pick.lines) { yy += pick.lh; c.fillText(l, ax, yy - pick.lh * 0.28); }
+    if (pick.lines.length) {
+      yy += refS * 1.9; c.fillStyle = SOFT; sans(c, 500, refS); spacing(c, refS * 0.12);
+      c.fillText(d.verse.ref, ax, yy - refS * 0.5); spacing(c, 0);
+      yy += titleS * 0.6;
+    }
+    c.fillStyle = SOFT; serif(c, 500, titleS);
+    for (const l of pick.tl) { yy += titleS * 1.6; c.fillText(l, ax, yy - titleS * 0.45); }
+    return pick.h;
+  }
+
+  /** 粗線下方那一區：左邊「詩篇 第 N 篇」，右邊經文、出處、標題。 */
+  function psalmRow(c, d, top, bottom, k) {
+    const num = numeral(c, d.psalm.psalm, M, 0, 170 * k, 36 * k, 430 * k, true);
+    numeral(c, d.psalm.psalm, M, top + num.big * 0.83, 170 * k, 36 * k, 430 * k);
+    const x = M + num.w + 44;
+    verseBlock(c, d, x, top, R - x, bottom - top, [40, 36, 32, 28, 25].map((s) => s * k), { ref: 22 * k, title: 26 * k });
+  }
+
+  /** 八個面向的位置條。實心點是使用者，圓圈是這篇詩。rowH 是每列高度。 */
+  function dimRows(c, d, y, rowH, k) {
+    const names = T().dimNames, ends = T().dimEnds;
+    const nameW = 176 * k, endW = 90 * k, gap = 16, rr = 15 * k;
+    const x0 = M + nameW + gap + endW + gap + rr, x1 = R - endW - gap - rr;
+    DIMS.forEach((dim, i) => {
+      const cy = y + rowH * i + rowH / 2;
+      c.textBaseline = 'middle';
+      c.fillStyle = INK; serif(c, 700, 26 * k); c.textAlign = 'left'; c.fillText(names[dim], M, cy);
+      c.fillStyle = SOFT; sans(c, 500, 21 * k);
+      c.textAlign = 'right'; c.fillText(ends[dim][0], x0 - rr - gap, cy);
+      c.textAlign = 'left'; c.fillText(ends[dim][1], x1 + rr + gap, cy);
+      c.fillStyle = TRACK; c.fillRect(x0 - rr, cy - 1, x1 - x0 + rr * 2, 2); c.fillRect((x0 + x1) / 2 - 1, cy - 7 * k, 2, 14 * k);
+      const px = (v) => x0 + (x1 - x0) * Math.max(0, Math.min(1, (v + 2) / 4));
+      c.beginPath(); c.arc(px(d.psalm[dim]), cy, rr - 2.5 * k, 0, Math.PI * 2); c.fillStyle = PAPER; c.fill(); c.lineWidth = 5 * k; c.strokeStyle = ORANGE; c.stroke();
+      if (d.scores[dim] !== undefined) { c.beginPath(); c.arc(px(d.scores[dim]), cy, 10 * k, 0, Math.PI * 2); c.fillStyle = INK; c.fill(); }
+      if (i < DIMS.length - 1) { c.fillStyle = LINE; c.fillRect(M, y + rowH * (i + 1) - 1, R - M, 1); }
+    });
+    c.textBaseline = 'alphabetic';
+  }
+
+  /** 數據區的標題列：左邊標題，右邊圖例。yb 是基線。 */
+  function dataHead(c, d, yb, k) {
+    c.textBaseline = 'alphabetic'; c.textAlign = 'left'; c.fillStyle = INK;
+    serif(c, 900, 28 * k); spacing(c, 28 * k * 0.06); c.fillText('八個面向，我和這篇詩的位置', M, yb); spacing(c, 0);
+    sans(c, 500, 22 * k); c.fillStyle = SOFT; c.textAlign = 'right';
+    const t2 = `詩篇 ${d.psalm.psalm}`, w2 = c.measureText(t2).width, w1 = c.measureText('我').width;
+    const cy = yb - 9 * k;
+    let x = R; c.fillText(t2, x, yb); x -= w2 + 8 * k + 12 * k;
+    c.beginPath(); c.arc(x, cy, 9.5 * k, 0, Math.PI * 2); c.lineWidth = 5 * k; c.strokeStyle = ORANGE; c.stroke();
+    x -= 12 * k + 24 * k; c.fillStyle = SOFT; c.fillText('我', x, yb); x -= w1 + 8 * k + 10 * k;
+    c.beginPath(); c.arc(x, cy, 10 * k, 0, Math.PI * 2); c.fillStyle = INK; c.fill();
+  }
+
+  /** 數據版上半部：插畫（左）、篇號與經文（中）、直排光景名稱（右）。 */
+  async function dataTop(c, d, name, y, imgS, nameS, k) {
+    await art(c, d, M, y, imgS);
+    stageName(c, name, R, y, nameS);
+    const x = M + imgS + 26, maxW = R - nameS - 26 - x;
+    const num = numeral(c, d.psalm.psalm, x, 0, 112 * k, 28 * k, maxW, true);
+    const o = { ref: 20 * k, title: 21 * k, maxLen: 9 };
+    const sizes = [29, 26, 23, 21].map((s) => s * k);
+    const vh = verseBlock(c, d, x, 0, maxW, imgS - num.big - 14, sizes, { ...o, dry: true });
+    const top = y + Math.max(0, (imgS - (num.big + 14 + vh)) / 2);
+    numeral(c, d.psalm.psalm, x, top + num.big * 0.83, 112 * k, 28 * k, maxW);
+    verseBlock(c, d, x, top + num.big + 14, maxW, imgS - num.big - 14, sizes, o);
+  }
+
+  /* ---------- 四種版面 ---------- */
+
+  async function postScene(c, d, name) {
+    header(c, 82, 1);
+    const top = 140, s = 736;
+    await art(c, d, M, top, s);
+    const nh = stageName(c, name, R, top, 150);
+    // 直排的光景說明，接在光景名稱下面
+    c.fillStyle = SOFT; serif(c, 500, 28);
+    const colW = 28 * 1.8, y0 = top + nh + 44, maxChars = Math.max(6, Math.floor((top + s - y0) / (28 * 1.1)));
+    vColumns(d.stageLine, maxChars).slice(0, 3).forEach((col, i) => vText(c, col, R - colW / 2 - i * colW, y0, 28, 0.1));
+    const rule = top + s + 30;
+    c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
+    psalmRow(c, d, rule + 33, 1244, 1);
+    footer(c, 1288, 22);
+  }
+
+  async function storyScene(c, d, name) {
+    header(c, 154, 34 / 30);
+    const top = 228, rowH = 420;
+    stageName(c, name, R, top, 200);
+    // 左欄由下往上排：心境標籤、光景說明、短線
+    const maxW = R - 200 - 40 - M;
+    let y = top + rowH;
+    const tags = d.tags.slice(0, 3);
+    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+    sans(c, 500, 30); c.fillStyle = SOFT;
+    for (let i = tags.length - 1; i >= 0; i--) { c.fillText(tags[i], M, y - 12); y -= 54; }
+    if (tags.length) y -= 20;
+    serif(c, 700, 48); c.fillStyle = INK;
+    const lines = PsalmText.stageLines(d.stageLine).flatMap((l) => wrap(c, l, maxW)).slice(0, 3);
+    for (let i = lines.length - 1; i >= 0; i--) { c.fillText(lines[i], M, y - 22); y -= 84; }
+    c.fillRect(M, y - 30, 64, 5);
+    const s = 760, iy = top + rowH + 16;
+    await art(c, d, (W - s) / 2, iy, s);
+    const rule = iy + s + 22;
+    c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
+    psalmRow(c, d, rule + 33, 1752, 190 / 170);
+    footer(c, 1802, 24);
+  }
+
+  async function postData(c, d, name) {
+    header(c, 82, 1);
+    await dataTop(c, d, name, 134, 420, 128, 1);
+    const rule = 580;
+    c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
+    dataHead(c, d, rule + 55, 1);
+    dimRows(c, d, rule + 81, 62, 1);
+    footer(c, 1288, 22);
+  }
+
+  async function storyData(c, d, name) {
+    header(c, 154, 34 / 30);
+    await dataTop(c, d, name, 228, 440, 150, 1.12);
+    const rule = 708;
+    c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
+    dataHead(c, d, rule + 66, 1.15);
+    dimRows(c, d, rule + 100, 90, 1.15);
+    // 結尾：光景說明與心境標籤
+    const y = rule + 100 + 90 * 8 + 44;
+    c.fillStyle = INK; c.fillRect(M, y, R - M, 3);
+    c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+    serif(c, 700, 40); c.fillStyle = INK;
+    let yy = y + 78;
+    for (const l of wrap(c, d.stageLine, R - M).slice(0, 2)) { c.fillText(l, W / 2, yy); yy += 62; }
+    if (d.tags.length) { sans(c, 500, 28); c.fillStyle = SOFT; c.fillText(d.tags.slice(0, 3).join('・'), W / 2, yy + 2); }
+    footer(c, 1802, 24);
   }
 
   async function draw(d) {
     const my = ++drawing;
-    const [W, H] = SIZES[opts.ratio];
+    const [, H] = SIZES[opts.ratio];
     const off = document.createElement('canvas'); off.width = W; off.height = H;
     const c = off.getContext('2d');
     const name = d.stage.replace(/^\d\s*/, '');
-    const allText = T().shareTitle + name + d.stageLine + d.psalm.title + '詩篇第篇推薦你閱讀的教會小本本給此刻的你' + (d.verse ? d.verse.text + d.verse.ref : '') + d.tags.join('') + T().shareFooter + Object.values(T().dimNames).join('') + '0123456789+-.ABCDEFGH未答—「」…';
+    const allText = T().brand + T().shareTitle + name + d.stageLine + d.psalm.title + '詩篇第篇八個面向，我和這篇詩的位置' + (d.verse ? d.verse.text + d.verse.ref : '') + d.tags.join('') + (T().shareFooterLeft || '') + (T().shareUrl || '') + Object.values(T().dimNames).join('') + Object.values(T().dimEnds).flat().join('') + '0123456789:-・…';
     await fontsReady(allText);
-    const story = opts.ratio === 'story', M = 72, cx = W / 2;
-    Art.paintPaper(c, W, H, d.psalm.psalm);
-    c.textBaseline = 'alphabetic';
-
-    // 1 品牌 → 2 我的生命光景 → 3 光景名稱 → 4 標籤與簡述（與結果頁相同順序）
-    logo(c, M, story ? 116 : 88, story ? 52 : 44);
-    let y = story ? 232 : 168;
-    kickerCenter(c, cx, y, story ? 38 : 32, T().shareTitle);
-    const ns = story ? 180 : 132;
-    y += story ? 196 : 146;
-    font(c, 900, ns); c.fillStyle = INK; c.textAlign = 'center'; c.fillText(name, cx, y);
-    const nw = Math.max(c.measureText(name).width, 240);
-    swoosh(c, cx - nw / 2, y + (story ? 34 : 26), nw, story ? 15 : 12);
-    const tags = d.tags.slice(0, 3);
-    if (tags.length) { y += story ? 112 : 84; pillsCenter(c, tags, cx, y, story ? 34 : 28); }
-    y += story ? 78 : 58;
-    font(c, 500, story ? 38 : 30); c.fillStyle = SOFT; c.textAlign = 'center';
-    for (const l of wrap(c, d.stageLine, W - 2 * M).slice(0, 2)) { c.fillText(l, cx, y); y += story ? 56 : 44; }
-
-    if (opts.style === 'scene') {
-      // 5 插畫 → 6 推薦詩篇
-      const sc = story ? 0.92 : 0.72;
-      const cardW = W - 2 * M, cardH = card(c, d, M, 0, cardW, sc, true, true);
-      const footY = H - (story ? 66 : 42);
-      const cardY = footY - (story ? 54 : 36) - cardH;
-      const artTop = y - (story ? 10 : 8);
-      const artH = Math.min(W, cardY - artTop + (story ? 70 : 54)); // 卡片只壓在插畫已淡出的下緣
-      await storybook(c, d, 0, artTop, W, artH);
-      c.textAlign = 'left';
-      card(c, d, M, cardY, cardW, sc, true);
-    } else {
-      if (story) {
-        await storybook(c, d, 140, y - 10, W - 280, 430);
-        const cy0 = y + 360, ch = card(c, d, M, cy0, W - 2 * M, 0.78, false);
-        const R = 170, ry = cy0 + ch + R * 1.3 + 60;
-        radar(c, d.scores, cx, ry, R, 28);
-      } else {
-        radar(c, d.scores, cx, y + 210, 140, 22);
-        card(c, d, M, y + 440, W - 2 * M, 0.6, false);
-      }
-    }
-    font(c, 500, story ? 26 : 22); c.fillStyle = SOFT; c.textAlign = 'center';
-    c.fillText(T().shareFooter, cx, H - (story ? 66 : 42));
+    paper(c, H);
+    const story = opts.ratio === 'story', scene = opts.style === 'scene';
+    await (scene ? (story ? storyScene : postScene) : (story ? storyData : postData))(c, d, name);
 
     if (my !== drawing) return; // 使用者已切換樣式
     const cv = $('share-canvas'); cv.width = W; cv.height = H; cv.getContext('2d').drawImage(off, 0, 0);
@@ -229,7 +340,7 @@
   function setRadio(group, key, val) { group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-checked', b.dataset[key] === val)); }
   document.querySelectorAll('#share-sheet [data-style]').forEach((b) => (b.onclick = () => {
     opts.style = b.dataset.style; setRadio(b.parentElement, 'style', opts.style);
-    $('share-note').textContent = opts.style === 'data' ? '數據版會顯示你在八個面向的大致位置，但不會出現題目或你的選項。' : '分享圖只包含詩篇與光景，不會出現你的作答內容。';
+    $('share-note').textContent = opts.style === 'data' ? '數據版會顯示你和這篇詩在八個面向的大致位置，但不會出現題目或你的選項。' : '分享圖只包含詩篇與光景，不會出現你的作答內容。';
     draw(data);
   }));
   document.querySelectorAll('#share-sheet [data-ratio]').forEach((b) => (b.onclick = () => { opts.ratio = b.dataset.ratio; setRadio(b.parentElement, 'ratio', opts.ratio); draw(data); }));
