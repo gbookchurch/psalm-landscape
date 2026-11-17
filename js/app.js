@@ -256,6 +256,12 @@
     return g <= r.hopeAlone || (a !== undefined && g <= r.hopeAndMood && a <= r.hopeAndMood);
   }
 
+  /** 插畫的創作意義：有正式插畫、而且 data/illustration-notes.js 有寫的篇章才回傳文字。 */
+  function artNote(n) {
+    const t = C.illustration(n) && window.ILLUSTRATION_NOTES && window.ILLUSTRATION_NOTES[n];
+    return typeof t === 'string' && t.trim() ? t.trim() : '';
+  }
+
   function renderResult(forcePsalm) {
     try { return renderResultInner(forcePsalm); } catch (e) { showError(e); }
   }
@@ -293,6 +299,7 @@
 
       <figure class="illus" id="r-book"><img id="r-img" alt="" decoding="async" width="1254" height="1254"></figure>
       ${!C.illustration(n) ? '<p class="fine illus-note">插畫製作中・目前顯示品牌裝飾圖</p>' : ''}
+      ${artNote(n) ? `<section class="art-note" aria-label="關於這張插畫"><p class="art-note-label">關於這張插畫</p><p>${esc(artNote(n))}</p></section>` : ''}
 
       <section class="psalm" aria-labelledby="pc-num">
         <p class="psalm-label">適合你現在讀的詩篇</p>
@@ -357,7 +364,7 @@
 
     illus($('r-book'), $('r-img'), n);
     $('btn-read').onclick = () => go(`#/read/${n}`);
-    $('btn-share').onclick = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
+    $('btn-share').onclick = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n), note: artNote(n) });
     $('btn-again').onclick = () => { clear(); lastResult = null; go('#/'); };
     $('btn-edit').onclick = () => { state.step = 0; state.done = false; save(); go('#/quiz'); };
     if ($('back-main')) $('back-main').onclick = () => renderResult();
@@ -397,6 +404,8 @@
     if (prevView !== 'read') readFrom = prevView;
     $('btn-read-back').querySelector('span').textContent = readFrom === 'mine' ? '回到我的詩篇' : lastResult || state.done ? '返回結果' : '回到首頁';
     record(n, 'read');
+    // 「選到」指的是測驗結果或從共鳴點開，單純讀全文不算；依日期由新到舊
+    const picked = [...new Set(loadCol().filter((x) => x.n === n && (x.how || []).some((h) => h === 'result' || h === 'near')).map((x) => x.day))].sort().reverse();
     if (!S) { $('reader').innerHTML = '<p>經文資料載入中，請稍候再試。</p>'; return; }
     let hits = anchorVerses(p.anchor, n);
     const last = S.verses.reduce((m, v) => Math.max(m, +v.v.split('-').pop()), 0);
@@ -413,6 +422,7 @@
       <figure class="illus" id="read-book"><img id="read-img" alt="" decoding="async" width="1254" height="1254"></figure>
       <h1 tabindex="-1" id="read-title">詩篇 第 ${n} 篇</h1>
       ${S.title ? `<p class="sup">${esc(S.title)}</p>` : ''}
+      ${picked.length ? `<p class="read-dates">${picked.length === 1 ? `你在 <b>${esc(dayLabel(picked[0]))}</b> 選到這一篇` : `你選到這一篇的日子<br>${picked.map((d) => `<b>${esc(dayLabel(d))}</b>`).join('、')}`}</p>` : ''}
       ${hits.size ? `<p class="anchor-note">底色標示的是這次推薦的<mark>經文錨點</mark>：詩篇 ${esc(p.anchor)}</p>` : ''}
       <div class="verses">${vhtml}</div>
       ${S.notes.length ? `<div class="footnotes">${S.notes.map((f) => `<p>${esc(f.ref)}　${esc(f.text)}</p>`).join('')}</div>` : ''}

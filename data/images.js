@@ -1,4 +1,4 @@
-/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 72 篇）。
+/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 39 篇）。
  * 只有這裡列出的篇章會顯示插畫；其他篇章一律用中性佔位，不推測檔名。
  * 新增插畫：把 webp 上傳到 images/psalms/ 就好，推送後 GitHub 會自動重新產生這個檔案並部署。
  * 路徑是相對路徑，才能在 GitHub Pages 子目錄下正常載入。 */
@@ -41,38 +41,5 @@ window.PSALM_IMAGES = {
   36: {"src": "images/psalms/psalm-036-sky-in-a-drop.webp", "w": 1254, "h": 1254},
   37: {"src": "images/psalms/psalm-037-pendulum-of-patience.webp", "w": 1254, "h": 1254},
   38: {"src": "images/psalms/psalm-038-weight-and-crack.webp", "w": 1254, "h": 1254},
-  39: {"src": "images/psalms/psalm-039-vanishing-days.webp", "w": 1254, "h": 1254},
-  40: {"src": "images/psalms/psalm-040-rising-rock.webp", "w": 1254, "h": 1254},
-  41: {"src": "images/psalms/psalm-041-gently-held-pillow.webp", "w": 1254, "h": 1254},
-  42: {"src": "images/psalms/psalm-042-upturned-stream.webp", "w": 1254, "h": 1254},
-  43: {"src": "images/psalms/psalm-043-folded-light-door.webp", "w": 1254, "h": 1254},
-  44: {"src": "images/psalms/psalm-044-still-connected-shards.webp", "w": 1254, "h": 1254},
-  45: {"src": "images/psalms/psalm-045-golden-thread-blessing.webp", "w": 1254, "h": 1254},
-  46: {"src": "images/psalms/psalm-046-stillness-in-the-storm.webp", "w": 1254, "h": 1254},
-  47: {"src": "images/psalms/psalm-047-flying-applause.webp", "w": 1254, "h": 1254},
-  48: {"src": "images/psalms/psalm-048-city-of-remembrance.webp", "w": 1254, "h": 1254},
-  49: {"src": "images/psalms/psalm-049-leaking-pocket.webp", "w": 1254, "h": 1254},
-  50: {"src": "images/psalms/psalm-050-altar-of-the-heart.webp", "w": 1254, "h": 1254},
-  51: {"src": "images/psalms/psalm-051-reshaping-clay.webp", "w": 1254, "h": 1254},
-  52: {"src": "images/psalms/psalm-052-razor-and-olive-tree.webp", "w": 1254, "h": 1254},
-  53: {"src": "images/psalms/psalm-053-misaligned-compass.webp", "w": 1254, "h": 1254},
-  54: {"src": "images/psalms/psalm-054-supported-stone.webp", "w": 1254, "h": 1254},
-  55: {"src": "images/psalms/psalm-055-wings-from-envelope.webp", "w": 1254, "h": 1254},
-  56: {"src": "images/psalms/psalm-056-treasured-tear.webp", "w": 1254, "h": 1254},
-  57: {"src": "images/psalms/psalm-057-storm-lyre.webp", "w": 1254, "h": 1254},
-  58: {"src": "images/psalms/psalm-058-bent-scales.webp", "w": 1254, "h": 1254},
-  59: {"src": "images/psalms/psalm-059-dawn-watch.webp", "w": 1254, "h": 1254},
-  60: {"src": "images/psalms/psalm-060-stitched-map.webp", "w": 1254, "h": 1254},
-  61: {"src": "images/psalms/psalm-061-paper-stairway.webp", "w": 1254, "h": 1254},
-  62: {"src": "images/psalms/psalm-062-still-center.webp", "w": 1254, "h": 1254},
-  63: {"src": "images/psalms/psalm-063-sky-filled-cup.webp", "w": 1536, "h": 1024},
-  64: {"src": "images/psalms/psalm-064-letter-arrow.webp", "w": 1536, "h": 1024},
-  65: {"src": "images/psalms/psalm-065-harvest-coat.webp", "w": 1536, "h": 1024},
-  66: {"src": "images/psalms/psalm-066-fire-water-record.webp", "w": 1536, "h": 1024},
-  67: {"src": "images/psalms/psalm-067-blooming-stamp.webp", "w": 1536, "h": 1024},
-  68: {"src": "images/psalms/psalm-068-key-room.webp", "w": 1536, "h": 1024},
-  69: {"src": "images/psalms/psalm-069-sinking-paper.webp", "w": 1536, "h": 1024},
-  70: {"src": "images/psalms/psalm-070-racing-clock.webp", "w": 1536, "h": 1024},
-  71: {"src": "images/psalms/psalm-071-growing-rings.webp", "w": 1536, "h": 1024},
-  72: {"src": "images/psalms/psalm-072-raining-crown.webp", "w": 1536, "h": 1024}
+  39: {"src": "images/psalms/psalm-039-vanishing-days.webp", "w": 1254, "h": 1254}
 };
