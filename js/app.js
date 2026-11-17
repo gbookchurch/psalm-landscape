@@ -146,7 +146,7 @@
   $('btn-prev').onclick = () => { if (state.step > 0) { state.step--; save(); renderQuiz(); } };
   document.addEventListener('keydown', (e) => {
     if ($('view-quiz').hidden || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (/^[1-4]$/.test(e.key)) { e.preventDefault(); select(+e.key - 1); }
+    if (/^[1-9]$/.test(e.key)) { e.preventDefault(); select(+e.key - 1); }
     else if (e.key === '0') { e.preventDefault(); skip(); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); $('btn-prev').click(); }
     else if (e.key === 'ArrowRight') { e.preventDefault(); $('btn-next').click(); }
@@ -409,7 +409,7 @@
       ${hits.size ? `<p class="anchor-note">底色標示的是這次推薦的<mark>經文錨點</mark>：詩篇 ${esc(p.anchor)}</p>` : ''}
       <div class="verses">${vhtml}</div>
       ${S.notes.length ? `<div class="footnotes">${S.notes.map((f) => `<p>${esc(f.ref)}　${esc(f.text)}</p>`).join('')}</div>` : ''}
-      <p class="source">經文：《新標點和合本》詩篇。</p>`;
+      <p class="source">經文：《新標點和合本》神版，詩篇。</p>`;
     illus($('read-book'), $('read-img'), n);
     applyReadPrefs();
     $('read-title').focus({ preventScroll: true });

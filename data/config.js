@@ -10,8 +10,9 @@ window.CONFIG = {
   dhLowSignal: { threshold: 0.5, factor: 0.35 },   // D/H 使用者分數接近 0 時降權（既有函數）
   dhNotEvidenced: { relief: 0.5 },                  // 詩篇 D/H=0 代表「未見證據」，使用者 >0 時距離減 0.5（既有函數）
 
-  /* Q19：停用（主編決定）。題目照原型顯示，但不計分。不得擅自改成 true。 */
-  q19: { show: true, scoring: false },
+  /* Q19：原題「最在意的事」經主編決定不計分。web-0.7 題庫改寫時已換成計分的新題（與神的距離），所以改為計分。
+   * 若要回到不計分，把 scoring 改回 false。 */
+  q19: { show: true, scoring: true },
 
   /* Q20：正式權重仍為 100%。0.5 只是候選方案，未核准。 */
   q20Weight: 1.0,
