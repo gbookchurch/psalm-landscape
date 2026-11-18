@@ -289,6 +289,12 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 .mine-end{margin-top:30px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .mine-end .btn-link{color:var(--soft)}
 .saved-note{margin:6px 0 0;text-align:center}
+.mine-end details.backup{align-self:stretch;margin-top:6px}
+.backup-body{padding:12px 0 6px;display:flex;flex-direction:column;gap:8px}
+.backup-body .btn-row{margin-top:2px}
+.backup-body textarea{width:100%;min-height:76px;padding:10px 12px;border:1.5px solid var(--line-2);border-radius:12px;background:var(--paper-hi);color:var(--ink);font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;resize:vertical;word-break:break-all}
+.backup-body textarea:focus-visible{outline:3px solid var(--orange);outline-offset:1px}
+.btn-outline{min-height:46px;padding:0 20px;font-size:15px}
 
 /* ---------- 經文閱讀 ---------- */
 .reader-bar{position:sticky;top:0;z-index:5;background:rgba(255,247,232,.94);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}

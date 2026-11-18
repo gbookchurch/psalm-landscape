@@ -243,8 +243,8 @@
     if (!real) return placeholder();
     box.classList.remove('placeholder');
     img.alt = `詩篇第 ${n} 篇插畫`;
-    img.onerror = placeholder;
-    img.src = real.src;
+    img.onerror = real.m ? () => { img.onerror = placeholder; img.src = real.src; } : placeholder; // 中圖載不到就改用原圖
+    img.src = real.m || real.src;
   }
 
   /** 依使用者自己的作答判斷要不要把求助專線放在醒目位置（門檻在 CONFIG.supportProminent）。 */
@@ -476,12 +476,45 @@
     else a.unshift({ n, day, t: Date.now(), how: [how] });
     return saveCol(a);
   }
+  /** 小圖（我的詩篇用）：有縮圖就用縮圖，載不到再改用原圖。 */
+  const smallImg = (img) => `<img src="${esc(img.s || img.src)}" alt="" loading="lazy" decoding="async"${img.s ? ` onerror="this.onerror=null;this.src='${esc(img.src)}'"` : ''}>`;
   /** 我的詩篇：每筆紀錄下方的插畫小圖與創作意義（點開才顯示）。 */
   function recMeaning(n) {
     const a = artNote(n), img = C.illustration(n);
     if (!a) return '';
-    return `<details class="rec-art"><summary><img src="${esc(img.src)}" alt="" loading="lazy" decoding="async"><span>插畫｜${esc(a.title || '創作意義')}</span></summary><p>${esc(a.text)}</p></details>`;
+    return `<details class="rec-art"><summary>${smallImg(img)}<span>插畫｜${esc(a.title || '創作意義')}</span></summary><p>${esc(a.text)}</p></details>`;
   }
+  /*
+   * 備份代碼：PSALM1: 加上 base64 的 [[篇號, 日期 YYYYMMDD, 方式]]，方式用位元表示（1 測驗結果、2 共鳴、4 讀全文）。
+   * 只有篇號和日期，沒有任何作答內容。
+   */
+  const HOW_BIT = { result: 1, near: 2, read: 4 };
+  function backupCode() {
+    const rows = loadCol().map((x) => [x.n, +x.day.replace(/-/g, ''), (x.how || []).reduce((m, h) => m | (HOW_BIT[h] || 0), 0)]);
+    return 'PSALM1:' + btoa(JSON.stringify(rows));
+  }
+  function restoreCode(text) {
+    const m = String(text || '').replace(/\s+/g, '').match(/PSALM1:([A-Za-z0-9+/=]+)/);
+    if (!m) return { ok: false, msg: '看不懂這段代碼，請確認有完整複製（PSALM1: 開頭）' };
+    let rows;
+    try { rows = JSON.parse(atob(m[1])); } catch (e) { return { ok: false, msg: '代碼不完整，請重新複製一次' }; }
+    if (!Array.isArray(rows)) return { ok: false, msg: '代碼格式不對' };
+    const a = loadCol(); let added = 0;
+    for (const r of rows) {
+      if (!Array.isArray(r)) continue;
+      const [n, d, bits] = r, ds = String(d);
+      if (!byNum[n] || !/^\d{8}$/.test(ds)) continue;
+      const day = `${ds.slice(0, 4)}-${ds.slice(4, 6)}-${ds.slice(6, 8)}`;
+      const how = Object.keys(HOW_BIT).filter((h) => bits & HOW_BIT[h]);
+      const ex = a.find((x) => x.n === n && x.day === day);
+      if (ex) ex.how = [...new Set([...(ex.how || []), ...how])];
+      else { a.push({ n, day, t: new Date(`${day}T12:00:00`).getTime() - n, how: how.length ? how : ['result'] }); added++; }
+    }
+    a.sort((x, y) => (y.day > x.day ? 1 : y.day < x.day ? -1 : y.t - x.t));
+    if (!saveCol(a)) return { ok: false, msg: '這個瀏覽器目前無法保存紀錄' };
+    return { ok: true, added };
+  }
+  let backupOpen = false;
   let confirmClear = false;
   function renderMine() {
     show('mine');
@@ -493,12 +526,12 @@
     const cells = Array.from({ length: 150 }, (_, i) => {
       const n = i + 1, p = byNum[n], img = C.illustration(n);
       if (!got.has(n)) return `<li class="stamp" aria-hidden="true"><span>${n}</span></li>`;
-      return `<li><a class="stamp got${img ? ' has-img' : ''}" href="#/read/${n}" aria-label="詩篇第 ${n} 篇：${esc(p.title)}（${esc(stageName(p.stage))}）">${img ? `<img src="${esc(img.src)}" alt="" loading="lazy" decoding="async">` : ''}<span>${n}</span></a></li>`;
+      return `<li><a class="stamp got${img ? ' has-img' : ''}" href="#/read/${n}" aria-label="詩篇第 ${n} 篇：${esc(p.title)}（${esc(stageName(p.stage))}）">${img ? smallImg(img) : ''}<span>${n}</span></a></li>`;
     }).join('');
     $('mine-root').innerHTML = `
       <h1 class="page-title" tabindex="-1" id="mine-title">我的詩篇</h1>
       ${!ok ? '<p class="note">這個瀏覽器目前無法保存紀錄（可能是無痕模式），所以這裡不會留下你開過的詩篇。</p>' : ''}
-      ${IN_APP ? '<p class="note">你現在是在 App 裡開啟這個網頁。App 內建的瀏覽器有時會自動清除資料，而且跟手機的 Safari、Chrome 是分開的。想長期保存，建議用手機瀏覽器打開，或加到主畫面。</p>' : ''}
+      ${IN_APP ? '<p class="note">你現在是在 App 裡開啟這個網頁。App 內建的瀏覽器有時會自動清除資料，而且跟手機的 Safari、Chrome 是分開的。想長期保存，建議改用 Safari 或 Chrome 打開；這裡已有的紀錄，可以用頁面最下方的「備份與還原」帶過去。</p>' : ''}
       <section aria-labelledby="h-stamps">
         <div class="mine-count"><h2 id="h-stamps">詩篇集章</h2><p><b>${got.size}</b> ／ 150</p></div>
         <p class="fine">做測驗、點開共鳴的詩篇、讀全文，開過的詩篇就會在這裡亮起來。點亮起來的格子可以再讀一次。</p>
@@ -514,14 +547,40 @@
           </li>`; }).join('')}</ul>`).join('')
         : `<p class="why-intro">還沒有紀錄。做完一次測驗，結果的詩篇就會收進這裡。</p><div class="btn-row"><a class="btn btn-primary" href="#/">去做測驗</a></div>`}
       </section>
-      ${a.length ? `<div class="mine-end">
-        <p class="fine">紀錄只存在這台裝置的這個瀏覽器，不會上傳。清除瀏覽資料、換手機或換瀏覽器，就看不到這些紀錄。</p>
-        <button class="btn-link" id="mine-clear" type="button">${confirmClear ? '確定要全部清除嗎？再按一次就會清除' : '全部清除'}</button>
-      </div>` : ''}`;
+      <div class="mine-end">
+        <p class="fine">紀錄只存在這台裝置的這個瀏覽器，不會上傳。清除瀏覽資料、換手機或換瀏覽器，就看不到這些紀錄。要帶到別的地方，請用下面的「備份與還原」。</p>
+        <details class="more backup"${backupOpen ? ' open' : ''}><summary>備份與還原</summary>
+          <div class="backup-body">
+            ${a.length ? `<p class="fine">複製這串備份代碼，傳給自己（例如 LINE 的記事本或 Email），到新的手機或瀏覽器打開這一頁，貼上後按「還原」就好。</p>
+            <div class="btn-row"><button class="btn btn-outline" id="bk-copy" type="button">複製備份代碼</button><button class="btn-link" id="bk-file" type="button">下載備份檔</button></div>` : ''}
+            <label class="fine" for="bk-in">貼上備份代碼</label>
+            <textarea id="bk-in" rows="3" placeholder="PSALM1: 開頭的一串文字" spellcheck="false" autocomplete="off"></textarea>
+            <div class="btn-row"><button class="btn btn-outline" id="bk-restore" type="button">還原</button></div>
+            <p class="fine">還原會跟這裡現有的紀錄合併，不會刪掉任何一筆。</p>
+          </div>
+        </details>
+        ${a.length ? `<button class="btn-link" id="mine-clear" type="button">${confirmClear ? '確定要全部清除嗎？再按一次就會清除' : '全部清除'}</button>` : ''}
+      </div>`;
     document.querySelectorAll('.rec-del').forEach((b) => (b.onclick = () => {
       saveCol(loadCol().filter((x) => String(x.t) !== b.dataset.t));
       confirmClear = false; renderMineKeepScroll(); toast('已刪除這筆紀錄');
     }));
+    $('mine-root').querySelector('details.backup').ontoggle = (e) => { backupOpen = e.target.open; };
+    if ($('bk-copy')) $('bk-copy').onclick = async () => {
+      const code = backupCode();
+      try { await navigator.clipboard.writeText(code); toast('備份代碼已複製'); }
+      catch (e) { $('bk-in').value = code; $('bk-in').select(); toast('請長按上方的代碼自行複製'); }
+    };
+    if ($('bk-file')) $('bk-file').onclick = () => {
+      const blob = new Blob([backupCode() + '\n'], { type: 'text/plain' });
+      const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `我的詩篇備份-${dayKey()}.txt`;
+      document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(link.href), 4000);
+    };
+    $('bk-restore').onclick = () => {
+      const r = restoreCode($('bk-in').value);
+      if (!r.ok) { toast(r.msg); $('bk-in').focus(); return; }
+      renderMine(); toast(r.added ? `已還原，新增 ${r.added} 筆紀錄` : '這些紀錄這裡都已經有了');
+    };
     if ($('mine-clear')) $('mine-clear').onclick = () => {
       if (!confirmClear) { confirmClear = true; renderMineKeepScroll(); $('mine-clear').focus(); return; }
       confirmClear = false; saveCol([]); renderMine(); toast('紀錄已全部清除');
