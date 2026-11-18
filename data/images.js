@@ -1,4 +1,4 @@
-/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 107 篇）。
+/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 120 篇）。
  * src 是原圖（分享圖用），m 是中圖（結果頁、讀全文），s 是小圖（我的詩篇）。沒有縮圖時網站會改用原圖。
  * 只有這裡列出的篇章會顯示插畫；其他篇章一律用中性佔位，不推測檔名。
  * 新增插畫：把 webp 上傳到 images/psalms/ 就好，推送後 GitHub 會自動重新產生這個檔案和縮圖並部署。 */
@@ -109,5 +109,18 @@ window.PSALM_IMAGES = {
   104: {"src": "images/psalms/psalm-104-unfolded-world.webp", "w": 1536, "h": 1024},
   105: {"src": "images/psalms/psalm-105-remembered-promise.webp", "w": 1536, "h": 1024},
   106: {"src": "images/psalms/psalm-106-untangled-mercy.webp", "w": 1536, "h": 1024},
-  107: {"src": "images/psalms/psalm-107-quiet-harbor.webp", "w": 1536, "h": 1024}
+  107: {"src": "images/psalms/psalm-107-quiet-harbor.webp", "w": 1536, "h": 1024},
+  108: {"src": "images/psalms/psalm-108-awaken-the-dawn.webp", "w": 1536, "h": 1024},
+  109: {"src": "images/psalms/psalm-109-standing-beside-me.webp", "w": 1536, "h": 1024},
+  110: {"src": "images/psalms/psalm-110-morning-authority.webp", "w": 1536, "h": 1024},
+  111: {"src": "images/psalms/psalm-111-remembered-wonders.webp", "w": 1536, "h": 1024},
+  112: {"src": "images/psalms/psalm-112-light-passed-on.webp", "w": 1536, "h": 1024},
+  113: {"src": "images/psalms/psalm-113-lifted-from-dust.webp", "w": 1536, "h": 1024},
+  114: {"src": "images/psalms/psalm-114-sea-made-way.webp", "w": 1536, "h": 1024},
+  115: {"src": "images/psalms/psalm-115-trust-beyond-idols.webp", "w": 1536, "h": 1024},
+  116: {"src": "images/psalms/psalm-116-untying-knot.webp", "w": 1536, "h": 1024},
+  117: {"src": "images/psalms/psalm-117-world-sings.webp", "w": 1536, "h": 1024},
+  118: {"src": "images/psalms/psalm-118-rediscovered-stone.webp", "w": 1536, "h": 1024},
+  119: {"src": "images/psalms/psalm-119-light-in-the-maze.webp", "w": 1536, "h": 1024},
+  120: {"src": "images/psalms/psalm-120-i-want-peace.webp", "w": 1536, "h": 1024}
 };
