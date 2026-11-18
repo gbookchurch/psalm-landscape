@@ -1,4 +1,4 @@
-/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 75 篇）。
+/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 86 篇）。
  * src 是原圖（分享圖用），m 是中圖（結果頁、讀全文），s 是小圖（我的詩篇）。沒有縮圖時網站會改用原圖。
  * 只有這裡列出的篇章會顯示插畫；其他篇章一律用中性佔位，不推測檔名。
  * 新增插畫：把 webp 上傳到 images/psalms/ 就好，推送後 GitHub 會自動重新產生這個檔案和縮圖並部署。 */
@@ -77,5 +77,16 @@ window.PSALM_IMAGES = {
   72: {"src": "images/psalms/psalm-072-raining-crown.webp", "w": 1536, "h": 1024},
   73: {"src": "images/psalms/psalm-073-new-perspective-glasses.webp", "w": 1774, "h": 887},
   74: {"src": "images/psalms/psalm-074-missing-door.webp", "w": 1536, "h": 1024},
-  75: {"src": "images/psalms/psalm-075-balanced-world.webp", "w": 1536, "h": 1024}
+  75: {"src": "images/psalms/psalm-075-balanced-world.webp", "w": 1536, "h": 1024},
+  76: {"src": "images/psalms/psalm-076-stilled-bow.webp", "w": 1536, "h": 1024},
+  77: {"src": "images/psalms/psalm-077-invisible-sea-path.webp", "w": 1536, "h": 1024},
+  78: {"src": "images/psalms/psalm-078-amber-of-memory.webp", "w": 1536, "h": 1024},
+  79: {"src": "images/psalms/psalm-079-voice-in-ashes.webp", "w": 1536, "h": 1024},
+  80: {"src": "images/psalms/psalm-080-turning-vine.webp", "w": 1536, "h": 1024},
+  81: {"src": "images/psalms/psalm-081-listening-shofar.webp", "w": 1536, "h": 1024},
+  82: {"src": "images/psalms/psalm-082-unequal-chairs.webp", "w": 1536, "h": 1024},
+  83: {"src": "images/psalms/psalm-083-wind-swept-forest.webp", "w": 1536, "h": 1024},
+  84: {"src": "images/psalms/psalm-084-nest-beneath-arch.webp", "w": 1536, "h": 1024},
+  85: {"src": "images/psalms/psalm-085-meeting-landscapes.webp", "w": 1536, "h": 1024},
+  86: {"src": "images/psalms/psalm-086-resonant-fork.webp", "w": 1536, "h": 1024}
 };
