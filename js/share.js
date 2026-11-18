@@ -283,20 +283,9 @@
     const lines = PsalmText.stageLines(d.stageLine).flatMap((l) => wrap(c, l, maxW)).slice(0, 3);
     for (let i = lines.length - 1; i >= 0; i--) { c.fillText(lines[i], M, y - 22); y -= 84; }
     c.fillRect(M, y - 30, 64, 5);
-    const note = (d.note || '').trim();
-    const s = note ? 660 : 760, iy = top + rowH + 16;
+    const s = 760, iy = top + rowH + 16;
     await art(c, d, (W - s) / 2, iy, s);
-    let rule = iy + s + 22;
-    if (note) {
-      // 插畫說明：置中、最多三行，太長時先縮字再截斷
-      let size = 28, lines;
-      for (size of [28, 26, 24]) { serif(c, 500, size); lines = wrapEven(c, note, R - M - 40); if (lines.length <= 3) break; }
-      if (lines.length > 3) { lines = lines.slice(0, 3); lines[2] = lines[2].slice(0, -1) + '…'; }
-      c.textAlign = 'center'; c.textBaseline = 'alphabetic'; c.fillStyle = SOFT;
-      let y = iy + s + 8;
-      for (const l of lines) { y += size * 1.7; c.fillText(l, W / 2, y - size * 0.45); }
-      rule = y + 30;
-    }
+    const rule = iy + s + 22;
     c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
     psalmRow(c, d, rule + 33, 1752, 190 / 170);
     footer(c, 1802, 24);
@@ -336,7 +325,7 @@
     const off = document.createElement('canvas'); off.width = W; off.height = H;
     const c = off.getContext('2d');
     const name = d.stage.replace(/^\d\s*/, '');
-    const allText = (d.note || '') + T().brand + T().shareTitle + name + d.stageLine + d.psalm.title + '詩篇第篇八個面向，我和這篇詩的位置' + (d.verse ? d.verse.text + d.verse.ref : '') + d.tags.join('') + (T().shareFooterLeft || '') + (T().shareUrl || '') + Object.values(T().dimNames).join('') + Object.values(T().dimEnds).flat().join('') + '0123456789:-・…';
+    const allText = T().brand + T().shareTitle + name + d.stageLine + d.psalm.title + '詩篇第篇八個面向，我和這篇詩的位置' + (d.verse ? d.verse.text + d.verse.ref : '') + d.tags.join('') + (T().shareFooterLeft || '') + (T().shareUrl || '') + Object.values(T().dimNames).join('') + Object.values(T().dimEnds).flat().join('') + '0123456789:-・…';
     await fontsReady(allText);
     paper(c, H);
     const story = opts.ratio === 'story', scene = opts.style === 'scene';

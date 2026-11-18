@@ -256,10 +256,18 @@
     return g <= r.hopeAlone || (a !== undefined && g <= r.hopeAndMood && a <= r.hopeAndMood);
   }
 
-  /** 插畫的創作意義：有正式插畫、而且 data/illustration-notes.js 有寫的篇章才回傳文字。 */
+  /** 插畫的創作意義：有正式插畫、而且 data/illustration-notes.js 有寫的篇章才回傳 { title, text }。 */
   function artNote(n) {
-    const t = C.illustration(n) && window.ILLUSTRATION_NOTES && window.ILLUSTRATION_NOTES[n];
-    return typeof t === 'string' && t.trim() ? t.trim() : '';
+    const v = C.illustration(n) && window.ILLUSTRATION_NOTES && window.ILLUSTRATION_NOTES[n];
+    if (!v) return null;
+    const o = typeof v === 'string' ? { title: '', text: v } : { title: v.title || '', text: v.text || '' };
+    return o.text.trim() ? { title: o.title.trim(), text: o.text.trim() } : null;
+  }
+  /** 創作意義的抽屜：點開才顯示文字。 */
+  function artDrawer(n, cls = '') {
+    const a = artNote(n);
+    if (!a) return '';
+    return `<details class="art-drawer ${cls}"><summary><span class="art-k">這張插畫的創作意義</span>${a.title ? `<span class="art-t">${esc(a.title)}</span>` : ''}</summary><p>${esc(a.text)}</p></details>`;
   }
 
   function renderResult(forcePsalm) {
@@ -299,7 +307,7 @@
 
       <figure class="illus" id="r-book"><img id="r-img" alt="" decoding="async" width="1254" height="1254"></figure>
       ${!C.illustration(n) ? '<p class="fine illus-note">插畫製作中・目前顯示品牌裝飾圖</p>' : ''}
-      ${artNote(n) ? `<section class="art-note" aria-label="關於這張插畫"><p class="art-note-label">關於這張插畫</p><p>${esc(artNote(n))}</p></section>` : ''}
+      ${artDrawer(n)}
 
       <section class="psalm" aria-labelledby="pc-num">
         <p class="psalm-label">適合你現在讀的詩篇</p>
@@ -364,7 +372,7 @@
 
     illus($('r-book'), $('r-img'), n);
     $('btn-read').onclick = () => go(`#/read/${n}`);
-    $('btn-share').onclick = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n), note: artNote(n) });
+    $('btn-share').onclick = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
     $('btn-again').onclick = () => { clear(); lastResult = null; go('#/'); };
     $('btn-edit').onclick = () => { state.step = 0; state.done = false; save(); go('#/quiz'); };
     if ($('back-main')) $('back-main').onclick = () => renderResult();
@@ -420,6 +428,7 @@
     }).join('');
     $('reader').innerHTML = `
       <figure class="illus" id="read-book"><img id="read-img" alt="" decoding="async" width="1254" height="1254"></figure>
+      ${artDrawer(n)}
       <h1 tabindex="-1" id="read-title">詩篇 第 ${n} 篇</h1>
       ${S.title ? `<p class="sup">${esc(S.title)}</p>` : ''}
       ${picked.length ? `<p class="read-dates">${picked.length === 1 ? `你在 <b>${esc(dayLabel(picked[0]))}</b> 選到這一篇` : `你選到這一篇的日子<br>${picked.map((d) => `<b>${esc(dayLabel(d))}</b>`).join('、')}`}</p>` : ''}
@@ -467,6 +476,12 @@
     else a.unshift({ n, day, t: Date.now(), how: [how] });
     return saveCol(a);
   }
+  /** 我的詩篇：每筆紀錄下方的插畫小圖與創作意義（點開才顯示）。 */
+  function recMeaning(n) {
+    const a = artNote(n), img = C.illustration(n);
+    if (!a) return '';
+    return `<details class="rec-art"><summary><img src="${esc(img.src)}" alt="" loading="lazy" decoding="async"><span>插畫｜${esc(a.title || '創作意義')}</span></summary><p>${esc(a.text)}</p></details>`;
+  }
   let confirmClear = false;
   function renderMine() {
     show('mine');
@@ -495,6 +510,7 @@
           <ul class="recs">${g.items.map((x) => { const p = byNum[x.n]; return `<li>
             <a class="rec" href="#/read/${x.n}"><span class="n">${x.n}</span><span class="t">${esc(p.shortTitle || p.title)}<small>${esc(stageName(p.stage))}・${(x.how || []).map((h) => HOW[h] || '').filter(Boolean).join('・')}</small></span></a>
             <button class="icon-btn rec-del" type="button" data-t="${x.t}" aria-label="刪除這筆紀錄：詩篇第 ${x.n} 篇，${esc(dayLabel(x.day))}"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+            ${recMeaning(x.n)}
           </li>`; }).join('')}</ul>`).join('')
         : `<p class="why-intro">還沒有紀錄。做完一次測驗，結果的詩篇就會收進這裡。</p><div class="btn-row"><a class="btn btn-primary" href="#/">去做測驗</a></div>`}
       </section>
