@@ -1,4 +1,4 @@
-/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 120 篇）。
+/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 130 篇）。
  * src 是原圖（分享圖用），m 是中圖（結果頁、讀全文），s 是小圖（我的詩篇）。沒有縮圖時網站會改用原圖。
  * 只有這裡列出的篇章會顯示插畫；其他篇章一律用中性佔位，不推測檔名。
  * 新增插畫：把 webp 上傳到 images/psalms/ 就好，推送後 GitHub 會自動重新產生這個檔案和縮圖並部署。 */
@@ -122,5 +122,15 @@ window.PSALM_IMAGES = {
   117: {"src": "images/psalms/psalm-117-world-sings.webp", "w": 1536, "h": 1024},
   118: {"src": "images/psalms/psalm-118-rediscovered-stone.webp", "w": 1536, "h": 1024},
   119: {"src": "images/psalms/psalm-119-light-in-the-maze.webp", "w": 1536, "h": 1024},
-  120: {"src": "images/psalms/psalm-120-i-want-peace.webp", "w": 1536, "h": 1024}
+  120: {"src": "images/psalms/psalm-120-i-want-peace.webp", "w": 1536, "h": 1024},
+  121: {"src": "images/psalms/psalm-121-watch-beyond-mountains.webp", "w": 1536, "h": 1024},
+  122: {"src": "images/psalms/psalm-122-we-have-arrived.webp", "w": 1536, "h": 1024},
+  123: {"src": "images/psalms/psalm-123-gentle-response.webp", "w": 1536, "h": 1024},
+  124: {"src": "images/psalms/psalm-124-broken-snare.webp", "w": 1536, "h": 1024},
+  125: {"src": "images/psalms/psalm-125-surrounded-by-mountains.webp", "w": 1536, "h": 1024},
+  126: {"src": "images/psalms/psalm-126-where-tears-fell.webp", "w": 1536, "h": 1024},
+  127: {"src": "images/psalms/psalm-127-restful-home.webp", "w": 1536, "h": 1024},
+  128: {"src": "images/psalms/psalm-128-blessings-at-the-table.webp", "w": 1536, "h": 1024},
+  129: {"src": "images/psalms/psalm-129-scars-not-the-ending.webp", "w": 1536, "h": 1024},
+  130: {"src": "images/psalms/psalm-130-before-the-dawn.webp", "w": 1536, "h": 1024}
 };
