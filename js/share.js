@@ -162,23 +162,36 @@
   }
 
   /**
-   * 經文（主）＋出處＋標題（次）排成一欄，自動挑能放進 maxH 的最大字級。
-   * align: 'left' | 'center'。回傳實際高度。dry 只量不畫。
+   * 經文（主）＋出處＋標題（次）排成一欄，保證不超過 maxH。
+   * 依序嘗試：大字到小字 × 短行到長行（都保留標題）→ 拿掉標題 → 最小字級下截斷經文並加「……」。
+   * align: 'left' | 'center'。回傳 { h, full }，full 表示經文和標題都完整放進去。dry 只量不畫。
    */
   function verseBlock(c, d, x, y, maxW, maxH, sizes, o = {}) {
     const refS = o.ref || 22, titleS = o.title || 26, align = o.align || 'left';
-    let pick = null;
-    for (const s of sizes) {
+    const layout = (s, maxLen, withTitle) => {
       serif(c, 700, s);
-      const lines = d.verse ? verseWrap(c, d.verse.text, maxW, o.maxLen || 11) : [];
+      const lines = d.verse ? verseWrap(c, d.verse.text, maxW, maxLen) : [];
       serif(c, 500, titleS);
-      const tl = wrapEven(c, d.psalm.title, maxW).slice(0, 2);
+      const tl = withTitle ? wrapEven(c, d.psalm.title, maxW).slice(0, 2) : [];
       const lh = s * 1.6;
-      const h = lines.length * lh + (lines.length ? refS * 1.9 : 0) + (lines.length ? titleS * 0.6 : 0) + tl.length * titleS * 1.6;
-      pick = { s, lines, tl, lh, h };
-      if (h <= maxH) break;
+      const h = lines.length * lh + (lines.length ? refS * 1.9 : 0) + (lines.length && tl.length ? titleS * 0.6 : 0) + tl.length * titleS * 1.6;
+      return { s, lines, tl, lh, h };
+    };
+    const lens = (s) => [...new Set([o.maxLen || 11, Math.max(6, Math.floor(maxW / s))])];
+    let pick = null, full = false;
+    for (const withTitle of [true, false]) {
+      for (const sz of sizes) for (const ml of lens(sz)) { const t = layout(sz, ml, withTitle); if (t.h <= maxH) { pick = t; full = withTitle; break; } }
+      if (pick) break;
+      if (o.strict) return { h: Infinity, full: false };
     }
-    if (o.dry) return pick.h;
+    if (!pick) {
+      // 仍然放不下：用最小字級、最長的行，從後面截掉經文，最後一行加「……」
+      const sz = sizes[sizes.length - 1];
+      pick = layout(sz, Math.max(6, Math.floor(maxW / sz)), false);
+      while (pick.lines.length > 1 && pick.h > maxH) { pick.lines.pop(); pick.h -= pick.lh; }
+      if (pick.lines.length) pick.lines[pick.lines.length - 1] = pick.lines[pick.lines.length - 1].replace(/[，。；：！？、]?$/, '……');
+    }
+    if (o.dry) return { h: pick.h, full };
     const ax = align === 'center' ? x + maxW / 2 : x;
     c.textAlign = align; c.textBaseline = 'alphabetic';
     let yy = y;
@@ -187,19 +200,29 @@
     if (pick.lines.length) {
       yy += refS * 1.9; c.fillStyle = SOFT; sans(c, 500, refS); spacing(c, refS * 0.12);
       c.fillText(d.verse.ref, ax, yy - refS * 0.5); spacing(c, 0);
-      yy += titleS * 0.6;
+      if (pick.tl.length) yy += titleS * 0.6;
     }
     c.fillStyle = SOFT; serif(c, 500, titleS);
     for (const l of pick.tl) { yy += titleS * 1.6; c.fillText(l, ax, yy - titleS * 0.45); }
-    return pick.h;
+    if (root.Share) root.Share._last = { h: pick.h, maxH, full };
+    return { h: pick.h, full };
   }
 
-  /** 粗線下方那一區：左邊「詩篇 第 N 篇」，右邊經文、出處、標題。 */
-  function psalmRow(c, d, top, bottom, k) {
+  /** 粗線下方那一區：左邊「詩篇 第 N 篇」，右邊經文、出處、標題。strict 時只量「能不能完整放下」。 */
+  const ROW_SIZES = [40, 36, 32, 28];
+  function psalmRow(c, d, top, bottom, k, strict) {
     const num = numeral(c, d.psalm.psalm, M, 0, 170 * k, 36 * k, 430 * k, true);
-    numeral(c, d.psalm.psalm, M, top + num.big * 0.83, 170 * k, 36 * k, 430 * k);
     const x = M + num.w + 44;
-    verseBlock(c, d, x, top, R - x, bottom - top, [40, 36, 32, 28, 25].map((s) => s * k), { ref: 22 * k, title: 26 * k });
+    const sizes = (strict ? ROW_SIZES.slice(0, 3) : [...ROW_SIZES, 25, 23]).map((s) => s * k); // 量的時候要求字夠大，放不下就先縮插畫
+    const o = { ref: 22 * k, title: 26 * k };
+    if (strict) return verseBlock(c, d, x, top, R - x, bottom - top, sizes, { ...o, dry: true, strict: true }).full;
+    numeral(c, d.psalm.psalm, M, top + num.big * 0.83, 170 * k, 36 * k, 430 * k);
+    return verseBlock(c, d, x, top, R - x, bottom - top, sizes, o);
+  }
+  /** 經文比較長時，把插畫縮小（最多縮到 minS），讓下方的經文和標題完整放下。gap 是插畫底到經文區頂端的距離。 */
+  function fitArt(c, d, iy, s0, minS, gap, bottom, k) {
+    for (let s = s0; s >= minS; s -= 20) if (psalmRow(c, d, iy + s + gap, bottom, k, true)) return s;
+    return minS;
   }
 
   /** 八個面向的位置條。實心點是使用者，圓圈是這篇詩。rowH 是每列高度。 */
@@ -244,7 +267,7 @@
     const num = numeral(c, d.psalm.psalm, x, 0, 112 * k, 28 * k, maxW, true);
     const o = { ref: 20 * k, title: 21 * k, maxLen: 9 };
     const sizes = [29, 26, 23, 21].map((s) => s * k);
-    const vh = verseBlock(c, d, x, 0, maxW, imgS - num.big - 14, sizes, { ...o, dry: true });
+    const vh = verseBlock(c, d, x, 0, maxW, imgS - num.big - 14, sizes, { ...o, dry: true }).h;
     const top = y + Math.max(0, (imgS - (num.big + 14 + vh)) / 2);
     numeral(c, d.psalm.psalm, x, top + num.big * 0.83, 112 * k, 28 * k, maxW);
     verseBlock(c, d, x, top + num.big + 14, maxW, imgS - num.big - 14, sizes, o);
@@ -254,7 +277,7 @@
 
   async function postScene(c, d, name) {
     header(c, 82, 1);
-    const top = 140, s = 736;
+    const top = 140, s = fitArt(c, d, top, 736, 620, 30 + 33, 1244, 1);
     await art(c, d, M, top, s);
     const nh = stageName(c, name, R, top, 150, 330);
     // 直排的光景說明，接在光景名稱下面
@@ -283,11 +306,12 @@
     const lines = PsalmText.stageLines(d.stageLine).flatMap((l) => wrap(c, l, maxW)).slice(0, 3);
     for (let i = lines.length - 1; i >= 0; i--) { c.fillText(lines[i], M, y - 22); y -= 84; }
     c.fillRect(M, y - 30, 64, 5);
-    const s = 760, iy = top + rowH + 16;
+    const iy = top + rowH + 16, k = 190 / 170;
+    const s = fitArt(c, d, iy, 760, 600, 22 + 33, 1752, k);
     await art(c, d, (W - s) / 2, iy, s);
     const rule = iy + s + 22;
     c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
-    psalmRow(c, d, rule + 33, 1752, 190 / 170);
+    psalmRow(c, d, rule + 33, 1752, k);
     footer(c, 1802, 24);
   }
 
