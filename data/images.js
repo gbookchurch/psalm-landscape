@@ -1,4 +1,4 @@
-/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 86 篇）。
+/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 97 篇）。
  * src 是原圖（分享圖用），m 是中圖（結果頁、讀全文），s 是小圖（我的詩篇）。沒有縮圖時網站會改用原圖。
  * 只有這裡列出的篇章會顯示插畫；其他篇章一律用中性佔位，不推測檔名。
  * 新增插畫：把 webp 上傳到 images/psalms/ 就好，推送後 GitHub 會自動重新產生這個檔案和縮圖並部署。 */
@@ -88,5 +88,16 @@ window.PSALM_IMAGES = {
   83: {"src": "images/psalms/psalm-083-wind-swept-forest.webp", "w": 1536, "h": 1024},
   84: {"src": "images/psalms/psalm-084-nest-beneath-arch.webp", "w": 1536, "h": 1024},
   85: {"src": "images/psalms/psalm-085-meeting-landscapes.webp", "w": 1536, "h": 1024},
-  86: {"src": "images/psalms/psalm-086-resonant-fork.webp", "w": 1536, "h": 1024}
+  86: {"src": "images/psalms/psalm-086-resonant-fork.webp", "w": 1536, "h": 1024},
+  87: {"src": "images/psalms/psalm-087-spring-borne-city.webp", "w": 1536, "h": 1024},
+  88: {"src": "images/psalms/psalm-088-sinking-night-city.webp", "w": 1536, "h": 1024},
+  89: {"src": "images/psalms/psalm-089-suspended-promise.webp", "w": 1536, "h": 1024},
+  90: {"src": "images/psalms/psalm-090-blade-of-time.webp", "w": 1536, "h": 1024},
+  91: {"src": "images/psalms/psalm-091-rain-shelter.webp", "w": 1536, "h": 1024},
+  92: {"src": "images/psalms/psalm-092-fruitful-pillar.webp", "w": 1536, "h": 1024},
+  93: {"src": "images/psalms/psalm-093-folded-sea.webp", "w": 1536, "h": 1024},
+  94: {"src": "images/psalms/psalm-094-finally-heard.webp", "w": 1282, "h": 1227},
+  95: {"src": "images/psalms/psalm-095-earth-fingerprint.webp", "w": 1312, "h": 1199},
+  96: {"src": "images/psalms/psalm-096-forest-chorus.webp", "w": 1536, "h": 1024},
+  97: {"src": "images/psalms/psalm-097-awakened-islands.webp", "w": 1536, "h": 1024}
 };
