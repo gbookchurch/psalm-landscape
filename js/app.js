@@ -196,7 +196,29 @@
     let text = join(v);
     if (!good && text.length > 46) text = v.lines.filter((l) => l).slice(0, 2).join('') + '……';
     text = text.replace(/[，；：、]$/, '……'); // 句子還沒結束時用刪節號
-    return { text, ref: `詩篇 ${n}:${v.v}` };
+    return { text, ref: `詩篇 ${n}:${v.v}`, ex: excerpt(n, S, v) };
+  }
+
+  /**
+   * 結果頁節錄：以主要經文為中心，取連續 2–3 節（分享圖仍只用一節，版面才放得下）。
+   * 主要經文如果是接著上一節的半句話，就從上一節開始；總字數盡量不超過 100 字。
+   */
+  function excerpt(n, S, key) {
+    const join = (v) => v.lines.filter((l) => l).join('');
+    const ends = (v) => /[。！？」』]$/.test(join(v));
+    const vs = S.verses;
+    let a = vs.indexOf(key);
+    if (a > 0 && !ends(vs[a - 1]) && join(vs[a - 1]).length + join(key).length <= 70) a -= 1;
+    let b = a, len = join(vs[a]).length;
+    while (b - a < 2 && b + 1 < vs.length && len + join(vs[b + 1]).length <= 100) { b += 1; len += join(vs[b]).length; }
+    // 三節卻停在半句話時，退回兩節（若兩節剛好是完整句子）
+    if (b - a === 2 && !ends(vs[b]) && ends(vs[b - 1])) b -= 1;
+    const pick = vs.slice(a, b + 1);
+    const lines = pick.map((v) => v.lines.filter((l) => l));
+    const lastLine = lines[lines.length - 1];
+    lastLine[lastLine.length - 1] = lastLine[lastLine.length - 1].replace(/[，；：、]$/, '……');
+    const first = pick[0].v.split('-')[0], last = pick[pick.length - 1].v.split('-').pop();
+    return { verses: pick.map((v, i) => ({ v: v.v, lines: lines[i] })), ref: `詩篇 ${n}:${first === last ? first : `${first}-${last}`}`, len };
   }
 
   /* ---------- 結果 ---------- */
@@ -270,6 +292,16 @@
     return `<details class="art-drawer ${cls}"><summary><span class="art-k">這張插畫的創作意義</span>${a.title ? `<span class="art-t">${esc(a.title)}</span>` : ''}</summary><p>${esc(a.text)}</p></details>`;
   }
 
+  /** 結果頁下半部的插畫卡片：小圖＋插畫名稱，點開看創作意義。 */
+  function artCard(n) {
+    const a = artNote(n), img = C.illustration(n);
+    if (!a || !img) return '';
+    return `<section class="r-block r-art" aria-label="這張插畫的創作意義"><details>
+        <summary>${smallImg(img)}<span class="r-art-text"><span class="k">這張插畫的創作意義</span><span class="t">${esc(a.title || '')}</span></span>${icon('i-chev-d', 'ic chev')}</summary>
+        <p>${esc(a.text)}</p>
+      </details></section>`;
+  }
+
   function renderResult(forcePsalm) {
     try { return renderResultInner(forcePsalm); } catch (e) { showError(e); }
   }
@@ -307,14 +339,12 @@
 
       <figure class="illus" id="r-book"><img id="r-img" alt="" decoding="async" width="1254" height="1254"></figure>
       ${!C.illustration(n) ? '<p class="fine illus-note">插畫製作中・目前顯示品牌裝飾圖</p>' : ''}
-      ${artDrawer(n)}
 
       <section class="psalm" aria-labelledby="pc-num">
         <p class="psalm-label">適合你現在讀的詩篇</p>
         <h2 class="psalm-num" id="pc-num"><span>詩篇 第</span><span class="n${String(n).length >= 3 ? ' n3' : ''}">${n}</span><span>篇</span></h2>
-        ${kv ? `<blockquote class="psalm-verse">${PsalmText.verseLines(kv.text).map(esc).join('<br>')}<span class="psalm-ref">${esc(kv.ref)}</span></blockquote>
-        <div class="psalm-rule" aria-hidden="true"></div>` : ''}
-        <p class="psalm-title">${esc(p.title)}</p>
+        ${kv ? `<blockquote class="psalm-verse${kv.ex.len > 40 ? ' long' : ''}">${kv.ex.verses.map((v) => `<p>${v.lines.map(esc).join('<br>')}</p>`).join('')}<span class="psalm-ref">${esc(kv.ex.ref)}</span></blockquote>
+` : ''}
       </section>
 
       ${deep ? supportBlock(true) : ''}
@@ -339,6 +369,8 @@
         <div class="r-head"><span class="no" aria-hidden="true">壹</span><h2 id="h-now">這篇詩想對你說</h2></div>
         <p class="r-body">${esc(p.body)}</p>
       </section>
+
+      ${artCard(n)}
 
       <section class="r-block" aria-labelledby="h-why">
         <div class="r-head"><span class="no" aria-hidden="true">貳</span><h2 id="h-why">為什麼是這一篇</h2></div>
