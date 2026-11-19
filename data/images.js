@@ -1,4 +1,4 @@
-/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 130 篇）。
+/* 自動產生，請勿手改。由 tools/build-images.mjs 依 images/psalms/ 內的 psalm-NNN-*.webp 產生（共 150 篇）。
  * src 是原圖（分享圖用），m 是中圖（結果頁、讀全文），s 是小圖（我的詩篇）。沒有縮圖時網站會改用原圖。
  * 只有這裡列出的篇章會顯示插畫；其他篇章一律用中性佔位，不推測檔名。
  * 新增插畫：把 webp 上傳到 images/psalms/ 就好，推送後 GitHub 會自動重新產生這個檔案和縮圖並部署。 */
@@ -132,5 +132,25 @@ window.PSALM_IMAGES = {
   127: {"src": "images/psalms/psalm-127-restful-home.webp", "w": 1536, "h": 1024},
   128: {"src": "images/psalms/psalm-128-blessings-at-the-table.webp", "w": 1536, "h": 1024},
   129: {"src": "images/psalms/psalm-129-scars-not-the-ending.webp", "w": 1536, "h": 1024},
-  130: {"src": "images/psalms/psalm-130-before-the-dawn.webp", "w": 1536, "h": 1024}
+  130: {"src": "images/psalms/psalm-130-before-the-dawn.webp", "w": 1536, "h": 1024},
+  131: {"src": "images/psalms/psalm-131-gently-held-world.webp", "w": 1536, "h": 1024},
+  132: {"src": "images/psalms/psalm-132-floating-sanctuary.webp", "w": 1536, "h": 1024},
+  133: {"src": "images/psalms/psalm-133-flowing-blessing.webp", "w": 1536, "h": 1024},
+  134: {"src": "images/psalms/psalm-134-midnight-lightwell.webp", "w": 1536, "h": 1024},
+  135: {"src": "images/psalms/psalm-135-world-turned-upside-down.webp", "w": 1254, "h": 1254},
+  136: {"src": "images/psalms/psalm-136-endless-golden-river.webp", "w": 1536, "h": 1024},
+  137: {"src": "images/psalms/psalm-137-song-on-the-willow.webp", "w": 1536, "h": 1024},
+  138: {"src": "images/psalms/psalm-138-upside-down-sky.webp", "w": 1536, "h": 1024},
+  139: {"src": "images/psalms/psalm-139-woven-universe.webp", "w": 1536, "h": 1024},
+  140: {"src": "images/psalms/psalm-140-shelter-in-thorn-rain.webp", "w": 1536, "h": 1024},
+  141: {"src": "images/psalms/psalm-141-floating-incense.webp", "w": 1536, "h": 1024},
+  142: {"src": "images/psalms/psalm-142-cry-inside-the-cave.webp", "w": 1536, "h": 1024},
+  143: {"src": "images/psalms/psalm-143-hands-in-parched-land.webp", "w": 1536, "h": 1024},
+  144: {"src": "images/psalms/psalm-144-shield-garden.webp", "w": 1536, "h": 1024},
+  145: {"src": "images/psalms/psalm-145-all-creation-looks-up.webp", "w": 1536, "h": 1024},
+  146: {"src": "images/psalms/psalm-146-world-opens-again.webp", "w": 1536, "h": 1024},
+  147: {"src": "images/psalms/psalm-147-star-scarf.webp", "w": 1536, "h": 1024},
+  148: {"src": "images/psalms/psalm-148-all-creation-sings.webp", "w": 1536, "h": 1024},
+  149: {"src": "images/psalms/psalm-149-let-joy-dance.webp", "w": 1536, "h": 1024},
+  150: {"src": "images/psalms/psalm-150-all-that-breathes-praise.webp", "w": 1536, "h": 1024}
 };
