@@ -514,6 +514,7 @@
     // 「選到」指的是測驗結果或從共鳴點開，單純讀全文不算；依日期由新到舊
     const picked = [...new Set(loadCol().filter((x) => x.n === n && (x.how || []).some((h) => h === 'result' || h === 'near')).map((x) => x.day))].sort().reverse();
     if (!S) { $('reader').innerHTML = '<p>經文資料載入中，請稍候再試。</p>'; return; }
+    const kept = keptVerse(n);
     let hits = anchorVerses(p.anchor, n);
     const last = S.verses.reduce((m, v) => Math.max(m, +v.v.split('-').pop()), 0);
     if (hits.size >= last) hits = new Set(); // 錨點涵蓋整篇時不必標示
@@ -523,7 +524,7 @@
       for (let k = a; k <= (b || a); k++) if (hits.has(k)) isAnchor = true;
       const gap = v.lines.includes('') ? ' gap' : '';
       const lines = v.lines.filter((l) => l !== '').map((l) => `<span class="ln">${esc(l)}</span>`).join('');
-      return `<p class="verse${isAnchor ? ' anchor' : ''}${gap}"><span class="vn">${v.v}</span>${lines}</p>`;
+      return `<p class="verse${isAnchor ? ' anchor' : ''}${gap}${kept && kept.v === v.v ? ' kept' : ''}" data-v="${esc(v.v)}" tabindex="0" role="button" aria-label="詩篇 ${n}:${esc(v.v)}，點一下可以記住、複製或做成分享圖"><span class="vn">${v.v}</span>${lines}</p>`;
     }).join('');
     $('reader').innerHTML = `
       <figure class="illus" id="read-book"><img id="read-img" alt="" decoding="async" width="1254" height="1254"></figure>
@@ -531,14 +532,93 @@
       <h1 tabindex="-1" id="read-title">詩篇 第 ${n} 篇</h1>
       ${S.title ? `<p class="sup">${esc(S.title)}</p>` : ''}
       ${picked.length ? `<p class="read-dates">${picked.length === 1 ? `你在 <b>${esc(dayLabel(picked[0]))}</b> 選到這一篇` : `你選到這一篇的日子<br>${picked.map((d) => `<b>${esc(dayLabel(d))}</b>`).join('、')}`}</p>` : ''}
+      <div id="keep-card">${keepCardHTML(n, S, kept)}</div>
       ${hits.size ? `<p class="anchor-note">底色標示的是這次推薦的<mark>經文錨點</mark>：詩篇 ${esc(p.anchor)}</p>` : ''}
-      <div class="verses">${vhtml}</div>
+      <p class="keep-hint">${icon('i-bookmark')}點一下任何一節，可以記住、複製或做成分享圖</p>
+      <div class="verses" id="verses">${vhtml}</div>
       ${S.notes.length ? `<div class="footnotes">${S.notes.map((f) => `<p>${esc(f.ref)}　${esc(f.text)}</p>`).join('')}</div>` : ''}
       <p class="source">經文：《新標點和合本》神版，詩篇。</p>`;
     illus($('read-book'), $('read-img'), n);
     applyReadPrefs();
+    verseTools(n, S);
     $('read-title').focus({ preventScroll: true });
   }
+  /* ---------- 今天想記住的一節經文：選一節 → 記住／複製／分享圖 ---------- */
+  const verseText = (S, v) => { const x = S.verses.find((y) => y.v === v); return x ? x.lines.filter((l) => l).join('') : ''; };
+  /** 這一篇最近一次記住的經文：{ v, day } 或 null */
+  function keptVerse(n) {
+    const x = loadCol().filter((r) => r.n === n && r.keep).sort((a, b) => (b.day > a.day ? 1 : b.day < a.day ? -1 : b.t - a.t))[0];
+    return x ? { v: x.keep, day: x.day } : null;
+  }
+  function keepCardHTML(n, S, kept) {
+    if (!kept) return '';
+    const text = verseText(S, kept.v);
+    if (!text) return '';
+    const when = kept.day === dayKey() ? '今天想記住的經文' : `你在 ${dayLabel(kept.day)} 記住的經文`;
+    return `<div class="keep-card"><p class="keep-k">${icon('i-bookmark')}${esc(when)}</p><p class="keep-t">${esc(text)}</p><p class="keep-r">詩篇 ${n}:${esc(kept.v)}</p></div>`;
+  }
+  /** 把某一節存成「今天記住的經文」。同一篇同一天只留一節；v 為 null 表示取消。 */
+  function setKeep(n, v) {
+    const a = loadCol(), day = dayKey();
+    let x = a.find((r) => r.n === n && r.day === day);
+    if (!x) { x = { n, day, t: Date.now(), how: ['read'] }; a.unshift(x); }
+    if (v) x.keep = v; else delete x.keep;
+    return saveCol(a);
+  }
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* 改用舊方法 */ }
+    try {
+      const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+      document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok;
+    } catch (e) { return false; }
+  }
+  let verseSel = null;
+  function verseTools(n, S) {
+    const bar = $('verse-bar'), box = $('verses');
+    const close = () => { if (verseSel) verseSel.classList.remove('sel'); verseSel = null; bar.classList.remove('on'); bar.setAttribute('aria-hidden', 'true'); };
+    close();
+    const keptNow = () => { const k = loadCol().find((r) => r.n === n && r.day === dayKey()); return k && k.keep; };
+    const sync = () => {
+      const v = verseSel && verseSel.dataset.v, on = v && keptNow() === v;
+      $('vb-ref').textContent = v ? `詩篇 ${n}:${v}` : '';
+      $('vb-keep').setAttribute('aria-pressed', on ? 'true' : 'false');
+      $('vb-keep').querySelector('span').textContent = on ? '已記住' : '記住這節';
+    };
+    const pick = (el) => {
+      if (verseSel === el) return close();
+      if (verseSel) verseSel.classList.remove('sel');
+      verseSel = el; el.classList.add('sel');
+      bar.classList.add('on'); bar.setAttribute('aria-hidden', 'false');
+      sync();
+    };
+    box.onclick = (e) => { const el = e.target.closest('.verse'); if (el) pick(el); };
+    box.onkeydown = (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('verse')) { e.preventDefault(); pick(e.target); } };
+    $('vb-close').onclick = close;
+    $('vb-keep').onclick = () => {
+      if (!verseSel) return;
+      const v = verseSel.dataset.v, was = keptNow();
+      const ok = setKeep(n, was === v ? null : v);
+      if (!ok) return toast('這個瀏覽器目前無法保存紀錄');
+      box.querySelectorAll('.verse.kept').forEach((x) => x.classList.remove('kept'));
+      if (was !== v) verseSel.classList.add('kept');
+      $('keep-card').innerHTML = keepCardHTML(n, S, keptVerse(n));
+      toast(was === v ? '已取消記住這節' : was ? `已改成記住第 ${v} 節，收在我的詩篇` : '記住了，收在我的詩篇');
+      sync();
+    };
+    $('vb-copy').onclick = async () => {
+      if (!verseSel) return;
+      const v = verseSel.dataset.v;
+      const ok = await copyText(`${verseText(S, v)}\n（詩篇 ${n}:${v}，新標點和合本）`);
+      toast(ok ? '經文已複製' : '這個瀏覽器不能自動複製，請長按經文選取');
+    };
+    $('vb-share').onclick = () => {
+      if (!verseSel) return;
+      const v = verseSel.dataset.v;
+      Share.open({ kind: 'verse', psalm: byNum[n], verse: { text: verseText(S, v), ref: `詩篇 ${n}:${v}` }, img: C.illustration(n) });
+    };
+  }
+  window.addEventListener('hashchange', () => { const bar = $('verse-bar'); if (bar) { bar.classList.remove('on'); bar.setAttribute('aria-hidden', 'true'); } verseSel = null; });
+
   const readPrefs = { size: 19, vnum: true };
   try { Object.assign(readPrefs, JSON.parse(localStorage.getItem('psalm-read') || '{}')); } catch (e) { /* 忽略 */ }
   function applyReadPrefs() {
@@ -577,6 +657,13 @@
   }
   /** 小圖（我的詩篇用）：有縮圖就用縮圖，載不到再改用原圖。 */
   const smallImg = (img) => `<img src="${esc(img.s || img.src)}" alt="" loading="lazy" decoding="async"${img.s ? ` onerror="this.onerror=null;this.src='${esc(img.src)}'"` : ''}>`;
+  /** 我的詩篇：那天記住的經文 */
+  function recKeep(x) {
+    if (!x.keep) return '';
+    const S = window.SCRIPTURE && window.SCRIPTURE[x.n];
+    const text = S ? verseText(S, x.keep) : '';
+    return text ? `<a class="rec-keep" href="#/read/${x.n}">${icon('i-bookmark')}<span><span class="kt">${esc(text)}</span><span class="kr">詩篇 ${x.n}:${esc(x.keep)}</span></span></a>` : '';
+  }
   /** 我的詩篇：每筆紀錄下方的插畫小圖與創作意義（點開才顯示）。 */
   function recMeaning(n) {
     const a = artNote(n), img = C.illustration(n);
@@ -589,7 +676,7 @@
    */
   const HOW_BIT = { result: 1, near: 2, read: 4 };
   function backupCode() {
-    const rows = loadCol().map((x) => [x.n, +x.day.replace(/-/g, ''), (x.how || []).reduce((m, h) => m | (HOW_BIT[h] || 0), 0)]);
+    const rows = loadCol().map((x) => { const r = [x.n, +x.day.replace(/-/g, ''), (x.how || []).reduce((m, h) => m | (HOW_BIT[h] || 0), 0)]; if (x.keep) r.push(x.keep); return r; });
     return 'PSALM1:' + btoa(JSON.stringify(rows));
   }
   function restoreCode(text) {
@@ -601,13 +688,14 @@
     const a = loadCol(); let added = 0;
     for (const r of rows) {
       if (!Array.isArray(r)) continue;
-      const [n, d, bits] = r, ds = String(d);
+      const [n, d, bits, keep] = r, ds = String(d);
       if (!byNum[n] || !/^\d{8}$/.test(ds)) continue;
       const day = `${ds.slice(0, 4)}-${ds.slice(4, 6)}-${ds.slice(6, 8)}`;
       const how = Object.keys(HOW_BIT).filter((h) => bits & HOW_BIT[h]);
       const ex = a.find((x) => x.n === n && x.day === day);
-      if (ex) ex.how = [...new Set([...(ex.how || []), ...how])];
-      else { a.push({ n, day, t: new Date(`${day}T12:00:00`).getTime() - n, how: how.length ? how : ['result'] }); added++; }
+      const k = typeof keep === 'string' && /^\d+(-\d+)?$/.test(keep) ? keep : null;
+      if (ex) { ex.how = [...new Set([...(ex.how || []), ...how])]; if (k && !ex.keep) ex.keep = k; }
+      else { const x = { n, day, t: new Date(`${day}T12:00:00`).getTime() - n, how: how.length ? how : ['result'] }; if (k) x.keep = k; a.push(x); added++; }
     }
     a.sort((x, y) => (y.day > x.day ? 1 : y.day < x.day ? -1 : y.t - x.t));
     if (!saveCol(a)) return { ok: false, msg: '這個瀏覽器目前無法保存紀錄' };
@@ -642,6 +730,7 @@
           <ul class="recs">${g.items.map((x) => { const p = byNum[x.n]; return `<li>
             <a class="rec" href="#/read/${x.n}"><span class="n">${x.n}</span><span class="t">${esc(p.shortTitle || p.title)}<small>${esc(stageName(p.stage))}・${(x.how || []).map((h) => HOW[h] || '').filter(Boolean).join('・')}</small></span></a>
             <button class="icon-btn rec-del" type="button" data-t="${x.t}" aria-label="刪除這筆紀錄：詩篇第 ${x.n} 篇，${esc(dayLabel(x.day))}"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+            ${recKeep(x)}
             ${recMeaning(x.n)}
           </li>`; }).join('')}</ul>`).join('')
         : `<p class="why-intro">還沒有紀錄。做完一次測驗，結果的詩篇就會收進這裡。</p><div class="btn-row"><a class="btn btn-primary" href="#/">去做測驗</a></div>`}

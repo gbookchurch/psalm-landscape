@@ -65,6 +65,7 @@ window.COPY = {
 
   /* 分享圖底部：左邊一句話、右邊網址 */
   shareFooterLeft: '推薦這一篇詩篇',
+  verseShareTitle: '今天想記住的經文',
   shareUrl: 'gbookchurch.github.io/psalm-landscape',
 
   /* 首頁：三個重點（短版，排成一列） */

@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
 <!-- 每次更新網站時，把下面所有 ?v= 後面的版本號一起改掉（例如 0.18 改成 0.19），瀏覽器就會載入新版，不會用到快取的舊檔 -->
-<link rel="stylesheet" href="css/style.css?v=0.32">
+<link rel="stylesheet" href="css/style.css?v=0.33">
 </head>
 <body>
 <a class="skip-link" href="#main">跳到主要內容</a>
@@ -45,6 +45,8 @@
     <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="1.8" fill="currentColor"/><path d="M4 17l5-4.5 3.5 3 3-2.5L20 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
     <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5M12 6.5C14 5 17 4.5 20.5 5v13c-3.5-.5-6.5 0-8.5 1.5M12 6.5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
     <symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.5a1.5 1.5 0 013 0V11m0-1.5a1.5 1.5 0 013 0V12m0-1a1.5 1.5 0 013 0v4c0 3-2 5.5-5.5 5.5-2.2 0-3.6-.9-4.8-2.6L5 15.2a1.5 1.5 0 012.4-1.8L9 15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 3.5h10a1 1 0 011 1v16l-6-4-6 4v-16a1 1 0 011-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 5.5v-1a1 1 0 00-1-1h-9a1 1 0 00-1 1v11a1 1 0 001 1h1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   </defs>
@@ -64,6 +66,17 @@
   </div>
 </header>
 <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+<div class="verse-bar" id="verse-bar" aria-hidden="true" role="toolbar" aria-label="這一節經文">
+  <div class="verse-bar-inner">
+    <p class="vb-ref" id="vb-ref"></p>
+    <button class="icon-btn vb-close" id="vb-close" type="button" aria-label="取消選取"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    <div class="vb-actions">
+      <button class="vb-btn vb-keep" id="vb-keep" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-bookmark"/></svg><span>記住這節</span></button>
+      <button class="vb-btn" id="vb-copy" type="button"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span>複製</span></button>
+      <button class="vb-btn" id="vb-share" type="button"><svg class="ic" aria-hidden="true"><use href="#i-image"/></svg><span>分享圖</span></button>
+    </div>
+  </div>
+</div>
 
 <main id="main" tabindex="-1">
 
@@ -194,17 +207,17 @@
   </div>
 </div>
 
-<script src="data/config.js?v=0.32"></script>
-<script src="data/copy.js?v=0.32"></script>
-<script src="data/psalms.js?v=0.32"></script>
-<script src="data/questions.js?v=0.32"></script>
-<script src="data/images.js?v=0.32"></script>
-<script src="data/illustration-notes.js?v=0.32"></script>
-<script src="data/scripture.js?v=0.32" defer></script>
-<script src="js/scoring.js?v=0.32"></script>
-<script src="js/text.js?v=0.32"></script>
-<script src="js/art.js?v=0.32"></script>
-<script src="js/share.js?v=0.32"></script>
-<script src="js/app.js?v=0.32"></script>
+<script src="data/config.js?v=0.33"></script>
+<script src="data/copy.js?v=0.33"></script>
+<script src="data/psalms.js?v=0.33"></script>
+<script src="data/questions.js?v=0.33"></script>
+<script src="data/images.js?v=0.33"></script>
+<script src="data/illustration-notes.js?v=0.33"></script>
+<script src="data/scripture.js?v=0.33" defer></script>
+<script src="js/scoring.js?v=0.33"></script>
+<script src="js/text.js?v=0.33"></script>
+<script src="js/art.js?v=0.33"></script>
+<script src="js/share.js?v=0.33"></script>
+<script src="js/app.js?v=0.33"></script>
 </body>
 </html>

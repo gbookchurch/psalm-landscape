@@ -343,18 +343,73 @@
     footer(c, 1802, 24);
   }
 
+  /* ---------- 經文分享圖（讀全文頁「今天想記住的一節」） ---------- */
+  async function verseCard(c, d, H) {
+    const story = H > 1500, k = story ? 34 / 30 : 1;
+    // 頁首：品牌圈＋教會小本本（左）、今天想記住的經文（右）
+    const cy = story ? 154 : 82;
+    { const r = 9 * k; let x = M + r;
+      for (const col of DOTS) { c.fillStyle = col; c.beginPath(); c.arc(x, cy, r, 0, Math.PI * 2); c.fill(); x += r * 2 + 8 * k; }
+      c.textBaseline = 'middle'; c.textAlign = 'left'; c.fillStyle = INK;
+      serif(c, 900, 30 * k); spacing(c, 30 * k * 0.08); c.fillText(T().brand, x + 10 * k - r, cy + 1);
+      sans(c, 700, 24 * k); spacing(c, 24 * k * 0.22); c.fillStyle = SOFT; c.textAlign = 'right';
+      c.fillText(T().verseShareTitle || '今天想記住的經文', R + 24 * k * 0.22, cy + 1);
+      spacing(c, 0); c.textBaseline = 'alphabetic'; }
+    const footY = story ? 1802 : 1288;
+    // 插畫（有正式插畫才放）
+    let top = cy + (story ? 90 : 64);
+    if (d.img) {
+      const s = story ? 640 : 400;
+      await art(c, { ...d, stage: '' }, (W - s) / 2, top, s);
+      top += s + (story ? 30 : 16);
+    } else top += story ? 40 : 10;
+    // 經文：置中，從大字開始試，放得下為止
+    const bottom = footY - (story ? 230 : 170), maxW = R - M - 40;
+    let lines = [], size = 64, lh = 0;
+    for (const sz of (story ? [68, 62, 56, 50, 46, 42, 38] : [60, 54, 48, 44, 40, 36, 32])) {
+      serif(c, 700, sz);
+      const ls = verseWrap(c, d.verse.text.replace(/[，；：、]$/, '……'), maxW, 14);
+      if (ls.length * sz * 1.62 <= bottom - top || sz <= 32) { lines = ls; size = sz; lh = sz * 1.62; break; }
+    }
+    const refH = (story ? 34 : 22) + size * 0.9 - lh + lh + 60 * k; // 經文下方的短線與出處
+    const blockH = lines.length * lh + refH;
+    let y = top + Math.max(0, (bottom + (story ? 120 : 80) - top - blockH) / 2) + size;
+    c.textAlign = 'center'; c.fillStyle = INK; serif(c, 700, size); spacing(c, size * 0.04);
+    for (const l of lines) { c.fillText(l, W / 2, y); y += lh; }
+    spacing(c, 0);
+    // 出處
+    y += (story ? 34 : 22) - lh + size * 0.9;
+    c.fillStyle = ORANGE; c.fillRect(W / 2 - 28 * k, y, 56 * k, 4 * k);
+    sans(c, 700, 30 * k); spacing(c, 30 * k * 0.12); c.fillStyle = INK;
+    c.fillText(d.verse.ref, W / 2 + 30 * k * 0.06, y + 56 * k); spacing(c, 0);
+    // 頁尾：經文版本（左）、網址（右）
+    const fs = story ? 24 : 22;
+    c.textBaseline = 'alphabetic'; c.fillStyle = SOFT;
+    sans(c, 500, fs); c.textAlign = 'left'; c.fillText('經文：《新標點和合本》神版', M, footY);
+    c.textAlign = 'right'; c.fillText(T().shareUrl || '', R, footY);
+  }
+
   async function draw(d) {
     const my = ++drawing;
     const [, H] = SIZES[opts.ratio];
     const off = document.createElement('canvas'); off.width = W; off.height = H;
     const c = off.getContext('2d');
+    if (d.kind === 'verse') {
+      await fontsReady(T().brand + (T().verseShareTitle || '今天想記住的經文') + d.verse.text + d.verse.ref + '「經文：《新標點和合本》神版' + (T().shareUrl || '') + '0123456789:-');
+      paper(c, H);
+      await verseCard(c, d, H);
+      return finish(off, my, H);
+    }
     const name = d.stage.replace(/^\d\s*/, '');
     const allText = T().brand + T().shareTitle + name + d.stageLine + d.psalm.title + '詩篇第篇八個面向，我和這篇詩的位置' + (d.verse ? d.verse.text + d.verse.ref : '') + d.tags.join('') + (T().shareFooterLeft || '') + (T().shareUrl || '') + Object.values(T().dimNames).join('') + Object.values(T().dimEnds).flat().join('') + '0123456789:-・…';
     await fontsReady(allText);
     paper(c, H);
     const story = opts.ratio === 'story', scene = opts.style === 'scene';
     await (scene ? (story ? storyScene : postScene) : (story ? storyData : postData))(c, d, name);
+    return finish(off, my, H);
+  }
 
+  async function finish(off, my, H) {
     if (my !== drawing) return; // 使用者已切換樣式
     const cv = $('share-canvas'); cv.width = W; cv.height = H; cv.getContext('2d').drawImage(off, 0, 0);
     lastBlob = await new Promise((r) => off.toBlob(r, 'image/png'));
@@ -375,7 +430,16 @@
       ? '長按圖片，就能<b>儲存到相簿</b>或傳給朋友'
       : '圖片上按右鍵可以另存，或按下面的<b>下載圖片</b>';
   }
-  function open(d) { data = d; lastFocus = document.activeElement; $('share-sheet').hidden = false; tip(); loading(); $('share-close').focus(); draw(d); }
+  function open(d) {
+    data = d; lastFocus = document.activeElement;
+    const verse = d.kind === 'verse';
+    $('share-title').textContent = verse ? '經文分享圖' : '製作分享圖';
+    const styleSeg = document.querySelector('#share-sheet [data-style]').parentElement;
+    styleSeg.hidden = verse;
+    $('share-note').textContent = verse ? '圖上只會有這一節經文和出處。'
+      : opts.style === 'data' ? '數據版會顯示你和這篇詩在八個面向的大致位置，但不會出現題目或你的選項。' : '分享圖只包含詩篇與光景，不會出現你的作答內容。';
+    $('share-sheet').hidden = false; tip(); loading(); $('share-close').focus(); draw(d);
+  }
   function close() { $('share-sheet').hidden = true; if (lastFocus) lastFocus.focus(); }
   function setRadio(group, key, val) { group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-checked', b.dataset[key] === val)); }
   document.querySelectorAll('#share-sheet [data-style]').forEach((b) => (b.onclick = () => {
@@ -387,7 +451,9 @@
   $('share-close').onclick = close;
   $('share-sheet').addEventListener('click', (e) => { if (e.target.id === 'share-sheet') close(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('share-sheet').hidden) close(); });
-  const fname = () => `我的生命光景-詩篇${data.psalm.psalm}-${opts.style === 'data' ? '數據' : '風景'}-${opts.ratio === 'story' ? '9x16' : '4x5'}.png`;
+  const fname = () => data.kind === 'verse'
+    ? `今天想記住的經文-${data.verse.ref.replace(/[ :]/g, (m) => (m === ':' ? '-' : ''))}-${opts.ratio === 'story' ? '9x16' : '4x5'}.png`
+    : `我的生命光景-詩篇${data.psalm.psalm}-${opts.style === 'data' ? '數據' : '風景'}-${opts.ratio === 'story' ? '9x16' : '4x5'}.png`;
   $('share-save').onclick = () => {
     if (!lastBlob) return;
     const a = document.createElement('a'); a.href = URL.createObjectURL(lastBlob); a.download = fname();

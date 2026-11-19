@@ -492,3 +492,38 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 .dim-say{font-size:16px;line-height:1.85;text-wrap:pretty}
 .dim-say .dim-you{display:block;font-weight:700;color:var(--ink)}
 .dim-say .dim-psalm{display:block;margin-top:4px;font-weight:400;color:var(--soft)}
+
+/* web-0.33：今天想記住的一節經文 */
+.seg[hidden]{display:none}
+.reader .keep-hint{display:flex;align-items:center;justify-content:center;gap:6px;margin:14px 0 0;font-size:13px;color:var(--soft)}
+.reader .keep-hint .ic{width:16px;height:16px;color:var(--orange-text)}
+.verse{cursor:pointer;transition:background-color .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.verse:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.verse.sel{background:#FFF0C2;box-shadow:inset 0 0 0 2px var(--yellow)}
+.verse.kept::after{content:"";position:absolute;left:-.15em;top:.55em;width:.5em;height:.7em;background:var(--orange-btn);clip-path:polygon(0 0,100% 0,100% 100%,50% 72%,0 100%)}
+.reader.no-vnum .verse{padding-left:.9em}
+.keep-card{margin:20px 0 0;padding:18px 20px 16px;border-radius:var(--r-md);background:var(--paper-hi);box-shadow:0 1px 2px rgba(23,64,42,.08);border-left:4px solid var(--orange-btn);text-align:left}
+.keep-card .keep-k{display:flex;align-items:center;gap:6px;margin:0;font-size:12.5px;font-weight:700;letter-spacing:.12em;color:var(--orange-text)}
+.keep-card .keep-k .ic{width:16px;height:16px}
+.keep-card .keep-t{margin:8px 0 0;font-family:var(--serif);font-size:18px;font-weight:700;line-height:1.85;color:var(--ink)}
+.keep-card .keep-r{margin:6px 0 0;font-size:13px;color:var(--soft)}
+/* 選取經文後，底部浮出的工具列 */
+.verse-bar{position:fixed;left:0;right:0;bottom:0;z-index:35;padding:0 12px calc(12px + env(safe-area-inset-bottom));transform:translateY(120%);transition:transform .22s ease;pointer-events:none}
+.verse-bar.on{transform:none;pointer-events:auto}
+.verse-bar-inner{position:relative;max-width:520px;margin:0 auto;padding:12px 12px 12px;border-radius:var(--r-lg);background:var(--ink);color:var(--paper-hi);box-shadow:0 10px 30px rgba(23,64,42,.3)}
+.vb-ref{margin:0 44px 10px 6px;font-size:13px;font-weight:700;letter-spacing:.1em;color:#CFE0C8}
+.vb-close{position:absolute;top:4px;right:4px;color:var(--paper-hi)}
+.vb-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vb-btn{display:flex;align-items:center;justify-content:center;gap:6px;min-height:48px;padding:0 6px;border:0;border-radius:var(--r-sm);background:rgba(255,253,247,.12);color:var(--paper-hi);font:700 15px/1 var(--sans);cursor:pointer}
+.vb-btn .ic{width:19px;height:19px}
+.vb-btn:hover{background:rgba(255,253,247,.2)}
+.vb-keep{background:var(--orange-btn)}
+.vb-keep:hover{background:#C94A06}
+.vb-keep[aria-pressed="true"]{background:var(--yellow);color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.verse-bar{transition:none}}
+/* 我的詩篇：那天記住的經文 */
+.rec-keep{display:flex;gap:8px;min-width:0;margin:0 0 12px 74px;padding:10px 12px;border-radius:var(--r-sm);background:#FFF0C2;color:var(--ink);text-decoration:none;flex:0 0 calc(100% - 74px)}
+.rec-keep .ic{flex:none;width:16px;height:16px;margin-top:4px;color:var(--orange-text)}
+.rec-keep .kt{display:block;font-family:var(--serif);font-size:15px;font-weight:700;line-height:1.7}
+.rec-keep .kr{display:block;margin-top:2px;font-size:12px;color:var(--soft)}
+body:has(.verse-bar.on) .toast{bottom:calc(150px + env(safe-area-inset-bottom))}
