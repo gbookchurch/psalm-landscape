@@ -461,3 +461,7 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 .view-quiz .opt{min-height:52px;padding-top:8px;padding-bottom:8px}
 .view-quiz .btn-skip{margin-top:6px}
 .quiz-art{height:clamp(150px,26vh,190px)}
+
+/* web-0.26：光景卡片放完整光景說明（about），通用說明（say）改成小字 */
+.journey-about{margin:20px 4px 0;padding-top:16px;border-top:2px solid var(--line);font-family:var(--serif);font-size:16.5px;line-height:1.95;color:var(--ink);text-wrap:pretty}
+.journey-about+.journey-say{margin-top:12px;padding-top:0;border-top:0;font-size:14px}

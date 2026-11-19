@@ -396,6 +396,7 @@
         <div class="journey-track">
           <ol aria-label="九種生命光景，你目前在${esc(name)}">${Object.keys(T.stages).map((k) => `<li${k === p.stage ? ' class="on" aria-current="true"' : ''}>${esc(stageName(k))}</li>`).join('')}</ol>
         </div>
+        ${st.about ? `<p class="journey-about">${esc(st.about)}</p>` : ''}
         <p class="journey-say">${esc(journeySay(p.stage))}</p>
       </section>
 
