@@ -487,3 +487,8 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 .r-hero .tags li{display:block;padding:1px 10px;border-radius:var(--r-xs);background:#F3E4C4;color:var(--soft)}
 .r-hero .tags li+li::before{content:none}
 .r-hero .tags{flex-direction:row}
+
+/* web-0.32：推薦理由改成兩句（處境＋詩篇的回應） */
+.dim-say{font-size:16px;line-height:1.85;text-wrap:pretty}
+.dim-say .dim-you{display:block;font-weight:700;color:var(--ink)}
+.dim-say .dim-psalm{display:block;margin-top:4px;font-weight:400;color:var(--soft)}

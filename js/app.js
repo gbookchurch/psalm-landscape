@@ -272,8 +272,18 @@
       .filter((r) => !used.has(r.d) && Math.abs(r.x - r.y) <= 0.75)
       .sort((a, b) => Math.abs(a.x - a.y) - Math.abs(b.x - b.y))
       .slice(0, 3 - same.length)
-      .map((r) => ({ ...r, say: T.reasonSayNear }));
+      .map((r) => ({ ...r, say: Math.abs(r.x) >= 0.25 && Math.sign(r.x) === Math.sign(r.y) ? (T.reasonSay[r.d] || [])[r.x > 0 ? 1 : 0] : '' }));
+    // 「有一些呼應」的通用句最多出現一次，避免同一段話重複
+    let nearUsed = false;
+    close.forEach((r) => { if (!r.say) { r.say = nearUsed ? '' : T.reasonSayNear; nearUsed = true; } });
     return [...same, ...close];
+  }
+  /** 推薦理由：第一句（你的處境）粗體，後面（詩篇的回應）一般字重 */
+  function sayHTML(say) {
+    if (!say) return '';
+    const i = say.indexOf('。');
+    if (i < 0 || i === say.length - 1) return `<p class="dim-say">${esc(say)}</p>`;
+    return `<p class="dim-say"><span class="dim-you">${esc(say.slice(0, i + 1))}</span><span class="dim-psalm">${esc(say.slice(i + 1))}</span></p>`;
   }
   const pct = (v) => Math.max(0, Math.min(100, ((v + 2) / 4) * 100));
   /** 位置條：實心點是使用者，圓圈是這篇詩。 */
@@ -403,7 +413,7 @@
 
       <section class="r-block" aria-labelledby="h-why">
         <div class="r-head"><span class="no" aria-hidden="true">貳</span><h2 id="h-why">為什麼是這一篇</h2></div>
-        ${rs.length ? `${rs.map((r) => `<div class="dimrow"><p class="dim-label">${esc((T.dimPlain || T.dimNames)[r.d])}</p><p class="dim-say">${esc(r.say)}</p>${barHTML(r.d, r.x, r.y)}</div>`).join('')}` : '<p class="why-intro">這篇詩是八個面向加總起來和你最接近的一篇。</p>'}
+        ${rs.length ? `${rs.map((r) => `<div class="dimrow"><p class="dim-label">${esc((T.dimPlain || T.dimNames)[r.d])}</p>${sayHTML(r.say)}${barHTML(r.d, r.x, r.y)}</div>`).join('')}` : '<p class="why-intro">這篇詩是八個面向加總起來和你最接近的一篇。</p>'}
         <div class="why-foot">
           <ul class="legend" aria-hidden="true"><li><span class="k-dot"></span>你</li><li><span class="k-ring"></span>詩篇 ${n}</li></ul>
         </div>
