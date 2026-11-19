@@ -101,7 +101,7 @@
     if (i === 1) return c.start || '';
     return '';
   }
-  /* 題目插畫：放在右上角（原本三個色塊的位置），換題時淡入，並先載好下一題的圖 */
+  /* 題目插畫：放在題目上方、盡量放大，換題時淡入，並先載好下一題的圖 */
   const qArtSrc = (q) => {
     const A = C.questionArt;
     const m = q && /^Q(\d+)$/.exec(q.id);
@@ -114,13 +114,13 @@
     if (qArtFor === q.id) return;
     qArtFor = q.id;
     const view = $('view-quiz');
-    const off = () => { fig.hidden = true; view.classList.remove('has-art'); document.querySelector('.quiz-deco').hidden = false; };
+    const off = () => { fig.hidden = true; view.classList.remove('has-art'); };
     if (!src) { off(); return; }
     fig.classList.remove('in');
     const pre = new Image();
     pre.onload = () => {
       if (qArtFor !== q.id) return;
-      img.src = src; fig.hidden = false; view.classList.add('has-art'); document.querySelector('.quiz-deco').hidden = true;
+      img.src = src; fig.hidden = false; view.classList.add('has-art');
       requestAnimationFrame(() => fig.classList.add('in'));
     };
     pre.onerror = () => { if (qArtFor === q.id) off(); };
@@ -136,7 +136,7 @@
     const cur = state.answers[q.id];
     $('quiz-sr').textContent = `第 ${state.step + 1} 題，共 ${total} 題`;
     $('quiz-num').textContent = state.step + 1;
-    $('quiz-of').textContent = `／ ${total}`;
+    $('quiz-of').textContent = `/ ${total}`;
     $('progress').setAttribute('aria-valuemax', total);
     $('progress').setAttribute('aria-valuenow', state.step + 1);
     $('progress').innerHTML = Array.from({ length: total }, (_, i) => `<i${i <= state.step ? ' class="on"' : ''}></i>`).join('');

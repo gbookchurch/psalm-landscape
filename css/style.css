@@ -436,19 +436,28 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 .r-details .journey-title{padding:0 4px}
 .journey-say{margin:20px 4px 0;padding-top:16px;border-top:2px solid var(--line);font-size:15px;line-height:1.9;color:var(--soft)}
 
-/* web-0.24：題目插畫，放在右上角原本色塊的位置；載不到圖時退回色塊 */
-.view-quiz{--qart:min(50vw,250px)}
-.quiz-art{position:absolute;z-index:0;top:50px;right:16px;width:var(--qart);height:150px;margin:0;display:flex;align-items:center;justify-content:flex-end;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .35s ease,transform .35s ease}
+/* web-0.25：答題頁精簡版頭。一列放關閉、進度、題號；插畫放大置中；小標與提示合成一行 */
+.view-quiz .quiz-top{height:48px;display:flex;align-items:center;gap:12px;margin-left:-12px}
+.view-quiz .progress{flex:1 1 auto;width:auto;max-width:none;margin:0;gap:3px}
+.view-quiz .progress i{height:4px}
+.view-quiz .quiz-count{flex:none;margin:0;gap:3px;font-family:var(--serif)}
+.view-quiz .quiz-count .num{font-size:20px;font-weight:900;line-height:1}
+.view-quiz .quiz-count .of{font-size:13px;font-weight:500}
+.quiz-art{display:flex;align-items:center;justify-content:center;height:clamp(150px,27vh,250px);margin:6px 0 0;opacity:0;transform:translateY(6px);transition:opacity .35s ease,transform .35s ease}
+.quiz-art[hidden]{display:none}
 .quiz-art.in{opacity:1;transform:none}
 .quiz-art img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;mix-blend-mode:multiply}
-/* 有插畫時，左邊的進度點和提示文字讓出右側空間 */
-.view-quiz.has-art .progress,
-.view-quiz.has-art .quiz-cheer{max-width:none;width:calc(100vw - var(--qart) - 16px - var(--pad) - 12px)}
-.view-quiz.has-art .progress{gap:3px}
-@media (min-width:560px){
-  .quiz-art{right:calc(50% - var(--maxw) / 2 + 16px)}
-  .view-quiz.has-art .progress,.view-quiz.has-art .quiz-cheer{width:calc(var(--maxw) - var(--qart) - 16px - var(--pad) - 12px)}
-}
+.quiz-meta{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:12px 0 0;min-height:20px}
+.quiz-meta .quiz-topic{margin:0;white-space:nowrap}
+.quiz-meta .quiz-cheer{margin:0;min-height:0;max-width:none;font-size:12.5px;line-height:1.4;color:var(--soft);text-align:right}
+.view-quiz .q-text{margin-top:8px;font-size:clamp(22px,6.4vw,26px);line-height:1.5}
+.view-quiz .options{margin-top:18px}
 @media (prefers-reduced-motion:reduce){.quiz-art{transition:none;transform:none}}
-.view-quiz>.wrap{position:relative;z-index:1}
-.view-quiz.has-art .quiz-cheer{text-wrap:pretty}
+/* 讓出空間給插畫：選項列稍微緊一點、間距縮小 */
+.quiz-art{height:clamp(140px,21vh,210px);margin-top:2px}
+.quiz-meta{margin-top:10px}
+.view-quiz .q-text{margin-top:6px}
+.view-quiz .options{margin-top:16px}
+.view-quiz .opt{min-height:52px;padding-top:8px;padding-bottom:8px}
+.view-quiz .btn-skip{margin-top:6px}
+.quiz-art{height:clamp(150px,26vh,190px)}
