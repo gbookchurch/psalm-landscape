@@ -329,14 +329,20 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 /* ---------- 分享圖面板 ---------- */
 .sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:rgba(23,64,42,.45)}
 .sheet-panel{width:100%;max-width:560px;max-height:94vh;max-height:94dvh;overflow:auto;padding:20px var(--pad) calc(24px + env(safe-area-inset-bottom));background:var(--paper);border-radius:24px 24px 0 0}
-.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .sheet-head h2{font-size:20px;letter-spacing:.06em}
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;margin-bottom:10px;padding:4px;border-radius:999px;background:#F1E4C6}
 .seg button{min-height:44px;border:0;border-radius:999px;background:none;color:var(--soft);font-size:14px;font-weight:500}
 .seg button[aria-checked="true"]{background:var(--paper-hi);color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(23,64,42,.12)}
-.share-preview{margin:14px auto 0;max-width:300px;border-radius:12px;overflow:hidden;box-shadow:0 8px 28px rgba(23,64,42,.16);background:var(--paper)}
-.share-preview canvas{display:block;width:100%;height:auto}
-.sheet .btn-row{margin-top:20px;justify-content:center}
+.share-preview{position:relative;display:flex;justify-content:center;align-items:center;margin:14px auto 0;min-height:200px}
+/* 真正的 <img>：手機長按可以儲存；高度限制在畫面一半左右，下面的提示和按鈕才看得到 */
+.share-preview img{display:block;width:auto;height:auto;max-width:100%;max-height:50vh;max-height:50dvh;border-radius:12px;box-shadow:0 8px 28px rgba(23,64,42,.18);background:var(--paper);-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
+.share-loading{margin:0;padding:80px 0;font-size:14px;color:var(--soft);letter-spacing:.08em}
+.share-tip{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px auto 0;padding:8px 14px;width:fit-content;max-width:100%;border-radius:999px;background:#FFF0C2;font-size:13.5px;line-height:1.5;color:var(--ink);white-space:nowrap}
+.share-tip .ic{flex:none;width:20px;height:20px;color:var(--orange-text)}
+.share-tip b{font-weight:700}
+.sheet .btn-row{margin-top:14px;justify-content:center;gap:10px}
+.sheet .btn-row .btn{min-height:50px}
 @media (min-width:640px){.sheet{align-items:center}.sheet-panel{border-radius:24px}}
 
 /* ---------- 較寬的螢幕 ---------- */
@@ -353,7 +359,8 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
   .btn,.opt,.btn-link{transition:background-color .15s,color .15s,border-color .15s}
 }
 @media print{
-  .topbar,.reader-bar,.r-cta,.end-actions,.podcast,.quiz-deco{display:none}
+  .topbar,.reader-bar,.r-cta,.end-actions,.podcast,.quiz-deco,.r-sticky{display:none}
+  .r-details{background:none;padding:0}
   body{background:#fff}
 }
 
@@ -364,3 +371,37 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
   .home-meta{margin-top:16px}
   .home-cta{padding-top:20px}
 }
+
+/* ── web-0.19 結果頁分區 ─────────────────────────────── */
+.r-cta{margin-top:30px}
+.cta-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:440px}
+.cta-row .btn{min-height:56px;padding:0 10px;gap:8px;font-size:16px;letter-spacing:.04em;white-space:nowrap}
+.cta-row .btn .ic{width:21px;height:21px}
+.btn-ink{background:var(--ink);color:var(--paper-hi)}
+.btn-ink:hover{background:#0F2E1E;color:var(--paper-hi)}
+.r-cta .saved-note{margin-top:10px}
+
+/* 下半部改成一整塊深一點的米色底，每一段各自是一張卡片 */
+.r-details{margin-top:44px;padding:28px 16px 30px;background:#F3E4C4;border-radius:28px 28px 0 0}
+.r-details .journey,
+.r-details .r-block{margin:0 0 14px;padding:24px 20px;background:var(--paper-hi);border-radius:20px;box-shadow:0 1px 2px rgba(23,64,42,.06)}
+.r-details .journey{padding:20px 14px 22px}
+.r-details .journey-title{margin-bottom:16px}
+.r-details .journey li::before{box-shadow:0 0 0 4px var(--paper-hi)}
+.r-details .journey li.on::before{box-shadow:0 0 0 5px var(--paper-hi)}
+.r-details .r-head{align-items:center;gap:10px;padding-bottom:0;margin-bottom:6px;border-bottom:0}
+.r-details .r-head .no{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:50%;background:var(--orange-btn);color:var(--paper-hi);font-size:14px;line-height:1}
+.r-details .r-head h2{font-size:20px}
+.r-details .r-body{margin-top:12px}
+/* 「這篇詩想對你說」是主要內容，用淡綠底和其他卡片區分 */
+.r-details .r-say{background:#E6EDDA}
+.r-details .r-say .r-body{font-family:var(--serif);font-size:17px;line-height:2}
+.r-details .r-end{margin:22px 4px 0;padding:0}
+.r-details .r-end .end-actions{margin-top:6px}
+
+/* 底部浮出的分享按鈕 */
+.r-sticky{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:center;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(255,247,232,.96) 60%,rgba(255,247,232,0));transform:translateY(110%);transition:transform .25s ease;pointer-events:none}
+.r-sticky.on{transform:none;pointer-events:auto}
+.r-sticky .btn{min-height:52px;padding:0 28px;gap:8px;box-shadow:0 6px 18px rgba(221,82,7,.28)}
+.r-sticky .btn .ic{width:20px;height:20px}
+@media (prefers-reduced-motion:reduce){.r-sticky{transition:none}}

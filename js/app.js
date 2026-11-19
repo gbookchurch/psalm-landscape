@@ -319,12 +319,15 @@
 
       ${deep ? supportBlock(true) : ''}
 
-      <div class="r-cta">
-        <button class="btn btn-primary btn-block" id="btn-read" type="button">讀詩篇第 ${n} 篇全文${icon('i-arrow-r')}</button>
-        <button class="btn-link" id="btn-share" type="button">${icon('i-share')}做成圖片分享</button>
+      <div class="r-cta" id="r-cta">
+        <div class="cta-row">
+          <button class="btn btn-primary" id="btn-share" type="button">${icon('i-image')}製作分享圖</button>
+          <button class="btn btn-ink" id="btn-read" type="button">${icon('i-book')}讀第 ${n} 篇全文</button>
+        </div>
         ${saved ? `<p class="fine saved-note">這篇已收進<a href="#/mine">我的詩篇</a>，之後可以回來再讀</p>` : ''}
       </div>
 
+      <div class="r-details">
       <section class="journey">
         <p class="journey-title">九種光景，一趟會循環的旅程</p>
         <div class="journey-track">
@@ -332,7 +335,7 @@
         </div>
       </section>
 
-      <section class="r-block" aria-labelledby="h-now">
+      <section class="r-block r-say" aria-labelledby="h-now">
         <div class="r-head"><span class="no" aria-hidden="true">壹</span><h2 id="h-now">這篇詩想對你說</h2></div>
         <p class="r-body">${esc(p.body)}</p>
       </section>
@@ -363,22 +366,48 @@
           <button class="btn-link" id="btn-edit" type="button">修改答案</button>
         </div>
       </div>
+      </div>
 
       ${pod ? `<aside class="podcast" aria-labelledby="h-pod">
         <p class="kicker">${esc(pod.kicker)}</p>
         <h2 id="h-pod">${pod.title.map(esc).join('<br>')}</h2>
         <a class="btn" href="${esc(pod.url)}" target="_blank" rel="noopener">${esc(pod.cta)}${icon('i-arrow-r')}</a>
-      </aside>` : ''}`;
+      </aside>` : ''}
+      <div class="r-sticky" id="r-sticky" aria-hidden="true"><button class="btn btn-primary" id="btn-share-2" type="button" tabindex="-1">${icon('i-image')}製作分享圖</button></div>`;
 
     illus($('r-book'), $('r-img'), n);
     $('btn-read').onclick = () => go(`#/read/${n}`);
-    $('btn-share').onclick = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
+    const openShare = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
+    $('btn-share').onclick = openShare;
+    $('btn-share-2').onclick = openShare;
+    stickyShare();
     $('btn-again').onclick = () => { clear(); lastResult = null; go('#/'); };
     $('btn-edit').onclick = () => { state.step = 0; state.done = false; save(); go('#/quiz'); };
     if ($('back-main')) $('back-main').onclick = () => renderResult();
     document.querySelectorAll('.near-list button').forEach((b) => (b.onclick = () => renderResult(+b.dataset.psalm)));
     $('r-stage').focus({ preventScroll: true });
   }
+
+  // 看不到「製作分享圖／讀全文」那排按鈕時（還沒捲到或已經捲過），底部浮出「製作分享圖」；捲到最底的 Podcast 區就收起來
+  let stickyTick = false;
+  function stickyUpdate() {
+    stickyTick = false;
+    const bar = $('r-sticky'), cta = $('r-cta');
+    if (!bar || !cta || $('view-result').hidden) return;
+    const pod = document.querySelector('#result-root .podcast');
+    const vh = window.innerHeight;
+    const r = cta.getBoundingClientRect();
+    const ctaSeen = r.bottom > 0 && r.top < vh - 60; // 上方兩顆按鈕在畫面裡
+    const on = !ctaSeen && !(pod && pod.getBoundingClientRect().top < vh - 40);
+    if (bar.classList.contains('on') === on) return;
+    bar.classList.toggle('on', on);
+    bar.setAttribute('aria-hidden', on ? 'false' : 'true');
+    $('btn-share-2').tabIndex = on ? 0 : -1;
+  }
+  function stickyShare() { stickyUpdate(); }
+  const stickyQueue = () => { if (!stickyTick) { stickyTick = true; requestAnimationFrame(stickyUpdate); } };
+  window.addEventListener('scroll', stickyQueue, { passive: true });
+  window.addEventListener('resize', stickyQueue);
 
   function showError(e) {
     show('result');

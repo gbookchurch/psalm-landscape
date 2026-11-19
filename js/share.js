@@ -358,18 +358,32 @@
     if (my !== drawing) return; // 使用者已切換樣式
     const cv = $('share-canvas'); cv.width = W; cv.height = H; cv.getContext('2d').drawImage(off, 0, 0);
     lastBlob = await new Promise((r) => off.toBlob(r, 'image/png'));
+    if (my !== drawing) return;
+    // 預覽用真正的 <img>，手機上長按就能「儲存影像」或分享。
+    // 用 data URL 而不是 blob URL：LINE、IG、FB 等 App 內建瀏覽器對 blob 圖片長按常常沒反應。
+    const img = $('share-img');
+    img.src = off.toDataURL('image/png');
+    img.width = W; img.height = H;
+    img.hidden = false; $('share-loading').hidden = true; $('share-preview').setAttribute('aria-busy', 'false');
     $('share-native').hidden = !(lastBlob && navigator.canShare && navigator.canShare({ files: [new File([lastBlob], 'a.png', { type: 'image/png' })] }));
   }
 
-  function open(d) { data = d; lastFocus = document.activeElement; $('share-sheet').hidden = false; $('share-close').focus(); draw(d); }
+  function loading() { $('share-img').hidden = true; $('share-loading').hidden = false; $('share-preview').setAttribute('aria-busy', 'true'); lastBlob = null; }
+  const touch = () => matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+  function tip() {
+    $('share-tip').querySelector('span').innerHTML = touch()
+      ? '長按圖片，就能<b>儲存到相簿</b>或傳給朋友'
+      : '圖片上按右鍵可以另存，或按下面的<b>下載圖片</b>';
+  }
+  function open(d) { data = d; lastFocus = document.activeElement; $('share-sheet').hidden = false; tip(); loading(); $('share-close').focus(); draw(d); }
   function close() { $('share-sheet').hidden = true; if (lastFocus) lastFocus.focus(); }
   function setRadio(group, key, val) { group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-checked', b.dataset[key] === val)); }
   document.querySelectorAll('#share-sheet [data-style]').forEach((b) => (b.onclick = () => {
     opts.style = b.dataset.style; setRadio(b.parentElement, 'style', opts.style);
     $('share-note').textContent = opts.style === 'data' ? '數據版會顯示你和這篇詩在八個面向的大致位置，但不會出現題目或你的選項。' : '分享圖只包含詩篇與光景，不會出現你的作答內容。';
-    draw(data);
+    loading(); draw(data);
   }));
-  document.querySelectorAll('#share-sheet [data-ratio]').forEach((b) => (b.onclick = () => { opts.ratio = b.dataset.ratio; setRadio(b.parentElement, 'ratio', opts.ratio); draw(data); }));
+  document.querySelectorAll('#share-sheet [data-ratio]').forEach((b) => (b.onclick = () => { opts.ratio = b.dataset.ratio; setRadio(b.parentElement, 'ratio', opts.ratio); loading(); draw(data); }));
   $('share-close').onclick = close;
   $('share-sheet').addEventListener('click', (e) => { if (e.target.id === 'share-sheet') close(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('share-sheet').hidden) close(); });

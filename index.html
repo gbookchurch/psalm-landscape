@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
 <!-- 每次更新網站時，把下面所有 ?v= 後面的版本號一起改掉（例如 0.18 改成 0.19），瀏覽器就會載入新版，不會用到快取的舊檔 -->
-<link rel="stylesheet" href="css/style.css?v=0.19">
+<link rel="stylesheet" href="css/style.css?v=0.20">
 </head>
 <body>
 <a class="skip-link" href="#main">跳到主要內容</a>
@@ -41,6 +41,9 @@
     <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 14v5h14v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="1.8" fill="currentColor"/><path d="M4 17l5-4.5 3.5 3 3-2.5L20 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5M12 6.5C14 5 17 4.5 20.5 5v13c-3.5-.5-6.5 0-8.5 1.5M12 6.5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.5a1.5 1.5 0 013 0V11m0-1.5a1.5 1.5 0 013 0V12m0-1a1.5 1.5 0 013 0v4c0 3-2 5.5-5.5 5.5-2.2 0-3.6-.9-4.8-2.6L5 15.2a1.5 1.5 0 012.4-1.8L9 15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   </defs>
@@ -166,7 +169,7 @@
 <div class="sheet" id="share-sheet" role="dialog" aria-modal="true" aria-labelledby="share-title" hidden>
   <div class="sheet-panel">
     <div class="sheet-head">
-      <h2 id="share-title">做成圖片分享</h2>
+      <h2 id="share-title">製作分享圖</h2>
       <button class="btn-link" id="share-close" type="button">關閉</button>
     </div>
     <div class="seg" role="radiogroup" aria-label="樣式">
@@ -178,25 +181,30 @@
       <button type="button" role="radio" aria-checked="false" data-ratio="post">貼文 4:5</button>
     </div>
     <p class="fine" id="share-note">分享圖只包含詩篇與光景，不會出現你的作答內容。</p>
-    <div class="share-preview"><canvas id="share-canvas" aria-label="分享圖預覽"></canvas></div>
+    <p class="share-tip" id="share-tip"><svg class="ic" aria-hidden="true"><use href="#i-hand"/></svg><span>長按圖片，就能<b>儲存到相簿</b>或傳給朋友</span></p>
+    <div class="share-preview" id="share-preview" aria-busy="true">
+      <img id="share-img" alt="分享圖預覽" hidden>
+      <p class="share-loading" id="share-loading">圖片製作中…</p>
+      <canvas id="share-canvas" hidden></canvas>
+    </div>
     <div class="btn-row">
-      <button class="btn btn-primary" id="share-save" type="button">儲存圖片</button>
-      <button class="btn btn-outline" id="share-native" type="button" hidden><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg>分享</button>
+      <button class="btn btn-primary" id="share-native" type="button" hidden><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg>分享或儲存</button>
+      <button class="btn btn-outline" id="share-save" type="button">下載圖片</button>
     </div>
   </div>
 </div>
 
-<script src="data/config.js?v=0.19"></script>
-<script src="data/copy.js?v=0.19"></script>
-<script src="data/psalms.js?v=0.19"></script>
-<script src="data/questions.js?v=0.19"></script>
-<script src="data/images.js?v=0.19"></script>
-<script src="data/illustration-notes.js?v=0.19"></script>
-<script src="data/scripture.js?v=0.19" defer></script>
-<script src="js/scoring.js?v=0.19"></script>
-<script src="js/text.js?v=0.19"></script>
-<script src="js/art.js?v=0.19"></script>
-<script src="js/share.js?v=0.19"></script>
-<script src="js/app.js?v=0.19"></script>
+<script src="data/config.js?v=0.20"></script>
+<script src="data/copy.js?v=0.20"></script>
+<script src="data/psalms.js?v=0.20"></script>
+<script src="data/questions.js?v=0.20"></script>
+<script src="data/images.js?v=0.20"></script>
+<script src="data/illustration-notes.js?v=0.20"></script>
+<script src="data/scripture.js?v=0.20" defer></script>
+<script src="js/scoring.js?v=0.20"></script>
+<script src="js/text.js?v=0.20"></script>
+<script src="js/art.js?v=0.20"></script>
+<script src="js/share.js?v=0.20"></script>
+<script src="js/app.js?v=0.20"></script>
 </body>
 </html>
