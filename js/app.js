@@ -101,6 +101,33 @@
     if (i === 1) return c.start || '';
     return '';
   }
+  /* 題目插畫：放在右上角（原本三個色塊的位置），換題時淡入，並先載好下一題的圖 */
+  const qArtSrc = (q) => {
+    const A = C.questionArt;
+    const m = q && /^Q(\d+)$/.exec(q.id);
+    if (!A || !m || (A.hide || []).includes(q.id)) return null;
+    return `${A.dir}question-${m[1].padStart(2, '0')}.webp?v=${(document.querySelector('script[src*="app.js"]').src.split('v=')[1] || '')}`;
+  };
+  let qArtFor = null;
+  function questionArt(q) {
+    const fig = $('quiz-art'), img = $('quiz-art-img'), src = qArtSrc(q);
+    if (qArtFor === q.id) return;
+    qArtFor = q.id;
+    const view = $('view-quiz');
+    const off = () => { fig.hidden = true; view.classList.remove('has-art'); document.querySelector('.quiz-deco').hidden = false; };
+    if (!src) { off(); return; }
+    fig.classList.remove('in');
+    const pre = new Image();
+    pre.onload = () => {
+      if (qArtFor !== q.id) return;
+      img.src = src; fig.hidden = false; view.classList.add('has-art'); document.querySelector('.quiz-deco').hidden = true;
+      requestAnimationFrame(() => fig.classList.add('in'));
+    };
+    pre.onerror = () => { if (qArtFor === q.id) off(); };
+    pre.src = src;
+    const nx = qArtSrc(visibleQ[state.step + 1]);
+    if (nx) new Image().src = nx;
+  }
   function renderQuiz() {
     show('quiz');
     if (state.step >= visibleQ.length) state.step = visibleQ.length - 1;
@@ -119,6 +146,7 @@
     $('btn-prev').disabled = state.step === 0;
     $('next-label').textContent = state.step === total - 1 ? '看結果' : '下一題';
     $('q-text').textContent = q.text;
+    questionArt(q);
     $('options').innerHTML = q.options.map((o, i) => `
       <button class="opt" type="button" role="radio" aria-checked="${cur === i}" data-i="${i}">
         <span class="opt-n" aria-hidden="true">${OPT_NUM[i] || i + 1}</span><span class="opt-t">${esc(o.text)}</span>${icon('i-check', 'opt-check')}
