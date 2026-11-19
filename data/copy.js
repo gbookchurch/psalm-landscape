@@ -108,9 +108,9 @@ window.COPY = {
 
   /* 結果頁結尾：導回 Podcast */
   podcast: {
-    kicker: '想聽更多',
-    title: ['這一季，', '陪你把詩篇', '慢慢讀完'],
-    cta: '去聽《教會小本本》',
+    kicker: '',
+    title: ['歡迎收聽'],
+    cta: '教會小本本',
     url: 'https://portaly.cc/gbookchurch',
   },
 };

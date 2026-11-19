@@ -465,3 +465,25 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 /* web-0.26：光景卡片放完整光景說明（about），通用說明（say）改成小字 */
 .journey-about{margin:20px 4px 0;padding-top:16px;border-top:2px solid var(--line);font-family:var(--serif);font-size:16.5px;line-height:1.95;color:var(--ink);text-wrap:pretty}
 .journey-about+.journey-say{margin-top:12px;padding-top:0;border-top:0;font-size:14px}
+
+.illus{width:min(100%,520px);margin-top:6px;padding:0 2px}
+.opt-n{font-size:16px;text-align:center}
+
+/* web-0.28：結果頁頂端改成置中直排的一小塊：小標、光景名稱、一句說明、心境標籤 */
+.r-hero{display:flex;flex-direction:column;align-items:center;gap:0;padding:20px var(--pad) 0;text-align:center}
+.r-hero .r-kicker{margin:0;font-size:12px;letter-spacing:.24em;color:var(--soft)}
+.r-hero .r-stage{writing-mode:horizontal-tb;max-height:none;margin:6px 0 0;font-size:clamp(40px,11.5vw,48px);line-height:1.15;letter-spacing:.12em;background:none}
+.r-hero .r-stage span{padding:0 .06em 0 .18em;background:linear-gradient(to top,transparent 8%,var(--yellow) 8%,var(--yellow) 40%,transparent 40%)}
+.r-hero .r-line{margin:10px 0 0;font-family:var(--serif);font-size:15.5px;font-weight:700;line-height:1.7;color:var(--ink)}
+.r-hero .r-line span{display:inline-block}
+.r-hero .tags{display:block;margin:6px 0 0;padding:0;font-size:12.5px;line-height:1.6;color:var(--soft)}
+.r-hero .tags li{display:inline}
+.r-hero .tags li+li::before{content:"・";margin:0 .1em}
+.illus{width:min(100%,520px);margin-top:4px;padding:0 2px}
+
+/* web-0.29：拿掉小標；心境標籤恢復成膠囊，置中排列 */
+.r-hero .r-stage{margin-top:0}
+.r-hero .tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:10px 0 0}
+.r-hero .tags li{display:block;padding:1px 10px;border-radius:var(--r-xs);background:#F3E4C4;color:var(--soft)}
+.r-hero .tags li+li::before{content:none}
+.r-hero .tags{flex-direction:row}

@@ -87,7 +87,7 @@
   $('btn-resume').onclick = () => go('#/quiz');
 
   /* ---------- 答題 ---------- */
-  const OPT_NUM = ['一', '二', '三', '四', '五', '六'];
+  const OPT_NUM = ['1', '2', '3', '4', '5', '6'];
   /** 這一題計分的面向，用來顯示題目上方的小標。 */
   function topicOf(q) {
     for (const o of q.options) { const k = Object.keys(o.scores || {}); if (k.length) return (T.quizTopics || {})[k[0]] || ''; }
@@ -359,14 +359,9 @@
 
     $('result-root').innerHTML = `
       <header class="r-hero">
-        <div class="r-hero-text">
-          <p class="r-kicker">你現在的生命光景</p>
-          <div>
-            <p class="r-line">${PsalmText.stageLines(st.line).map(esc).join('<br>')}</p>
-            ${tags.length ? `<ul class="tags" aria-label="心境標籤">${tags.map((t) => `<li>${esc(t.text)}</li>`).join('')}</ul>` : ''}
-          </div>
-        </div>
-        <h1 class="r-stage${[...name].length >= 3 ? ' long' : ''}" id="r-stage" tabindex="-1">${esc(name)}</h1>
+        <h1 class="r-stage" id="r-stage" tabindex="-1"><span>${esc(name)}</span></h1>
+        <p class="r-line">${PsalmText.stageLines(st.line.replace(/。$/, '')).map((l) => `<span>${esc(l)}</span>`).join('')}</p>
+        ${tags.length ? `<ul class="tags" aria-label="心境標籤">${tags.map((t) => `<li>${esc(t.text)}</li>`).join('')}</ul>` : ''}
       </header>
       ${isAlt ? `<p class="note">你正在看「也可能共鳴」的詩篇。<button class="btn-link" id="back-main" type="button">回到主要結果：詩篇第 ${res.best.psalm} 篇</button></p>` : ''}
 
@@ -397,7 +392,6 @@
           <ol aria-label="九種生命光景，你目前在${esc(name)}">${Object.keys(T.stages).map((k) => `<li${k === p.stage ? ' class="on" aria-current="true"' : ''}>${esc(stageName(k))}</li>`).join('')}</ol>
         </div>
         ${st.about ? `<p class="journey-about">${esc(st.about)}</p>` : ''}
-        <p class="journey-say">${esc(journeySay(p.stage))}</p>
       </section>
 
       <section class="r-block r-say" aria-labelledby="h-now">
@@ -409,8 +403,7 @@
 
       <section class="r-block" aria-labelledby="h-why">
         <div class="r-head"><span class="no" aria-hidden="true">貳</span><h2 id="h-why">為什麼是這一篇</h2></div>
-        ${rs.length ? `<p class="why-intro">下面是你的作答和這篇詩最接近的${rs.length === 1 ? '一' : rs.length === 2 ? '兩' : '三'}件事。實心點是你，圓圈是這篇詩，兩個靠得越近，代表越像。</p>
-        ${rs.map((r) => `<div class="dimrow"><p class="dim-label">${esc((T.dimPlain || T.dimNames)[r.d])}</p><p class="dim-say">${esc(r.say)}</p>${barHTML(r.d, r.x, r.y)}</div>`).join('')}` : '<p class="why-intro">這篇詩是八個面向加總起來和你最接近的一篇。實心點是你，圓圈是這篇詩。</p>'}
+        ${rs.length ? `${rs.map((r) => `<div class="dimrow"><p class="dim-label">${esc((T.dimPlain || T.dimNames)[r.d])}</p><p class="dim-say">${esc(r.say)}</p>${barHTML(r.d, r.x, r.y)}</div>`).join('')}` : '<p class="why-intro">這篇詩是八個面向加總起來和你最接近的一篇。</p>'}
         <div class="why-foot">
           <ul class="legend" aria-hidden="true"><li><span class="k-dot"></span>你</li><li><span class="k-ring"></span>詩篇 ${n}</li></ul>
         </div>
@@ -436,7 +429,7 @@
       </div>
 
       ${pod ? `<aside class="podcast" aria-labelledby="h-pod">
-        <p class="kicker">${esc(pod.kicker)}</p>
+        ${pod.kicker ? `<p class="kicker">${esc(pod.kicker)}</p>` : ''}
         <h2 id="h-pod">${pod.title.map(esc).join('<br>')}</h2>
         <a class="btn" href="${esc(pod.url)}" target="_blank" rel="noopener">${esc(pod.cta)}${icon('i-arrow-r')}</a>
       </aside>` : ''}
