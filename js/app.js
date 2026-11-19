@@ -356,6 +356,7 @@
     const n = forcePsalm || res.best.psalm;
     const p = byNum[n];
     const st = T.stages[p.stage] || { line: '', color: '#FF8A1F' };
+    const sc = (window.PSALM_STAGE_CONTENT && window.PSALM_STAGE_CONTENT.stagesByKey && window.PSALM_STAGE_CONTENT.stagesByKey[p.stage]) || {};
     const name = stageName(p.stage);
     const tags = moodTags(res.scores);
     const rs = reasons(res.scores, p);
@@ -370,7 +371,7 @@
     $('result-root').innerHTML = `
       <header class="r-hero">
         <h1 class="r-stage" id="r-stage" tabindex="-1"><span>${esc(name)}</span></h1>
-        <p class="r-line">${PsalmText.stageLines(st.line.replace(/。$/, '')).map((l) => `<span>${esc(l)}</span>`).join('')}</p>
+        <p class="r-line">${PsalmText.stageLines((sc.headline || st.line).replace(/。$/, '')).map((l) => `<span>${esc(l)}</span>`).join('')}</p>
         ${tags.length ? `<ul class="tags" aria-label="心境標籤">${tags.map((t) => `<li>${esc(t.text)}</li>`).join('')}</ul>` : ''}
       </header>
       ${isAlt ? `<p class="note">你正在看「也可能共鳴」的詩篇。<button class="btn-link" id="back-main" type="button">回到主要結果：詩篇第 ${res.best.psalm} 篇</button></p>` : ''}
@@ -401,7 +402,8 @@
         <div class="journey-track">
           <ol aria-label="九種生命光景，你目前在${esc(name)}">${Object.keys(T.stages).map((k) => `<li${k === p.stage ? ' class="on" aria-current="true"' : ''}>${esc(stageName(k))}</li>`).join('')}</ol>
         </div>
-        ${st.about ? `<p class="journey-about">${esc(st.about)}</p>` : ''}
+        ${sc.description || st.about ? `<p class="journey-about">${esc(sc.description || st.about)}</p>` : ''}
+        ${sc.reflection ? `<div class="journey-reflect"><p class="k">留給自己的問題</p><p class="q">${esc(sc.reflection)}</p></div>` : ''}
       </section>
 
       <section class="r-block r-say" aria-labelledby="h-now">

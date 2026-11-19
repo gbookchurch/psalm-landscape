@@ -527,3 +527,10 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 .rec-keep .kt{display:block;font-family:var(--serif);font-size:15px;font-weight:700;line-height:1.7}
 .rec-keep .kr{display:block;margin-top:2px;font-size:12px;color:var(--soft)}
 body:has(.verse-bar.on) .toast{bottom:calc(150px + env(safe-area-inset-bottom))}
+
+/* web-0.34：九種光景三層文案。第二層描述、第三層「留給自己的問題」淡色區塊 */
+.journey-reflect{margin:18px 0 2px;padding:16px 18px;border-radius:var(--r-sm);background:#E6EDDA}
+.journey-reflect .k{margin:0;font-size:12.5px;font-weight:700;letter-spacing:.14em;color:#3D6B3A}
+.journey-reflect .q{margin:6px 0 0;font-family:var(--serif);font-size:17px;font-weight:700;line-height:1.8;color:var(--ink);text-wrap:pretty}
+.journey-reflect{background:#FBEFD6}
+.journey-reflect .k{color:var(--orange-text)}
