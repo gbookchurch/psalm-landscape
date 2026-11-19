@@ -429,3 +429,9 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 .psalm-verse p+p{margin-top:12px}
 .psalm-verse.long{max-width:22em;font-size:19px;line-height:1.8}
 .psalm-verse.long p+p{margin-top:10px}
+
+/* web-0.23：光景卡片加上標題與說明 */
+.r-details .journey-title{margin:0 0 18px;font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:.06em;color:var(--ink);text-align:left}
+.r-details .journey{padding:24px 16px 22px}
+.r-details .journey-title{padding:0 4px}
+.journey-say{margin:20px 4px 0;padding-top:16px;border-top:2px solid var(--line);font-size:15px;line-height:1.9;color:var(--soft)}

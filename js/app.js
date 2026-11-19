@@ -292,6 +292,11 @@
     return `<details class="art-drawer ${cls}"><summary><span class="art-k">這張插畫的創作意義</span>${a.title ? `<span class="art-t">${esc(a.title)}</span>` : ''}</summary><p>${esc(a.text)}</p></details>`;
   }
 
+  function journeySay(stage) {
+    const keys = Object.keys(T.stages), i = keys.indexOf(stage);
+    const next = keys[(i + 1) % keys.length];
+    return T.journey.say.replace('{stage}', stageName(stage)).replace('{next}', stageName(next));
+  }
   /** 結果頁下半部的插畫卡片：小圖＋插畫名稱，點開看創作意義。 */
   function artCard(n) {
     const a = artNote(n), img = C.illustration(n);
@@ -341,7 +346,7 @@
       ${!C.illustration(n) ? '<p class="fine illus-note">插畫製作中・目前顯示品牌裝飾圖</p>' : ''}
 
       <section class="psalm" aria-labelledby="pc-num">
-        <p class="psalm-label">適合你現在讀的詩篇</p>
+        <p class="psalm-label">推薦你現在讀</p>
         <h2 class="psalm-num" id="pc-num"><span>詩篇 第</span><span class="n${String(n).length >= 3 ? ' n3' : ''}">${n}</span><span>篇</span></h2>
         ${kv ? `<blockquote class="psalm-verse${kv.ex.len > 40 ? ' long' : ''}">${kv.ex.verses.map((v) => `<p>${v.lines.map(esc).join('<br>')}</p>`).join('')}<span class="psalm-ref">${esc(kv.ex.ref)}</span></blockquote>
 ` : ''}
@@ -359,10 +364,11 @@
 
       <div class="r-details">
       <section class="journey">
-        <p class="journey-title">九種光景，一趟會循環的旅程</p>
+        <h2 class="journey-title">${esc(T.journey.title)}</h2>
         <div class="journey-track">
           <ol aria-label="九種生命光景，你目前在${esc(name)}">${Object.keys(T.stages).map((k) => `<li${k === p.stage ? ' class="on" aria-current="true"' : ''}>${esc(stageName(k))}</li>`).join('')}</ol>
         </div>
+        <p class="journey-say">${esc(journeySay(p.stage))}</p>
       </section>
 
       <section class="r-block r-say" aria-labelledby="h-now">
