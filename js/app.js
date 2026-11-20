@@ -94,43 +94,43 @@
   }
   document.querySelectorAll('[data-copy]').forEach((el) => (el.textContent = T[el.dataset.copy]));
   $('home-meta').innerHTML = (T.homeMetaShort || []).map((t) => `<li>${esc(t)}</li>`).join('');
-  /* ---------- 首頁：拖動太陽，看一天的九種光景（web-0.42） ---------- */
-  (function homeSky() {
-    const SKY = window.PSALM_SKY, SC = window.PSALM_STAGE_CONTENT && window.PSALM_STAGE_CONTENT.stagesByKey;
-    const range = $('home-sky-range');
-    if (!SKY || !range) { if ($('home-sky')) $('home-sky').hidden = true; return; }
-    const keys = Object.keys(T.stages);
-    // 每種光景挑一張已完成的插畫：優先用這幾篇，沒有的話用那個光景裡第一篇有插畫的
-    const prefer = { '1 晨光': 23, '2 正午': 33, '3 起風': 27, '4 黃昏': 14, '5 日落': 42, '6 入夜': 6, '7 深夜': 22, '8 夜將盡': 25, '9 破曉': 30 };
-    const artOf = (k) => {
-      const pick = (n) => { const im = C.illustration(n); return im && byNum[n] && byNum[n].stage === k ? im : null; };
-      let im = pick(prefer[k]);
-      if (!im) for (const p of P) { if (p.stage === k && (im = pick(p.psalm))) break; }
-      return im ? (im.m || im.src) : null;
+  /* ---------- 首頁：拱門裡的風景，自動慢慢變換一天的九種光景（web-0.43） ----------
+     只換拱門裡的圖：assets/home-sky/home-N.webp 是同一張孔版風景重新上色的版本（正午就是原圖）。
+     下一張圖等到要換之前才下載；系統設定「減少動態效果」、或開啟省流量時不播放。 */
+  (function homeCycle() {
+    const arch = $('home-arch'), base = arch && arch.querySelector('img'), next = $('home-arch-next');
+    if (!arch || !next) return;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData);
+    if (reduce) { next.remove(); return; }
+    const ORIG = base.getAttribute('src');
+    // 從正午（原圖）開始，往後走一天：起風、黃昏、日落、入夜、深夜、夜將盡、破曉、晨光，再回到正午
+    const seq = [ORIG, 3, 4, 5, 6, 7, 8, 9, 1].map((x) => (typeof x === 'number' ? `assets/home-sky/home-${x}.webp` : x));
+    const HOLD = 3800, FADE = 1600;
+    let i = 0, timer = null, busy = false;
+    const visible = () => !document.hidden && !$('view-home').hidden;
+    const step = () => {
+      timer = null;
+      if (!visible()) return;
+      if (busy) return;
+      busy = true;
+      const j = (i + 1) % seq.length, img = new Image();
+      img.decoding = 'async';
+      img.onload = () => {
+        next.src = seq[j];
+        next.classList.add('on');
+        setTimeout(() => {
+          base.src = seq[j]; // 換到底圖之後，再把上層收起來
+          const done = () => { next.classList.remove('on'); i = j; busy = false; schedule(); };
+          if (base.complete) requestAnimationFrame(done); else base.onload = () => { base.onload = null; requestAnimationFrame(done); };
+        }, FADE + 60);
+      };
+      img.onerror = () => { busy = false; i = j; schedule(); };
+      img.src = seq[j];
     };
-    const arts = keys.map(artOf);
-    arts.forEach((src) => { if (src) { const i = new Image(); i.decoding = 'async'; i.src = src; } }); // 先載好，拖的時候不會等
-    $('home-sky-ticks').innerHTML = keys.map((k) => `<li>${esc(stageName(k))}</li>`).join('');
-    range.style.setProperty('--track', `linear-gradient(to right, ${keys.map((k, i) => `${SKY[k].c1} ${(i / 8) * 100}%`).join(', ')})`);
-    const view = $('view-home'), arch = $('home-arch'), art = $('home-arch-art');
-    let touched = false;
-    const set = (i, user) => {
-      const k = keys[i], s = SKY[k], name = stageName(k);
-      range.setAttribute('aria-valuetext', name);
-      range.style.setProperty('--thumb', s.sun);
-      range.style.setProperty('--thumb-ring', s.c1);
-      $('home-sky-ticks').querySelectorAll('li').forEach((li, j) => li.classList.toggle('on', j === i));
-      if (!user && !touched) return;
-      view.style.setProperty('--sky-top', s.top); view.style.setProperty('--sky-mid', s.mid); view.classList.add('has-sky');
-      arch.style.setProperty('--c1', s.top); arch.style.setProperty('--c2', s.mid);
-      if (arts[i]) { art.src = arts[i]; art.hidden = false; arch.classList.add('sky'); } else { art.hidden = true; arch.classList.remove('sky'); }
-      const head = ((SC && SC[k] && SC[k].headline) || T.stages[k].line || '').replace(/。$/, '');
-      $('home-sky-out').innerHTML = `${skyChip(k)}<b>${esc(name)}</b><span>${esc(head)}</span>`;
-      $('home-sky-q').textContent = '你現在在哪個時刻？做完測驗就知道';
-      if (user && !touched) { touched = true; track('home_sky'); }
-    };
-    range.addEventListener('input', () => set(+range.value, true));
-    set(0, false);
+    const schedule = () => { if (!timer && visible()) timer = setTimeout(step, HOLD); };
+    document.addEventListener('visibilitychange', () => { if (visible()) schedule(); });
+    window.addEventListener('hashchange', () => setTimeout(schedule, 50));
+    if (document.readyState === 'complete') schedule(); else window.addEventListener('load', schedule);
   })();
   $('btn-start').onclick = () => { clear(); go('#/quiz'); };
   $('btn-resume').onclick = () => go('#/quiz');

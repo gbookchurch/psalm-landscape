@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
 <!-- 每次更新網站時，把下面所有 ?v= 後面的版本號一起改掉（例如 0.18 改成 0.19），瀏覽器就會載入新版，不會用到快取的舊檔 -->
-<link rel="stylesheet" href="css/style.css?v=0.42">
+<link rel="stylesheet" href="css/style.css?v=0.43">
 </head>
 <body>
 <a class="skip-link" href="#main">跳到主要內容</a>
@@ -86,7 +86,7 @@
       <div class="home-hero">
         <div class="home-arch" id="home-arch">
           <img src="assets/home-risograph-clean.webp" alt="孔版印刷風景：橘色圓日、綠色山丘、蜿蜒的河流與葉片" width="600" height="1000" fetchpriority="high">
-          <img class="home-arch-art" id="home-arch-art" alt="" decoding="async" hidden>
+          <img class="home-arch-next" id="home-arch-next" alt="" aria-hidden="true" decoding="async">
         </div>
         <div class="home-side">
           <h1 class="home-title">哪一篇適合<br>你現在的<mark>光景</mark>？</h1>
@@ -95,14 +95,6 @@
       </div>
       <p class="home-lead">二十個關於「最近」的問題，<br>找到一篇此刻能陪你的詩篇。</p>
       <ul class="home-meta" id="home-meta"></ul>
-      <div class="home-sky" id="home-sky">
-        <label class="home-sky-q" for="home-sky-range" id="home-sky-q">拖動太陽，看看一天裡的九種光景</label>
-        <div class="home-sky-track">
-          <input type="range" id="home-sky-range" min="0" max="8" step="1" value="0">
-          <ol class="home-sky-ticks" id="home-sky-ticks" aria-hidden="true"></ol>
-        </div>
-        <p class="home-sky-out" id="home-sky-out" aria-live="polite"></p>
-      </div>
       <div class="home-cta">
         <button class="btn btn-primary btn-block" id="btn-start" type="button"><span id="start-label">開始測驗</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
         <button class="btn-link" id="btn-resume" type="button" hidden></button>
@@ -218,20 +210,20 @@
   </div>
 </div>
 
-<script src="data/config.js?v=0.42"></script>
-<script src="data/copy.js?v=0.42"></script>
-<script src="data/stage-content.js?v=0.42"></script>
-<script src="data/sky.js?v=0.42"></script>
-<script src="data/psalms.js?v=0.42"></script>
-<script src="data/questions.js?v=0.42"></script>
-<script src="data/images.js?v=0.42"></script>
-<script src="data/illustration-notes.js?v=0.42"></script>
-<script src="data/scripture.js?v=0.42" defer></script>
-<script src="js/scoring.js?v=0.42"></script>
-<script src="js/text.js?v=0.42"></script>
-<script src="js/art.js?v=0.42"></script>
-<script src="js/share.js?v=0.42"></script>
-<script src="js/analytics.js?v=0.42"></script>
-<script src="js/app.js?v=0.42"></script>
+<script src="data/config.js?v=0.43"></script>
+<script src="data/copy.js?v=0.43"></script>
+<script src="data/stage-content.js?v=0.43"></script>
+<script src="data/sky.js?v=0.43"></script>
+<script src="data/psalms.js?v=0.43"></script>
+<script src="data/questions.js?v=0.43"></script>
+<script src="data/images.js?v=0.43"></script>
+<script src="data/illustration-notes.js?v=0.43"></script>
+<script src="data/scripture.js?v=0.43" defer></script>
+<script src="js/scoring.js?v=0.43"></script>
+<script src="js/text.js?v=0.43"></script>
+<script src="js/art.js?v=0.43"></script>
+<script src="js/share.js?v=0.43"></script>
+<script src="js/analytics.js?v=0.43"></script>
+<script src="js/app.js?v=0.43"></script>
 </body>
 </html>
