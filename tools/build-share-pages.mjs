@@ -49,7 +49,7 @@ async function ogImage(n) {
   const src = join(root, img.src);
   if (!existsSync(src)) return null;
   const buf = readFileSync(src);
-  const hash = createHash('sha1').update(buf).update('og-v1').digest('hex').slice(0, 8);
+  const hash = createHash('sha1').update(buf).update('og-v2').digest('hex').slice(0, 8);
   const name = `${String(n).padStart(3, '0')}.${hash}.jpg`;
   keepOg.add(name);
   const path = join(ogDir, name);
@@ -57,9 +57,9 @@ async function ogImage(n) {
   mkdirSync(ogDir, { recursive: true });
   const art = await sharp(buf).resize(560, 560, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
   const dots = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="40">
-    <circle cx="20" cy="20" r="11" fill="#EB5A0C"/><circle cx="50" cy="20" r="11" fill="#F5A21B"/>
-    <circle cx="80" cy="20" r="11" fill="#FFD24D"/><circle cx="110" cy="20" r="11" fill="#6DB443"/></svg>`);
-  await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#FFF7E8' } })
+    <circle cx="20" cy="20" r="11" fill="#E5602A"/><circle cx="50" cy="20" r="11" fill="#F2C230"/>
+    <circle cx="80" cy="20" r="11" fill="#1E4632"/><circle cx="110" cy="20" r="11" fill="#8FA987"/></svg>`);
+  await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#F8F2E6' } })
     .composite([{ input: art, left: 320, top: 35 }, { input: dots, left: 40, top: 36 }])
     .jpeg({ quality: 84, mozjpeg: true })
     .toFile(path);
@@ -75,7 +75,7 @@ for (const p of PSALMS) {
   const st = (COPY.stages || {})[p.stage] || {};
   const name = stageName(p.stage);
   const og = await ogImage(n);
-  const ogUrl = og ? `${SITE}p/og/${og}` : `${SITE}assets/og-image.jpg`;
+  const ogUrl = og ? `${SITE}p/og/${og}` : `${SITE}assets/og-home-v2.jpg`;
   const title = `詩篇 ${n} 篇｜${p.title}`;
   const desc = `生命光景：${name}。${(sc.headline || st.line || '').replace(/。$/, '')}。你現在的光景，適合讀哪篇詩篇？`;
   const target = `../?s=${n}#/read/${n}`;
