@@ -565,3 +565,37 @@ body:has(.verse-bar.on) .toast{bottom:calc(150px + env(safe-area-inset-bottom))}
 .journey-track.sky li{gap:8px}
 
 /* web-0.43：首頁拱門裡的風景自動變換光景（只換拱門裡的圖） */
+
+/* web-0.45 加到手機桌面 */
+.home-app{display:flex;align-items:center;gap:12px;margin:18px 0 0;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--paper-hi);color:var(--ink);font-size:14px;font-weight:500;line-height:1.5;text-decoration:none}
+.home-app>span:nth-child(2){flex:1}
+.home-app .ic{width:18px;height:18px;flex:none;color:var(--soft)}
+.home-app-icon,.app-icon{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:6px;width:34px;height:34px;border-radius:9px;background:var(--paper);box-shadow:0 0 0 1px var(--line)}
+.home-app-icon i,.app-icon i{border-radius:50%;background:#D77747}
+.home-app-icon i:nth-child(2),.app-icon i:nth-child(2){background:#E6AE4B}
+.home-app-icon i:nth-child(3),.app-icon i:nth-child(3){background:#C7BD85}
+.home-app-icon i:nth-child(4),.app-icon i:nth-child(4){background:#91A48A}
+.app-hero{display:flex;gap:16px;align-items:flex-start;margin-bottom:8px}
+.app-icon{width:64px;height:64px;padding:10px;gap:4px;border-radius:16px;box-shadow:0 0 0 1px var(--line),0 6px 16px rgba(23,64,42,.10)}
+.app-hero .page-title{margin-top:0}
+.app-sub{margin:6px 0 0;color:var(--soft);font-size:15px;line-height:1.7}
+.app-tabs{margin:22px 0 6px}
+.app-steps{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.app-steps li{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:var(--r-md);background:var(--paper-hi);border:1px solid var(--line);font-size:15px;line-height:1.75}
+.app-steps .fine{display:block;margin-top:4px}
+.app-step-n{flex:none;display:grid;place-items:center;width:26px;height:26px;margin-top:1px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+.ic-inline{width:18px;height:18px;vertical-align:-3px;color:#2A6FDB}
+.key-ic{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 4px;border-radius:6px;border:1px solid var(--line-2);font-size:13px;font-weight:700;vertical-align:1px;background:var(--paper)}
+.app-install{margin-top:16px}
+.app-install .key-ic{border-color:rgba(255,255,255,.6);background:transparent;color:inherit;margin-right:2px}
+.app-page .note{margin:16px 0 0}
+.app-page .note p{margin:0 0 6px}
+.app-page .note p:last-child{margin-bottom:0}
+.app-inapp .btn{margin-top:8px}
+.app-url{font-weight:700;word-break:break-all}
+.app-manual{margin-top:14px}
+.app-perks{margin:8px 0 0;padding-left:1.2em;line-height:1.8}
+.app-done{padding:18px;border-radius:var(--r-md);background:var(--green-soft)}
+.app-done p{margin:0 0 6px}
+.center{text-align:center}
+.seg button[aria-selected="true"]{background:var(--paper-hi);color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(23,64,42,.12)}

@@ -44,6 +44,7 @@
     if (h.startsWith('#/quiz')) return renderQuiz();
     if (h.startsWith('#/result')) return renderResult(state.altPsalm);
     if (h.startsWith('#/about')) return renderAbout();
+    if (h.startsWith('#/app')) { show('app'); if (window.renderInstall) window.renderInstall(); const t = document.querySelector('#view-app .page-title'); if (t) t.focus({ preventScroll: true }); return; }
     if (h.startsWith('#/mine')) return renderMine();
     if ((m = h.match(/^#\/read\/(\d{1,3})/))) return renderReader(+m[1]);
     if (h !== '#/' && h !== '#' && !h.startsWith('#/')) return; // 頁內錨點，維持目前畫面

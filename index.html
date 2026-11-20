@@ -11,6 +11,11 @@
 <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="詩篇光景">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <!-- 社群分享預覽（LINE、Facebook、Threads、X）。網址要用完整網址，換網域時這裡要一起改 -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
@@ -59,6 +64,7 @@
     <nav class="nav" id="nav" aria-label="主選單">
       <a href="#/">詩篇測驗</a>
       <a href="#/mine">我的詩篇</a>
+      <a href="#/app" class="nav-app">加到手機桌面</a>
       <a href="#/about">關於網站</a>
       <button type="button" class="nav-share" id="nav-share">分享給朋友</button>
     </nav>
@@ -99,6 +105,7 @@
         <button class="btn-link" id="btn-resume" type="button" hidden></button>
         <a class="btn-link" id="home-mine" href="#/mine" hidden></a>
       </div>
+      <a class="home-app" id="home-app" href="#/app"><span class="home-app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>加到手機桌面，每天打開讀一篇</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
     </div>
   </section>
 
@@ -161,6 +168,27 @@
   </section>
 
   <!-- 關於 -->
+  <!-- 加到手機桌面 -->
+  <section id="view-app" class="view" data-view="app" hidden>
+    <div class="wrap page app-page">
+      <div class="app-hero">
+        <span class="app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <div>
+          <h1 class="page-title" tabindex="-1">加到手機桌面</h1>
+          <p class="app-sub">像一個小 App，點一下就打開。每天睡前、通勤、心裡亂的時候，都可以回來讀一篇。</p>
+        </div>
+      </div>
+      <div id="app-body"></div>
+      <h2>放到桌面之後</h2>
+      <ul class="app-perks">
+        <li>桌面上會出現「詩篇光景」的圖示，打開是全螢幕，沒有網址列。</li>
+        <li>不用下載、不用註冊，也不佔什麼空間。</li>
+        <li>網站有更新時，打開就是最新版。</li>
+      </ul>
+      <div class="btn-row"><a class="btn btn-primary" href="#/">回到首頁</a></div>
+    </div>
+  </section>
+
   <section id="view-about" class="view" data-view="about" hidden>
     <div class="wrap page about">
       <h1 class="page-title" tabindex="-1">關於這個網站</h1>
@@ -223,6 +251,7 @@
 <script src="js/art.js?v=0.45"></script>
 <script src="js/share.js?v=0.45"></script>
 <script src="js/analytics.js?v=0.45"></script>
+<script src="js/install.js?v=0.45"></script>
 <script src="js/app.js?v=0.45"></script>
 </body>
 </html>
