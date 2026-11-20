@@ -310,6 +310,17 @@
     return `<div class="bar" role="img" aria-label="${esc(label)}"><span class="tick"></span><span class="ring" style="left:${pct(y)}%"></span>${x === undefined ? '' : `<span class="dot" style="left:${pct(x)}%"></span>`}</div>
       <div class="bar-ends" aria-hidden="true"><span>${esc(T.dimEnds[d][0])}</span><span>${esc(T.dimEnds[d][1])}</span></div>`;
   }
+  /** 對話式短句：依分數方向取 [偏左, 偏右, 中間] */
+  function whySide(map, d, v) {
+    const arr = (map || {})[d] || [];
+    if (v === undefined || Math.abs(v) < 0.25) return arr[2] || arr[1] || '';
+    return arr[v > 0 ? 1 : 0] || arr[2] || '';
+  }
+  /** 八條光譜：兩端詞＋面向名，點點是你、圈圈是詩篇；最像的三項加粗 */
+  function specHTML(d, x, y, hot) {
+    const label = `${T.dimNames[d]}：你 ${x === undefined ? '未作答' : fmt(x)}，這篇詩 ${fmt(y)}（範圍 −2 到 +2）`;
+    return `<div class="spec-row${hot ? ' hot' : ''}" role="img" aria-label="${esc(label)}"><div class="spec-t"><span>${esc(T.dimEnds[d][0])}</span><b>${esc(T.dimNames[d])}</b><span>${esc(T.dimEnds[d][1])}</span></div><div class="spec-bar"><span class="tick"></span><span class="ring" style="left:${pct(y)}%"></span>${x === undefined ? '' : `<span class="dot" style="left:${pct(x)}%"></span>`}</div></div>`;
+  }
   /** 插畫：有正式插畫就顯示，沒有就顯示中性佔位。插畫以「印在紙上」的方式融入紙底（樣式在 CSS）。 */
   function illus(box, img, n) {
     const real = C.illustration(n);
@@ -447,13 +458,12 @@
 
       <section class="r-block" aria-labelledby="h-why">
         <div class="r-head"><span class="no" aria-hidden="true">貳</span><h2 id="h-why">為什麼是這一篇</h2></div>
-        ${rs.length ? `${rs.map((r) => `<div class="dimrow"><p class="dim-label">${esc((T.dimPlain || T.dimNames)[r.d])}</p>${sayHTML(r.say)}${barHTML(r.d, r.x, r.y)}</div>`).join('')}` : '<p class="why-intro">這篇詩是八個面向加總起來和你最接近的一篇。</p>'}
-        <div class="why-foot">
-          <ul class="legend" aria-hidden="true"><li><span class="k-dot"></span>你</li><li><span class="k-ring"></span>詩篇 ${n}</li></ul>
-        </div>
-        <details class="more"><summary>看完整八個面向</summary>
-          ${DIMS.map((d) => `<div class="dimrow compact"><div class="dim-head"><p class="dim-label">${esc(T.dimNames[d])}</p><span class="dim-val">你 ${res.scores[d] === undefined ? '未作答' : fmt(res.scores[d])}・這篇 ${fmt(p[d])}</span></div>${barHTML(d, res.scores[d], p[d])}</div>`).join('')}
-          <p class="fine chart-note">數字依你的作答，用正式計分方式算出，範圍 −2 到 +2，中間的刻度是 0。這是相似程度的參考，不是心理測量。</p>
+        ${rs.length ? `<p class="why-lead">你和這篇最像的${rs.length === 3 ? '三' : rs.length === 2 ? '兩' : '一'}件事</p>
+        <ol class="chat">${rs.map((r) => `<li class="chat-pair"><p class="bub me"><span class="who">你</span>${esc(whySide(T.whyMe, r.d, r.x))}</p><p class="bub ps"><span class="who">詩篇 ${n}</span>${esc(whySide(T.whyPsalm, r.d, r.y))}</p></li>`).join('')}</ol>` : '<p class="why-intro">這篇詩是八個面向加總起來和你最接近的一篇。</p>'}
+        <details class="more spec-more"><summary>看完整八個面向</summary>
+          <ul class="legend" aria-hidden="true"><li><span class="k-dot"></span>你</li><li><span class="k-ring"></span>詩篇 ${n}</li><li class="k-bold">粗體＝最像的${rs.length ? (rs.length === 3 ? '三' : rs.length === 2 ? '兩' : '一') + '項' : '項目'}</li></ul>
+          <div class="spec">${DIMS.map((d) => specHTML(d, res.scores[d], p[d], rs.some((r) => r.d === d))).join('')}</div>
+          <p class="fine chart-note">點點和圈圈的位置依你的作答算出，範圍 −2 到 +2，中間是 0。這是相似程度的參考，不是心理測量。</p>
         </details>
       </section>
 

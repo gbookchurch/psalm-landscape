@@ -676,3 +676,28 @@ body[data-view="home"]{background-color:#F8F2E6;background-image:none}
   .home-title .only-d>span:first-child{display:block}
   .home-title .only-d>span+span{display:inline}
 }
+
+/* ── web-0.51 為什麼是這一篇：對話式＋八條光譜 ─────── */
+.why-lead{margin:2px 0 14px;font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink)}
+.chat{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+.chat-pair{display:flex;flex-direction:column;gap:6px}
+.bub{position:relative;margin:0;max-width:86%;padding:10px 14px 11px;font-size:15px;line-height:1.6}
+.bub .who{display:block;margin-bottom:2px;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--soft)}
+.bub.me{align-self:flex-start;background:var(--paper-hi);border:1px solid var(--line);border-radius:16px 16px 16px 4px;color:var(--ink)}
+.bub.ps{align-self:flex-end;background:#FBEBC8;border-radius:16px 16px 4px 16px;color:#5A3A08;font-family:var(--serif);font-weight:700}
+.bub.ps .who{color:#8A5A12;font-family:var(--sans)}
+.spec-more{margin-top:20px}
+.spec-more .legend{margin:12px 0 4px;flex-wrap:wrap;gap:8px 16px}
+.legend .k-bold{font-weight:700;color:var(--ink)}
+.spec{display:flex;flex-direction:column;gap:14px;padding:10px 0 4px}
+.spec-t{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;gap:8px;font-size:12px;color:var(--soft);letter-spacing:.06em}
+.spec-t span:last-child{text-align:right}
+.spec-t b{font-weight:500;font-size:13px;color:var(--soft)}
+.spec-row.hot .spec-t b{font-weight:700;color:var(--ink)}
+.spec-row.hot .spec-t span{color:var(--ink)}
+.spec-bar{position:relative;height:16px;margin:6px 8px 0}
+.spec-bar::before{content:"";position:absolute;left:-8px;right:-8px;top:7px;height:2px;border-radius:2px;background:var(--track)}
+.spec-row.hot .spec-bar::before{background:var(--line-2)}
+.spec-bar .tick{position:absolute;left:50%;top:3px;width:2px;height:10px;margin-left:-1px;background:var(--track)}
+.spec-bar .ring{position:absolute;top:0;width:16px;height:16px;margin-left:-8px;border-radius:50%;border:2.5px solid var(--orange);background:var(--paper)}
+.spec-bar .dot{position:absolute;top:3px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--ink)}
