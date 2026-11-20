@@ -95,7 +95,7 @@
   document.querySelectorAll('[data-copy]').forEach((el) => (el.textContent = T[el.dataset.copy]));
   $('home-meta').innerHTML = (T.homeMetaShort || []).map((t) => `<li>${esc(t)}</li>`).join('');
   /* ---------- 首頁：拱門裡的風景，自動慢慢變換一天的九種光景（web-0.43） ----------
-     只換拱門裡的圖：assets/home-sky/home-N.webp 是同一張孔版風景重新上色的版本（正午就是原圖）。
+     只換拱門裡的圖：assets/home-arch/ 是從詩篇插畫挑出、裁成拱門比例的六張風景。
      下一張圖等到要換之前才下載；系統設定「減少動態效果」、或開啟省流量時不播放。 */
   (function homeCycle() {
     const arch = $('home-arch'), base = arch && arch.querySelector('img'), next = $('home-arch-next');
@@ -103,9 +103,9 @@
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData);
     if (reduce) { next.remove(); return; }
     const ORIG = base.getAttribute('src');
-    // 從正午（原圖）開始，往後走一天：起風、黃昏、日落、入夜、深夜、夜將盡、破曉、晨光，再回到正午
-    const seq = [ORIG, 3, 4, 5, 6, 7, 8, 9, 1].map((x) => (typeof x === 'number' ? `assets/home-sky/home-${x}.webp` : x));
-    const HOLD = 3800, FADE = 1600;
+    // 詩篇 1、2、23、29、4、3：樹與溪水、山城、青草地、海上風暴、山間小屋、星夜
+    const seq = [ORIG].concat(['002', '023', '029', '004', '003'].map((n) => `assets/home-arch/arch-${n}.webp`));
+    const HOLD = 4200, FADE = 1600;
     let i = 0, timer = null, busy = false;
     const visible = () => !document.hidden && !$('view-home').hidden;
     const step = () => {
