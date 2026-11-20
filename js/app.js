@@ -94,44 +94,6 @@
   }
   document.querySelectorAll('[data-copy]').forEach((el) => (el.textContent = T[el.dataset.copy]));
   $('home-meta').innerHTML = (T.homeMetaShort || []).map((t) => `<li>${esc(t)}</li>`).join('');
-  /* ---------- 首頁：拱門裡的風景，自動慢慢變換一天的九種光景（web-0.43） ----------
-     只換拱門裡的圖：assets/home-arch/ 是從詩篇插畫挑出、裁成拱門比例的六張風景。
-     下一張圖等到要換之前才下載；系統設定「減少動態效果」、或開啟省流量時不播放。 */
-  (function homeCycle() {
-    const arch = $('home-arch'), base = arch && arch.querySelector('img'), next = $('home-arch-next');
-    if (!arch || !next) return;
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData);
-    if (reduce) { next.remove(); return; }
-    const ORIG = base.getAttribute('src');
-    // 詩篇 1、2、23、29、4、3：樹與溪水、山城、青草地、海上風暴、山間小屋、星夜
-    const seq = [ORIG].concat(['002', '023', '029', '004', '003'].map((n) => `assets/home-arch/arch-${n}.webp`));
-    const HOLD = 4200, FADE = 1600;
-    let i = 0, timer = null, busy = false;
-    const visible = () => !document.hidden && !$('view-home').hidden;
-    const step = () => {
-      timer = null;
-      if (!visible()) return;
-      if (busy) return;
-      busy = true;
-      const j = (i + 1) % seq.length, img = new Image();
-      img.decoding = 'async';
-      img.onload = () => {
-        next.src = seq[j];
-        next.classList.add('on');
-        setTimeout(() => {
-          base.src = seq[j]; // 換到底圖之後，再把上層收起來
-          const done = () => { next.classList.remove('on'); i = j; busy = false; schedule(); };
-          if (base.complete) requestAnimationFrame(done); else base.onload = () => { base.onload = null; requestAnimationFrame(done); };
-        }, FADE + 60);
-      };
-      img.onerror = () => { busy = false; i = j; schedule(); };
-      img.src = seq[j];
-    };
-    const schedule = () => { if (!timer && visible()) timer = setTimeout(step, HOLD); };
-    document.addEventListener('visibilitychange', () => { if (visible()) schedule(); });
-    window.addEventListener('hashchange', () => setTimeout(schedule, 50));
-    if (document.readyState === 'complete') schedule(); else window.addEventListener('load', schedule);
-  })();
   $('btn-start').onclick = () => { clear(); go('#/quiz'); };
   $('btn-resume').onclick = () => go('#/quiz');
 

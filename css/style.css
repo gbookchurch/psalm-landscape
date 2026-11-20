@@ -565,6 +565,3 @@ body:has(.verse-bar.on) .toast{bottom:calc(150px + env(safe-area-inset-bottom))}
 .journey-track.sky li{gap:8px}
 
 /* web-0.43：首頁拱門裡的風景自動變換光景（只換拱門裡的圖） */
-.home-arch{position:relative}
-.home-arch .home-arch-next{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease}
-.home-arch .home-arch-next.on{opacity:1}
