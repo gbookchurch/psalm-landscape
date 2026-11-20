@@ -290,29 +290,33 @@
     footer(c, 1288, 22);
   }
 
+  /* 9:16 限時動態：上方約 250px 會被頭像與名稱蓋住、下方約 240px 會被回覆列蓋住（web-0.35）。
+     光景、插畫、篇號、經文都排在安全區內；不怕被蓋的放在上下兩條：
+     品牌列放在上方那條的下緣（頭像那一列的下面），頁尾一句話與網址放在最下面。 */
+  const SAFE_TOP = 206, SAFE_FOOT = 1806, MAIN_TOP = 262, MAIN_BOTTOM = 1666;
   async function storyScene(c, d, name) {
-    header(c, 154, 34 / 30);
-    const top = 228, rowH = 420;
-    stageName(c, name, R, top, 200, 420);
+    header(c, SAFE_TOP, 34 / 30);
+    const top = MAIN_TOP, rowH = 380;
+    stageName(c, name, R, top, 188, 380);
     // 左欄由下往上排：心境標籤、光景說明、短線
-    const maxW = R - 200 - 40 - M;
+    const maxW = R - 188 - 40 - M;
     let y = top + rowH;
     const tags = d.tags.slice(0, 3);
     c.textAlign = 'left'; c.textBaseline = 'alphabetic';
-    sans(c, 500, 30); c.fillStyle = SOFT;
-    for (let i = tags.length - 1; i >= 0; i--) { c.fillText(tags[i], M, y - 12); y -= 54; }
-    if (tags.length) y -= 20;
-    serif(c, 700, 48); c.fillStyle = INK;
+    sans(c, 500, 28); c.fillStyle = SOFT;
+    for (let i = tags.length - 1; i >= 0; i--) { c.fillText(tags[i], M, y - 10); y -= 48; }
+    if (tags.length) y -= 18;
+    serif(c, 700, 44); c.fillStyle = INK;
     const lines = PsalmText.stageLines(d.stageLine).flatMap((l) => wrap(c, l, maxW)).slice(0, 3);
-    for (let i = lines.length - 1; i >= 0; i--) { c.fillText(lines[i], M, y - 22); y -= 84; }
-    c.fillRect(M, y - 30, 64, 5);
-    const iy = top + rowH + 16, k = 190 / 170;
-    const s = fitArt(c, d, iy, 760, 600, 22 + 33, 1752, k);
+    for (let i = lines.length - 1; i >= 0; i--) { c.fillText(lines[i], M, y - 20); y -= 76; }
+    c.fillRect(M, y - 26, 64, 5);
+    const iy = top + rowH + 18, k = 190 / 170, bottom = MAIN_BOTTOM;
+    const s = fitArt(c, d, iy, 780, 540, 22 + 32, bottom, k);
     await art(c, d, (W - s) / 2, iy, s);
     const rule = iy + s + 22;
     c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
-    psalmRow(c, d, rule + 33, 1752, k);
-    footer(c, 1802, 24);
+    psalmRow(c, d, rule + 32, bottom, k);
+    footer(c, SAFE_FOOT, 24);
   }
 
   async function postData(c, d, name) {
@@ -326,28 +330,28 @@
   }
 
   async function storyData(c, d, name) {
-    header(c, 154, 34 / 30);
-    await dataTop(c, d, name, 228, 440, 150, 1.12);
-    const rule = 708;
+    header(c, SAFE_TOP, 34 / 30);
+    await dataTop(c, d, name, MAIN_TOP, 420, 146, 1.1);
+    const rule = MAIN_TOP + 420 + 24;
     c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
-    dataHead(c, d, rule + 66, 1.15);
-    dimRows(c, d, rule + 100, 90, 1.15);
+    dataHead(c, d, rule + 64, 1.14);
+    dimRows(c, d, rule + 96, 80, 1.14);
     // 結尾：光景說明與心境標籤
-    const y = rule + 100 + 90 * 8 + 44;
+    const y = rule + 96 + 80 * 8 + 34;
     c.fillStyle = INK; c.fillRect(M, y, R - M, 3);
     c.textAlign = 'center'; c.textBaseline = 'alphabetic';
-    serif(c, 700, 40); c.fillStyle = INK;
-    let yy = y + 78;
-    for (const l of wrap(c, d.stageLine, R - M).slice(0, 2)) { c.fillText(l, W / 2, yy); yy += 62; }
-    if (d.tags.length) { sans(c, 500, 28); c.fillStyle = SOFT; c.fillText(d.tags.slice(0, 3).join('・'), W / 2, yy + 2); }
-    footer(c, 1802, 24);
+    serif(c, 700, 36); c.fillStyle = INK;
+    let yy = y + 64;
+    for (const l of wrap(c, d.stageLine, R - M).slice(0, 2)) { c.fillText(l, W / 2, yy); yy += 54; }
+    if (d.tags.length) { sans(c, 500, 26); c.fillStyle = SOFT; c.fillText(d.tags.slice(0, 3).join('・'), W / 2, yy - 4); }
+    footer(c, SAFE_FOOT, 24);
   }
 
   /* ---------- 經文分享圖（讀全文頁「今天想記住的一節」） ---------- */
   async function verseCard(c, d, H) {
     const story = H > 1500, k = story ? 34 / 30 : 1;
     // 頁首：品牌圈＋教會小本本（左）、今天想記住的經文（右）
-    const cy = story ? 154 : 82;
+    const cy = story ? SAFE_TOP : 82;
     { const r = 9 * k; let x = M + r;
       for (const col of DOTS) { c.fillStyle = col; c.beginPath(); c.arc(x, cy, r, 0, Math.PI * 2); c.fill(); x += r * 2 + 8 * k; }
       c.textBaseline = 'middle'; c.textAlign = 'left'; c.fillStyle = INK;
@@ -355,16 +359,16 @@
       sans(c, 700, 24 * k); spacing(c, 24 * k * 0.22); c.fillStyle = SOFT; c.textAlign = 'right';
       c.fillText(T().verseShareTitle || '今天想記住的經文', R + 24 * k * 0.22, cy + 1);
       spacing(c, 0); c.textBaseline = 'alphabetic'; }
-    const footY = story ? 1802 : 1288;
+    const footY = story ? SAFE_FOOT : 1288;
     // 插畫（有正式插畫才放）
-    let top = cy + (story ? 90 : 64);
+    let top = story ? MAIN_TOP + 10 : cy + 64;
     if (d.img) {
-      const s = story ? 640 : 400;
+      const s = story ? 660 : 400;
       await art(c, { ...d, stage: '' }, (W - s) / 2, top, s);
       top += s + (story ? 30 : 16);
     } else top += story ? 40 : 10;
     // 經文：置中，從大字開始試，放得下為止
-    const bottom = footY - (story ? 230 : 170), maxW = R - M - 40;
+    const bottom = story ? MAIN_BOTTOM - 110 : footY - 170, maxW = R - M - 40;
     let lines = [], size = 64, lh = 0;
     for (const sz of (story ? [68, 62, 56, 50, 46, 42, 38] : [60, 54, 48, 44, 40, 36, 32])) {
       serif(c, 700, sz);
@@ -436,6 +440,7 @@
     $('share-title').textContent = verse ? '經文分享圖' : '製作分享圖';
     const styleSeg = document.querySelector('#share-sheet [data-style]').parentElement;
     styleSeg.hidden = verse;
+    $('share-link').hidden = verse || !d.link;
     $('share-note').textContent = verse ? '圖上只會有這一節經文和出處。'
       : opts.style === 'data' ? '數據版會顯示你和這篇詩在八個面向的大致位置，但不會出現題目或你的選項。' : '分享圖只包含詩篇與光景，不會出現你的作答內容。';
     $('share-sheet').hidden = false; tip(); loading(); $('share-close').focus(); draw(d);
@@ -459,7 +464,20 @@
     const a = document.createElement('a'); a.href = URL.createObjectURL(lastBlob); a.download = fname();
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   };
-  $('share-native').onclick = async () => { try { await navigator.share({ files: [new File([lastBlob], fname(), { type: 'image/png' })], title: T().shareTitle }); } catch (e) { /* 使用者取消 */ } };
+  $('share-native').onclick = async () => {
+    const msg = data.kind === 'verse' ? {} : { text: `我現在的光景適合讀詩篇 ${data.psalm.psalm} 篇，你也來測測看：${data.link || ''}` };
+    try { await navigator.share({ files: [new File([lastBlob], fname(), { type: 'image/png' })], title: T().shareTitle, ...msg }); } catch (e) { /* 使用者取消 */ }
+  };
+  // 複製這一篇的分享連結（LINE、FB 會顯示這一篇的預覽）
+  $('share-link').onclick = async () => {
+    const url = data && data.link; if (!url) return;
+    let ok = false;
+    try { await navigator.clipboard.writeText(url); ok = true; } catch (e) {
+      try { const ta = document.createElement('textarea'); ta.value = url; ta.style.cssText = 'position:fixed;top:-1000px'; document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove(); } catch (e2) { /* 無法複製 */ }
+    }
+    const b = $('share-link'); const old = b.textContent;
+    b.textContent = ok ? '連結已複製' : '請長按網址列複製'; setTimeout(() => (b.textContent = old), 2000);
+  };
 
   root.Share = { open };
 })(window);

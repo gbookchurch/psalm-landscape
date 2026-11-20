@@ -60,10 +60,19 @@
     const t = $('toast'); t.textContent = msg; t.hidden = false;
     clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 2400);
   }
+  /* 分享連結：每一篇都有自己的 p/N.html（GitHub 部署時自動產生），LINE、FB 會顯示那一篇的預覽 */
+  const siteBase = () => location.href.split('#')[0].split('?')[0].replace(/index\.html$/, '');
+  const psalmLink = (n) => `${siteBase()}p/${n}.html`;
+  window.psalmLink = psalmLink;
+  /** 從分享連結進來的人：網址帶 ?s=篇號 */
+  const sharedFrom = () => { const m = /[?&]s=(\d{1,3})/.exec(location.search); return m ? +m[1] : null; };
+  const clearShared = () => { if (sharedFrom() && history.replaceState) history.replaceState(null, '', siteBase() + location.hash); };
   $('nav-share').onclick = async () => {
     closeMenu();
-    const url = location.href.split('#')[0];
-    const data = { title: T.siteTitle, text: T.homeSub, url };
+    // 在結果頁按分享：分享這一篇的連結；其他頁面分享網站首頁
+    const onResult = !$('view-result').hidden && resultN;
+    const url = onResult ? psalmLink(resultN) : siteBase();
+    const data = onResult ? { title: T.siteTitle, text: `我現在的光景適合讀詩篇 ${resultN} 篇。${T.homeSub}`, url } : { title: T.siteTitle, text: T.homeSub, url };
     try {
       if (navigator.share) { await navigator.share(data); return; }
       await navigator.clipboard.writeText(url); toast('網址已複製，可以貼給朋友');
@@ -129,6 +138,7 @@
     if (nx) new Image().src = nx;
   }
   function renderQuiz() {
+    clearShared();
     show('quiz');
     if (state.step >= visibleQ.length) state.step = visibleQ.length - 1;
     const q = visibleQ[state.step];
@@ -251,6 +261,7 @@
 
   /* ---------- 結果 ---------- */
   let lastResult = null;
+  let resultN = null; // 結果頁目前顯示的篇號（分享連結用）
   function moodTags(scores) {
     return DIMS.filter((d) => scores[d] !== undefined && Math.abs(scores[d]) >= 0.75)
       .map((d) => ({ d, w: C.weights[d] * Math.abs(scores[d]), text: T.moodTags[d][scores[d] > 0 ? 1 : 0] }))
@@ -354,6 +365,7 @@
     show('result');
     lastResult = res;
     const n = forcePsalm || res.best.psalm;
+    resultN = n;
     const p = byNum[n];
     const st = T.stages[p.stage] || { line: '', color: '#FF8A1F' };
     const sc = (window.PSALM_STAGE_CONTENT && window.PSALM_STAGE_CONTENT.stagesByKey && window.PSALM_STAGE_CONTENT.stagesByKey[p.stage]) || {};
@@ -449,7 +461,7 @@
 
     illus($('r-book'), $('r-img'), n);
     $('btn-read').onclick = () => go(`#/read/${n}`);
-    const openShare = () => Share.open({ psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
+    const openShare = () => Share.open({ link: psalmLink(n), psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
     $('btn-share').onclick = openShare;
     $('btn-share-2').onclick = openShare;
     stickyShare();
@@ -533,6 +545,7 @@
       ${artDrawer(n)}
       <h1 tabindex="-1" id="read-title">詩篇 第 ${n} 篇</h1>
       ${S.title ? `<p class="sup">${esc(S.title)}</p>` : ''}
+      ${sharedFrom() === n && !state.done ? `<aside class="shared-invite"><p>這是朋友分享給你的詩篇。<br>你現在的光景，適合讀哪一篇？</p><a class="btn btn-primary" href="#/quiz" id="shared-start">開始測驗</a></aside>` : ''}
       ${picked.length ? `<p class="read-dates">${picked.length === 1 ? `你在 <b>${esc(dayLabel(picked[0]))}</b> 選到這一篇` : `你選到這一篇的日子<br>${picked.map((d) => `<b>${esc(dayLabel(d))}</b>`).join('、')}`}</p>` : ''}
       <div id="keep-card">${keepCardHTML(n, S, kept)}</div>
       ${hits.size ? `<p class="anchor-note">底色標示的是這次推薦的<mark>經文錨點</mark>：詩篇 ${esc(p.anchor)}</p>` : ''}
