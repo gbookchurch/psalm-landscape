@@ -552,7 +552,7 @@
       <p class="keep-hint">${icon('i-bookmark')}點一下任何一節，可以記住、複製或做成分享圖</p>
       <div class="verses" id="verses">${vhtml}</div>
       ${S.notes.length ? `<div class="footnotes">${S.notes.map((f) => `<p>${esc(f.ref)}　${esc(f.text)}</p>`).join('')}</div>` : ''}
-      <p class="source">經文：《新標點和合本》神版 © 1988, 1989 香港聖經公會</p>`;
+      <p class="source">經文：《和合本》1919 年版（神版），保留當年的用字與標點</p>`;
     illus($('read-book'), $('read-img'), n);
     applyReadPrefs();
     verseTools(n, S);
@@ -623,7 +623,7 @@
     $('vb-copy').onclick = async () => {
       if (!verseSel) return;
       const v = verseSel.dataset.v;
-      const ok = await copyText(`${verseText(S, v)}\n（詩篇 ${n}:${v}，新標點和合本）`);
+      const ok = await copyText(`${verseText(S, v)}\n（詩篇 ${n}:${v}，和合本）`);
       toast(ok ? '經文已複製' : '這個瀏覽器不能自動複製，請長按經文選取');
     };
     $('vb-share').onclick = () => {
