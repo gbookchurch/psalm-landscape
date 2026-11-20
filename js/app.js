@@ -350,6 +350,13 @@
     const next = keys[(i + 1) % keys.length];
     return T.journey.say.replace('{stage}', stageName(stage)).replace('{next}', stageName(next));
   }
+  /** 天空圓章（九種光景各一個），裝飾用 */
+  function skyChip(stage, cls = '') {
+    const s = window.PSALM_SKY && window.PSALM_SKY[stage];
+    if (!s) return '';
+    const sun = s.kind === 'cloud' ? '<i class="sun"></i><i class="cloud"></i>' : s.kind === 'half' ? '<i class="sun"></i><i class="haze"></i>' : '<i class="sun"></i>';
+    return `<span class="sky-chip ${s.kind} ${cls}" aria-hidden="true" style="--c1:${s.c1};--c2:${s.c2};--sun:${s.sun};--y:${s.y}%">${sun}</span>`;
+  }
   /** 結果頁下半部的插畫卡片：小圖＋插畫名稱，點開看創作意義。 */
   function artCard(n) {
     const a = artNote(n), img = C.illustration(n);
@@ -370,6 +377,7 @@
     lastResult = res;
     const n = forcePsalm || res.best.psalm;
     resultN = n;
+    { const sk = window.PSALM_SKY && window.PSALM_SKY[byNum[n].stage]; const rr = $('result-root'); if (sk) { rr.style.setProperty('--sky-top', sk.top); rr.style.setProperty('--sky-mid', sk.mid); rr.classList.add('has-sky'); } else rr.classList.remove('has-sky'); }
     if (!forcePsalm) {
       const key = 'psalm-ga-done:' + JSON.stringify(state.answers);
       let seen = false; try { seen = sessionStorage.getItem('psalm-ga-done') === key; sessionStorage.setItem('psalm-ga-done', key); } catch (e) { /* 無法記錄就照常送 */ }
@@ -391,7 +399,7 @@
 
     $('result-root').innerHTML = `
       <header class="r-hero">
-        <h1 class="r-stage" id="r-stage" tabindex="-1"><span>${esc(name)}</span></h1>
+        <div class="r-stage-row">${skyChip(p.stage, 'lg')}<h1 class="r-stage" id="r-stage" tabindex="-1"><span>${esc(name)}</span></h1></div>
         <p class="r-line">${PsalmText.stageLines((sc.headline || st.line).replace(/。$/, '')).map((l) => `<span>${esc(l)}</span>`).join('')}</p>
         ${tags.length ? `<ul class="tags" aria-label="心境標籤">${tags.map((t) => `<li>${esc(t.text)}</li>`).join('')}</ul>` : ''}
       </header>
@@ -420,8 +428,8 @@
       <div class="r-details">
       <section class="journey">
         <h2 class="journey-title">${esc(T.journey.title)}</h2>
-        <div class="journey-track">
-          <ol aria-label="九種生命光景，你目前在${esc(name)}">${Object.keys(T.stages).map((k) => `<li${k === p.stage ? ' class="on" aria-current="true"' : ''}>${esc(stageName(k))}</li>`).join('')}</ol>
+        <div class="journey-track sky">
+          <ol aria-label="九種生命光景，你目前在${esc(name)}">${Object.keys(T.stages).map((k) => `<li${k === p.stage ? ' class="on" aria-current="true"' : ''}>${skyChip(k)}${esc(stageName(k))}</li>`).join('')}</ol>
         </div>
         ${sc.description || st.about ? `<p class="journey-about">${esc(sc.description || st.about)}</p>` : ''}
         ${sc.reflection ? `<div class="journey-reflect"><p class="k">留給自己的問題</p><p class="q">${esc(sc.reflection)}</p></div>` : ''}
@@ -755,7 +763,7 @@
         <div class="r-head"><h2 id="h-log">開過的詩篇</h2></div>
         ${a.length ? days.map((g) => `<h3 class="day">${esc(dayLabel(g.day))}</h3>
           <ul class="recs">${g.items.map((x) => { const p = byNum[x.n]; return `<li>
-            <a class="rec" href="#/read/${x.n}"><span class="n">${x.n}</span><span class="t">${esc(p.shortTitle || p.title)}<small>${esc(stageName(p.stage))}・${(x.how || []).map((h) => HOW[h] || '').filter(Boolean).join('・')}</small></span></a>
+            <a class="rec" href="#/read/${x.n}"><span class="n">${x.n}</span><span class="t">${esc(p.shortTitle || p.title)}<small>${skyChip(p.stage, 'xs')}${esc(stageName(p.stage))}・${(x.how || []).map((h) => HOW[h] || '').filter(Boolean).join('・')}</small></span></a>
             <button class="icon-btn rec-del" type="button" data-t="${x.t}" aria-label="刪除這筆紀錄：詩篇第 ${x.n} 篇，${esc(dayLabel(x.day))}"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
             ${recKeep(x)}
             ${recMeaning(x.n)}

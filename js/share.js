@@ -65,11 +65,37 @@
     return out;
   }
 
-  function paper(c, H) {
+  function paper(c, H, stage) {
     c.fillStyle = PAPER; c.fillRect(0, 0, W, H);
+    // 九種光景的天色：上方淡天色漸層回米色紙（web-0.41）
+    const sk = stage && root.PSALM_SKY && root.PSALM_SKY[stage];
+    if (sk) {
+      const g = c.createLinearGradient(0, 0, 0, H * 0.68);
+      g.addColorStop(0, sk.top); g.addColorStop(0.5, sk.mid); g.addColorStop(1, 'rgba(255,247,232,0)');
+      c.fillStyle = g; c.fillRect(0, 0, W, H * 0.68);
+    }
     const t = document.createElement('canvas'); t.width = t.height = 14;
     const tc = t.getContext('2d'); tc.fillStyle = 'rgba(23,64,42,.08)'; tc.beginPath(); tc.arc(7, 7, 2, 0, Math.PI * 2); tc.fill();
     c.fillStyle = c.createPattern(t, 'repeat'); c.fillRect(0, 0, W, H);
+  }
+
+  /** 天空圓章：x,y 是左上角，s 是直徑 */
+  function skyChip(c, stage, x, y, s) {
+    const sk = root.PSALM_SKY && root.PSALM_SKY[stage];
+    if (!sk) return false;
+    c.save();
+    c.beginPath(); c.arc(x + s / 2, y + s / 2, s / 2, 0, Math.PI * 2); c.clip();
+    const g = c.createLinearGradient(0, y, 0, y + s); g.addColorStop(0, sk.c1); g.addColorStop(1, sk.c2);
+    c.fillStyle = g; c.fillRect(x, y, s, s);
+    const cy = y + s * sk.y / 100;
+    const dot = (cx, r, col, glow) => { c.save(); if (glow) { c.shadowColor = col; c.shadowBlur = s * 0.12; } c.fillStyle = col; c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.fill(); c.restore(); };
+    if (sk.kind === 'moon') dot(x + s * 0.58, s * 0.16, sk.sun, true);
+    else if (sk.kind === 'half') { dot(x + s / 2, s * 0.24, sk.sun); c.fillStyle = 'rgba(255,247,232,.55)'; c.fillRect(x, cy - s * 0.04, s, s); }
+    else if (sk.kind === 'cloud') { dot(x + s * 0.42, s * 0.2, sk.sun); c.fillStyle = 'rgba(255,255,255,.88)'; const cw = s * 0.56, ch = s * 0.2, cx0 = x + s * 0.22, cy0 = cy + s * 0.06; c.beginPath(); c.roundRect ? c.roundRect(cx0, cy0, cw, ch, ch / 2) : c.rect(cx0, cy0, cw, ch); c.fill(); }
+    else dot(x + s / 2, s * 0.2, sk.sun);
+    c.restore();
+    c.beginPath(); c.arc(x + s / 2, y + s / 2, s / 2 - 0.5, 0, Math.PI * 2); c.lineWidth = 1.5; c.strokeStyle = 'rgba(23,64,42,.14)'; c.stroke();
+    return true;
   }
 
   /** 頁首：四個品牌圈＋教會小本本（左），我的生命光景（右）。cy 是這一列的垂直中心。 */
@@ -282,7 +308,9 @@
     const nh = stageName(c, name, R, top, 150, 330);
     // 直排的光景說明，接在光景名稱下面
     c.fillStyle = SOFT; serif(c, 500, 28);
-    const colW = 28 * 1.8, y0 = top + nh + 44, maxChars = Math.max(6, Math.floor((top + s - y0) / (28 * 1.1)));
+    const chipS = root.PSALM_SKY && root.PSALM_SKY[d.stage] ? 64 : 0;
+    if (chipS) skyChip(c, d.stage, R - chipS, top + s - chipS, chipS);
+    const colW = 28 * 1.8, y0 = top + nh + 44, maxChars = Math.max(6, Math.floor((top + s - y0 - (chipS ? chipS + 20 : 0)) / (28 * 1.1)));
     vColumns(d.stageLine, maxChars).slice(0, 3).forEach((col, i) => vText(c, col, R - colW / 2 - i * colW, y0, 28, 0.1));
     const rule = top + s + 30;
     c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
@@ -313,6 +341,7 @@
     const iy = top + rowH + 18, k = 190 / 170, bottom = MAIN_BOTTOM;
     const s = fitArt(c, d, iy, 780, 540, 22 + 32, bottom, k);
     await art(c, d, (W - s) / 2, iy, s);
+    skyChip(c, d.stage, M, iy + 8, 80); // 天空圓章放在插畫左上角的空白處
     const rule = iy + s + 22;
     c.fillStyle = INK; c.fillRect(M, rule, R - M, 3);
     psalmRow(c, d, rule + 32, bottom, k);
@@ -407,7 +436,7 @@
     const name = d.stage.replace(/^\d\s*/, '');
     const allText = T().brand + T().shareTitle + name + d.stageLine + d.psalm.title + '詩篇第篇八個面向，我和這篇詩的位置' + (d.verse ? d.verse.text + d.verse.ref : '') + d.tags.join('') + (T().shareFooterLeft || '') + (T().shareUrl || '') + Object.values(T().dimNames).join('') + Object.values(T().dimEnds).flat().join('') + '0123456789:-・…';
     await fontsReady(allText);
-    paper(c, H);
+    paper(c, H, d.stage);
     const story = opts.ratio === 'story', scene = opts.style === 'scene';
     await (scene ? (story ? storyScene : postScene) : (story ? storyData : postData))(c, d, name);
     return finish(off, my, H);
