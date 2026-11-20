@@ -583,31 +583,75 @@ body:has(.verse-bar.on) .toast{bottom:calc(150px + env(safe-area-inset-bottom))}
 .center{text-align:center}
 .seg button[aria-selected="true"]{background:var(--paper-hi);color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(23,64,42,.12)}
 
-/* ── web-0.47 首頁：Risograph 主插畫（手機直向、桌機橫向）─────── */
-.home{position:relative;display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"eyebrow" "title" "art" "lead" "cta" "meta" "app";align-content:start;padding-top:10px;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
-.home-eyebrow{grid-area:eyebrow;position:relative;justify-self:start;padding-bottom:9px;font-size:14px;letter-spacing:.24em}
-.home-scribble{position:absolute;left:-2px;right:.1em;bottom:0;width:calc(100% - .1em);height:8px;color:var(--orange)}
-.home-title{grid-area:title;margin:10px 0 0;font-size:clamp(30px,8.6vw,40px);line-height:1.32;letter-spacing:.04em;text-shadow:3px 3px 0 var(--yellow)}
-.home-title mark{color:inherit;background:linear-gradient(transparent 62%,var(--yellow) 62%,var(--yellow) 92%,transparent 92%)}
-.home-art{grid-area:art;position:relative;margin:14px calc(var(--pad) * -1 + 8px) 0;display:flex;justify-content:center}
-.home-art::before{content:"";position:absolute;inset:8% 4% 2%;border-radius:50%;background:radial-gradient(closest-side,rgba(145,164,138,.20),rgba(145,164,138,0));pointer-events:none}
-.home-art picture{position:relative;display:block;max-width:100%}
-.home-art img{display:block;width:auto;max-width:100%;height:auto;max-height:max(200px,calc(100svh - 418px));object-fit:contain}
-.home-lead{grid-area:lead;margin:12px 0 0;font-family:var(--serif);font-size:17px;font-weight:500;line-height:1.8}
-.home-cta{grid-area:cta;padding-top:16px;display:flex;flex-direction:column;align-items:center;gap:4px}
-.home-meta{grid-area:meta;list-style:none;margin:14px 0 0;padding:10px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font-size:13px;line-height:1.5;color:var(--soft);text-align:center}
-.home-meta li+li{border-left:2px solid var(--ink)}
-.home-app{grid-area:app}
+/* ── web-0.48 首頁與頁首：照 v3 視覺稿（拼貼構圖、柔和色彩）─────── */
+/* 頁首：四色點｜教會小本本 Podcast 特別企劃（所有頁面共用） */
+.brand-dots i{background:#E5602A}
+.brand-dots i:nth-child(2){background:#F2C230}
+.brand-dots i:nth-child(3){background:#1E4632}
+.brand-dots i:nth-child(4){background:#8FA987}
+.brand-sep{width:1.5px;height:22px;background:var(--ink);opacity:.8;margin:0 2px}
+.brand-text{display:flex;flex-direction:column;line-height:1.15}
+.brand-name{font-size:17px}
+.topbar-inner>.brand{flex:0 1 auto}
+.brand .brand-tag{margin:2px 0 0;font-family:var(--serif);font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink)}
+.menu-btn{margin-left:auto}
+@media (max-width:379px){.brand .brand-tag{display:block}}
+.nav a[aria-current="page"]{color:var(--ink);font-weight:700}
+
+/* 首頁背景：暖白，不用點點 */
+body[data-view="home"]{background-color:#F8F2E6;background-image:none}
+#view-home{position:relative;overflow:hidden}
+.home{position:relative;display:flex;flex-direction:column;padding-top:12px;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.home-text{display:contents}
+.home-eyebrow{order:1;position:relative;align-self:flex-start;margin:0;padding-bottom:8px;font-family:var(--serif);font-size:17px;font-weight:900;letter-spacing:.12em;color:var(--ink)}
+.home-scribble{position:absolute;left:-3px;bottom:-2px;width:calc(100% + 8px);height:9px;color:#DD6A2A}
+.home-dots{display:none}
+.home-title{order:2;margin:14px 0 0;font-size:clamp(32px,10.6vw,44px);line-height:1.2;letter-spacing:.02em}
+.home-title span{display:block}
+.home-art{order:3;position:relative;height:clamp(150px,calc(100svh - 452px),330px);margin:10px calc(var(--pad) * -1) 0}
+.home-art picture{position:absolute;top:0;bottom:0;right:-7%;display:block}
+.home-art img{display:block;height:100%;width:auto;max-width:none}
+.home-lead{order:4;margin:12px 0 0;font-family:var(--serif);font-size:15px;font-weight:500;line-height:1.75}
+.home-cta{order:5;padding-top:14px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.home-start{min-width:200px;min-height:50px;padding:0 28px;border-radius:8px;font-family:var(--serif);font-size:20px;font-weight:900;letter-spacing:.24em}
+.home-start .ic{width:22px;height:22px;margin-left:6px}
+.home-meta{order:6;list-style:none;margin:10px 0 0;padding:0;display:flex;justify-content:center;flex-wrap:wrap;font-family:var(--serif);font-size:13px;font-weight:700;line-height:1.6;color:var(--ink)}
+.home-meta li+li::before{content:"•";margin:0 .9em;font-family:var(--sans);font-weight:400}
+.home-app{order:7;margin-top:22px}
+
 @media (min-width:768px){
-  body[data-view="home"] .topbar-inner{max-width:1200px;padding-left:48px;padding-right:36px}
-  .wrap.home{max-width:1200px;padding-left:48px;padding-right:48px;min-height:calc(100vh - 60px);min-height:calc(100dvh - 60px);grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);grid-template-rows:1fr auto auto auto auto auto auto 1fr;grid-template-areas:". art" "eyebrow art" "title art" "lead art" "cta art" "meta art" "app art" ". art";column-gap:clamp(24px,4vw,64px);align-items:start;padding-top:8px;padding-bottom:40px}
-  .home-title{margin-top:18px;font-size:clamp(36px,3.7vw,54px);line-height:1.3;white-space:nowrap;text-shadow:4px 4px 0 var(--yellow)}
-  .home-art{align-self:center;margin:0 -16px 0 0}
-  .home-art picture{width:100%}
-  .home-art img{width:100%;max-height:min(680px,calc(100dvh - 110px))}
-  .home-lead{margin-top:22px;font-size:clamp(18px,1.5vw,20px)}
-  .home-cta{padding-top:28px;align-items:flex-start}
-  .home-cta .btn-block{width:auto;min-width:240px;padding-left:36px;padding-right:32px}
-  .home-meta{margin-top:24px;max-width:440px}
-  .home-app{max-width:440px}
+  .topbar-inner{max-width:none;height:88px;padding:0 5vw}
+  body[data-view="home"] .topbar-inner{max-width:none;padding:0 5vw}
+  .brand{gap:14px}
+  .brand-dots{gap:7px}
+  .brand-dots i{width:15px;height:15px}
+  .brand-sep{height:32px;margin:0 6px}
+  .brand-text{flex-direction:row;align-items:baseline;gap:22px}
+  .brand-name{font-size:28px;letter-spacing:.14em}
+  .brand .brand-tag{margin:0;font-size:17px;letter-spacing:.02em;font-weight:500}
+  .nav{gap:clamp(12px,2.4vw,40px)}
+  .nav a,.nav button{position:relative;min-height:44px;padding:0 2px;font-family:var(--serif);font-size:17px;font-weight:500}
+  .nav a:hover,.nav button:hover{background:none;color:var(--orange-text)}
+  .nav a[aria-current="page"]::after{content:"";position:absolute;left:-4px;right:-4px;bottom:4px;height:3px;border-radius:3px;background:#DD6A2A;transform:rotate(-1deg)}
+  .nav .nav-sub{display:none}
+
+  #view-home{min-height:calc(100vh - 88px);min-height:calc(100dvh - 88px)}
+  .wrap.home{max-width:none;min-height:calc(100vh - 88px);min-height:calc(100dvh - 88px);padding:clamp(48px,11vh,150px) 5vw 48px;display:block}
+  .home-text{display:block;position:relative;z-index:2;max-width:min(58vw,820px)}
+  .home-eyebrow{font-size:clamp(20px,2.1vw,30px);letter-spacing:.14em;padding-bottom:12px;display:inline-block}
+  .home-scribble{height:12px;bottom:-4px;left:-8px;width:calc(100% + 24px)}
+  .home-dots{display:block;position:absolute;left:calc(100% - min(58vw,820px) + 38vw);top:6px;width:clamp(48px,4.8vw,72px);left:38vw}
+  .home-title{margin-top:clamp(18px,3vh,36px);font-size:min(6.1vw,10.4vh);line-height:1.3;white-space:nowrap}
+  .home-title span{display:inline}
+  .home-title span:first-child{display:block}
+  .home-lead{margin-top:clamp(14px,2.6vh,30px);font-size:clamp(17px,1.65vw,24px);line-height:1.6;white-space:nowrap}
+  .home-cta{align-items:flex-start;padding-top:clamp(22px,4vh,46px)}
+  .home-start{min-width:0;min-height:clamp(58px,7.4vh,76px);padding:0 clamp(32px,3.6vw,56px);font-size:clamp(24px,2.4vw,34px);letter-spacing:.26em;border-radius:8px}
+  .home-start .ic{width:30px;height:30px;margin-left:14px}
+  .home-meta{justify-content:flex-start;margin-top:clamp(16px,3vh,34px);font-size:clamp(14px,1.25vw,18px);font-weight:500}
+  .home-meta li+li::before{margin:0 1.1em}
+  .home-app{display:none}
+  .home-art{position:absolute;z-index:1;margin:0;height:auto;width:min(86.7vw,142vh);right:-5.8vw;bottom:-3vh;pointer-events:none}
+  .home-art picture{position:static}
+  .home-art img{width:100%;height:auto;max-width:none}
 }

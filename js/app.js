@@ -35,6 +35,7 @@
     track && trackPage(name === 'home' ? '/' : name === 'read' && rm ? `/read/${rm[1]}` : `/${name}`);
     document.querySelectorAll('.view').forEach((v) => (v.hidden = v.dataset.view !== name));
     document.body.dataset.view = name; // 樣式用：答題頁會收起頁首
+    document.querySelectorAll('#nav [data-nav]').forEach((a) => { if (a.dataset.nav === name) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     closeMenu();
     window.scrollTo(0, 0);
   }
@@ -70,6 +71,7 @@
   /** 從分享連結進來的人：網址帶 ?s=篇號 */
   const sharedFrom = () => { const m = /[?&]s=(\d{1,3})/.exec(location.search); return m ? +m[1] : null; };
   const clearShared = () => { if (sharedFrom() && history.replaceState) history.replaceState(null, '', siteBase() + location.hash); };
+  if ($('nav-podcast')) $('nav-podcast').addEventListener('click', () => { closeMenu(); track('podcast_click', { place: 'nav' }); });
   $('nav-share').onclick = async () => {
     closeMenu();
     // 在結果頁按分享：分享這一篇的連結；其他頁面分享網站首頁

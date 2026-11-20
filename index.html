@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
 <!-- 每次更新網站時，把下面所有 ?v= 後面的版本號一起改掉（例如 0.18 改成 0.19），瀏覽器就會載入新版，不會用到快取的舊檔 -->
-<link rel="stylesheet" href="css/style.css?v=0.47">
+<link rel="stylesheet" href="css/style.css?v=0.48">
 </head>
 <body>
 <a class="skip-link" href="#main">跳到主要內容</a>
@@ -59,14 +59,14 @@
 
 <header class="topbar" id="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="#/" aria-label="教會小本本，回首頁"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="brand-name">教會小本本</span></a>
-    <span class="brand-tag">Podcast 特別企劃</span>
+    <a class="brand" href="#/" aria-label="教會小本本 Podcast 特別企劃，回首頁"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="brand-sep" aria-hidden="true"></span><span class="brand-text"><span class="brand-name">教會小本本</span><span class="brand-tag">Podcast 特別企劃</span></span></a>
     <nav class="nav" id="nav" aria-label="主選單">
-      <a href="#/">詩篇測驗</a>
-      <a href="#/mine">我的詩篇</a>
-      <a href="#/app" class="nav-app">加到手機桌面</a>
-      <a href="#/about">關於網站</a>
-      <button type="button" class="nav-share" id="nav-share">分享給朋友</button>
+      <a href="#/" data-nav="home">首頁</a>
+      <a href="#/about" data-nav="about">關於企劃</a>
+      <a href="https://portaly.cc/gbookchurch" target="_blank" rel="noopener" id="nav-podcast">聆聽 Podcast</a>
+      <button type="button" class="nav-share" id="nav-share">分享測驗</button>
+      <a href="#/mine" data-nav="mine" class="nav-sub">我的詩篇</a>
+      <a href="#/app" data-nav="app" class="nav-app nav-sub">加到手機桌面</a>
     </nav>
     <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="開啟選單"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
   </div>
@@ -89,24 +89,24 @@
   <!-- 首頁 -->
   <section id="view-home" class="view view-home" data-view="home" hidden>
     <div class="wrap home">
-      <p class="eyebrow home-eyebrow">詩篇測驗<svg class="home-scribble" viewBox="0 0 120 10" aria-hidden="true" preserveAspectRatio="none"><path d="M2 6.5C22 3.5 46 3 66 4.6s38 1.6 52-1.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></p>
-      <h1 class="home-title">哪一篇適合<br>你現在的<mark>光景</mark>？</h1>
-      <div class="home-art">
+      <div class="home-text">
+        <p class="home-eyebrow">詩篇閱讀測驗<svg class="home-scribble" viewBox="0 0 240 14" aria-hidden="true" preserveAspectRatio="none"><path d="M3 9.5C40 6.2 92 4.6 140 5.2c38 .4 68 1.2 96-.8" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round"/><path d="M10 11.5c46-2.6 102-3.4 160-2.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".55"/></svg></p>
+        <h1 class="home-title"><span>你現在的光景，</span><span class="t2">適合讀</span><span class="t3">哪篇詩篇？</span></h1>
+        <p class="home-lead">二十個關於最近的問題，找到一篇此刻能陪你的詩篇。</p>
+        <div class="home-cta">
+          <button class="btn btn-primary home-start" id="btn-start" type="button"><span id="start-label">開始測驗</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+          <button class="btn-link" id="btn-resume" type="button" hidden></button>
+          <a class="btn-link" id="home-mine" href="#/mine" hidden></a>
+        </div>
+        <ul class="home-meta" id="home-meta"></ul>
+        <a class="home-app" id="home-app" href="#/app"><span class="home-app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>加到手機桌面，每天打開讀一篇</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+      </div>
+      <div class="home-art" aria-hidden="true">
         <picture>
-          <source media="(max-width: 767px)" type="image/webp" srcset="assets/images/home/psalm-home-hero-mobile-720.webp 720w, assets/images/home/psalm-home-hero-mobile.webp 1122w" sizes="(max-width: 767px) 86vw">
-          <source media="(max-width: 767px)" srcset="assets/images/home/psalm-home-hero-mobile.png">
-          <source type="image/webp" srcset="assets/images/home/psalm-home-hero-desktop-960.webp 960w, assets/images/home/psalm-home-hero-desktop.webp 1536w" sizes="(min-width: 1200px) 640px, 54vw">
+          <source type="image/webp" srcset="assets/images/home/psalm-home-hero-desktop-960.webp 960w, assets/images/home/psalm-home-hero-desktop.webp 1536w" sizes="(min-width: 768px) 88vw, 130vw">
           <img src="assets/images/home/psalm-home-hero-desktop.png" width="1536" height="1024" alt="" decoding="async" fetchpriority="high">
         </picture>
       </div>
-      <p class="home-lead">二十個關於「最近」的問題，<br>找到一篇此刻能陪你的詩篇。</p>
-      <div class="home-cta">
-        <button class="btn btn-primary btn-block" id="btn-start" type="button"><span id="start-label">開始測驗</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
-        <button class="btn-link" id="btn-resume" type="button" hidden></button>
-        <a class="btn-link" id="home-mine" href="#/mine" hidden></a>
-      </div>
-      <ul class="home-meta" id="home-meta"></ul>
-      <a class="home-app" id="home-app" href="#/app"><span class="home-app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>加到手機桌面，每天打開讀一篇</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
     </div>
   </section>
 
@@ -238,21 +238,21 @@
   </div>
 </div>
 
-<script src="data/config.js?v=0.47"></script>
-<script src="data/copy.js?v=0.47"></script>
-<script src="data/stage-content.js?v=0.47"></script>
-<script src="data/sky.js?v=0.47"></script>
-<script src="data/psalms.js?v=0.47"></script>
-<script src="data/questions.js?v=0.47"></script>
-<script src="data/images.js?v=0.47"></script>
-<script src="data/illustration-notes.js?v=0.47"></script>
-<script src="data/scripture.js?v=0.47" defer></script>
-<script src="js/scoring.js?v=0.47"></script>
-<script src="js/text.js?v=0.47"></script>
-<script src="js/art.js?v=0.47"></script>
-<script src="js/share.js?v=0.47"></script>
-<script src="js/analytics.js?v=0.47"></script>
-<script src="js/install.js?v=0.47"></script>
-<script src="js/app.js?v=0.47"></script>
+<script src="data/config.js?v=0.48"></script>
+<script src="data/copy.js?v=0.48"></script>
+<script src="data/stage-content.js?v=0.48"></script>
+<script src="data/sky.js?v=0.48"></script>
+<script src="data/psalms.js?v=0.48"></script>
+<script src="data/questions.js?v=0.48"></script>
+<script src="data/images.js?v=0.48"></script>
+<script src="data/illustration-notes.js?v=0.48"></script>
+<script src="data/scripture.js?v=0.48" defer></script>
+<script src="js/scoring.js?v=0.48"></script>
+<script src="js/text.js?v=0.48"></script>
+<script src="js/art.js?v=0.48"></script>
+<script src="js/share.js?v=0.48"></script>
+<script src="js/analytics.js?v=0.48"></script>
+<script src="js/install.js?v=0.48"></script>
+<script src="js/app.js?v=0.48"></script>
 </body>
 </html>
