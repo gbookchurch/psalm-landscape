@@ -480,7 +480,7 @@
     illus($('r-book'), $('r-img'), n);
     $('btn-read').onclick = () => go(`#/read/${n}`);
     if ($('btn-podcast')) $('btn-podcast').addEventListener('click', () => track('podcast_click', { psalm: n }));
-    const openShare = () => Share.open({ link: psalmLink(n), psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
+    const openShare = () => Share.open({ link: psalmLink(n), psalm: p, stage: p.stage, stageLine: ((sc && sc.headline) || st.line).replace(/。$/, ''), stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
     $('btn-share').onclick = openShare;
     $('btn-share-2').onclick = openShare;
     stickyShare();
@@ -816,7 +816,7 @@
   /* ---------- 關於 ---------- */
   function renderAbout() {
     show('about');
-    $('about-dims').textContent = DIMS.map((d) => `${d} ${T.dimNames[d]}`).join('、') + '。每個面向都從 −2 到 +2，代表你最近偏向哪一端，沒有好壞之分。';
+    $('about-dims').textContent = '每一題都會算進這八個面向：' + DIMS.map((d) => T.dimNames[d]).join('、') + '。每個面向從 −2 到 +2，只是看你最近比較靠哪一邊，沒有對錯，也沒有哪一邊比較屬靈。最後拿你的結果和每篇詩篇的位置比對，挑出最接近的那一篇。';
     document.querySelector('#view-about .page-title').focus({ preventScroll: true });
   }
 

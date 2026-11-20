@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
 <!-- 每次更新網站時，把下面所有 ?v= 後面的版本號一起改掉（例如 0.18 改成 0.19），瀏覽器就會載入新版，不會用到快取的舊檔 -->
-<link rel="stylesheet" href="css/style.css?v=0.45">
+<link rel="stylesheet" href="css/style.css?v=0.47">
 </head>
 <body>
 <a class="skip-link" href="#main">跳到主要內容</a>
@@ -89,22 +89,23 @@
   <!-- 首頁 -->
   <section id="view-home" class="view view-home" data-view="home" hidden>
     <div class="wrap home">
-      <div class="home-hero">
-        <div class="home-arch" id="home-arch">
-          <img src="assets/home-risograph-clean.webp" alt="孔版印刷風景：橘色圓日、綠色山丘、蜿蜒的河流與葉片" width="600" height="1000" fetchpriority="high">
-        </div>
-        <div class="home-side">
-          <h1 class="home-title">哪一篇適合<br>你現在的<mark>光景</mark>？</h1>
-          <p class="eyebrow">詩篇測驗</p>
-        </div>
+      <p class="eyebrow home-eyebrow">詩篇測驗<svg class="home-scribble" viewBox="0 0 120 10" aria-hidden="true" preserveAspectRatio="none"><path d="M2 6.5C22 3.5 46 3 66 4.6s38 1.6 52-1.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></p>
+      <h1 class="home-title">哪一篇適合<br>你現在的<mark>光景</mark>？</h1>
+      <div class="home-art">
+        <picture>
+          <source media="(max-width: 767px)" type="image/webp" srcset="assets/images/home/psalm-home-hero-mobile-720.webp 720w, assets/images/home/psalm-home-hero-mobile.webp 1122w" sizes="(max-width: 767px) 86vw">
+          <source media="(max-width: 767px)" srcset="assets/images/home/psalm-home-hero-mobile.png">
+          <source type="image/webp" srcset="assets/images/home/psalm-home-hero-desktop-960.webp 960w, assets/images/home/psalm-home-hero-desktop.webp 1536w" sizes="(min-width: 1200px) 640px, 54vw">
+          <img src="assets/images/home/psalm-home-hero-desktop.png" width="1536" height="1024" alt="" decoding="async" fetchpriority="high">
+        </picture>
       </div>
       <p class="home-lead">二十個關於「最近」的問題，<br>找到一篇此刻能陪你的詩篇。</p>
-      <ul class="home-meta" id="home-meta"></ul>
       <div class="home-cta">
         <button class="btn btn-primary btn-block" id="btn-start" type="button"><span id="start-label">開始測驗</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
         <button class="btn-link" id="btn-resume" type="button" hidden></button>
         <a class="btn-link" id="home-mine" href="#/mine" hidden></a>
       </div>
+      <ul class="home-meta" id="home-meta"></ul>
       <a class="home-app" id="home-app" href="#/app"><span class="home-app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>加到手機桌面，每天打開讀一篇</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
     </div>
   </section>
@@ -192,13 +193,13 @@
   <section id="view-about" class="view" data-view="about" hidden>
     <div class="wrap page about">
       <h1 class="page-title" tabindex="-1">關於這個網站</h1>
-      <p>這是《教會小本本》做的詩篇閱讀引導。你回答 20 道關於「最近」的問題，我們從八個面向整理你此刻的狀態，再從 150 篇詩篇裡，找出和你現在最接近的一篇。</p>
-      <h2>八個面向</h2>
+      <p>這是《教會小本本》Podcast 做的一個小測驗。二十題都在問你「最近」過得怎麼樣，答完之後，我們會從 150 篇詩篇裡挑一篇，給現在的你讀。</p>
+      <h2>結果怎麼算出來的</h2>
       <p id="about-dims"></p>
-      <h2>你的作答去了哪裡</h2>
-      <p>所有計算都在你的裝置上完成，作答不會傳到任何伺服器。分享圖也不會出現你的題目或選項。「我的詩篇」的紀錄也只存在你這台裝置的瀏覽器裡。</p>
-      <p id="about-ga" hidden>我們用 Google Analytics 匿名統計網站的使用情形，例如有多少人做完測驗、各種光景和推薦詩篇出現的次數、分享功能有沒有人用。不會記錄你每一題的作答，也不會記錄你在「我的詩篇」裡的內容。Google Analytics 會使用 Cookie，你可以在瀏覽器的設定裡封鎖。</p>
-      <h2>請記得</h2>
+      <h2>作答會不會被看到</h2>
+      <p>不會。計算全部在你的手機或電腦上完成，答案沒有傳到任何地方，分享圖上也不會出現你選了什麼。「我的詩篇」的紀錄只存在這台裝置的瀏覽器裡，清掉瀏覽資料就沒了。</p>
+      <p id="about-ga" hidden>我們有用 Google Analytics 看網站的使用狀況，像是多少人做完測驗、哪些詩篇最常被推薦、分享按鈕有沒有人按。不會記錄你每一題怎麼答，也看不到「我的詩篇」裡的內容。GA 會用到 Cookie，不想被記錄的話，可以在瀏覽器設定裡封鎖。</p>
+      <h2>先說清楚</h2>
       <p data-copy="disclaimer"></p>
       <p class="fine">經文：《和合本》1919 年版（神版），詩篇。已超過著作權保護期，屬公有領域。</p>
       <div class="btn-row"><a class="btn btn-primary" href="#/">回到首頁</a></div>
@@ -237,21 +238,21 @@
   </div>
 </div>
 
-<script src="data/config.js?v=0.45"></script>
-<script src="data/copy.js?v=0.45"></script>
-<script src="data/stage-content.js?v=0.45"></script>
-<script src="data/sky.js?v=0.45"></script>
-<script src="data/psalms.js?v=0.45"></script>
-<script src="data/questions.js?v=0.45"></script>
-<script src="data/images.js?v=0.45"></script>
-<script src="data/illustration-notes.js?v=0.45"></script>
-<script src="data/scripture.js?v=0.45" defer></script>
-<script src="js/scoring.js?v=0.45"></script>
-<script src="js/text.js?v=0.45"></script>
-<script src="js/art.js?v=0.45"></script>
-<script src="js/share.js?v=0.45"></script>
-<script src="js/analytics.js?v=0.45"></script>
-<script src="js/install.js?v=0.45"></script>
-<script src="js/app.js?v=0.45"></script>
+<script src="data/config.js?v=0.47"></script>
+<script src="data/copy.js?v=0.47"></script>
+<script src="data/stage-content.js?v=0.47"></script>
+<script src="data/sky.js?v=0.47"></script>
+<script src="data/psalms.js?v=0.47"></script>
+<script src="data/questions.js?v=0.47"></script>
+<script src="data/images.js?v=0.47"></script>
+<script src="data/illustration-notes.js?v=0.47"></script>
+<script src="data/scripture.js?v=0.47" defer></script>
+<script src="js/scoring.js?v=0.47"></script>
+<script src="js/text.js?v=0.47"></script>
+<script src="js/art.js?v=0.47"></script>
+<script src="js/share.js?v=0.47"></script>
+<script src="js/analytics.js?v=0.47"></script>
+<script src="js/install.js?v=0.47"></script>
+<script src="js/app.js?v=0.47"></script>
 </body>
 </html>

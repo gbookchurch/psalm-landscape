@@ -98,18 +98,6 @@ body[data-view="quiz"] .topbar{display:none}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:60;margin:0;max-width:calc(100% - 40px);padding:12px 20px;border-radius:var(--r-sm);background:var(--ink);color:var(--paper);font-size:14px;text-align:center}
 
 /* ---------- 首頁 ---------- */
-.home{display:flex;flex-direction:column;min-height:calc(100vh - 60px);min-height:calc(100dvh - 60px);padding-top:12px;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
-.home-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
-.home-arch{flex:0 0 58.7%;aspect-ratio:196/400;max-height:max(260px,calc(100vh - 420px));max-height:max(260px,calc(100dvh - 420px));border-radius:999px 999px 0 0;overflow:hidden;background:var(--orange)}
-@media (min-width:560px){.home-arch{aspect-ratio:auto;height:min(400px,max(260px,calc(100vh - 420px)))}}
-.home-arch img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 40%}
-.home-side{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:flex-end;gap:18px;padding-top:6px}
-.home-title{writing-mode:vertical-rl;font-size:clamp(30px,10.2vw,42px);line-height:1.5;letter-spacing:.08em;text-shadow:3px 3px 0 var(--yellow)}
-.home-title mark{color:inherit;background:linear-gradient(to left,transparent 12%,var(--yellow) 12%,var(--yellow) 46%,transparent 46%)}
-.home-lead{margin:28px 0 0;font-family:var(--serif);font-size:18px;font-weight:500;line-height:1.85}
-.home-meta{list-style:none;margin:22px 0 0;padding:12px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font-size:13px;line-height:1.5;color:var(--soft);text-align:center}
-.home-meta li+li{border-left:2px solid var(--ink)}
-.home-cta{margin-top:auto;padding-top:28px;display:flex;flex-direction:column;align-items:center;gap:4px}
 
 /* ---------- 答題 ---------- */
 .view-quiz{position:relative;overflow:hidden;min-height:100vh;min-height:100dvh}
@@ -370,12 +358,7 @@ details.more[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)
 }
 
 /* 螢幕比較矮的手機：首頁收緊一點，讓「開始測驗」留在第一屏 */
-@media (max-height:700px){
-  .home-title{font-size:clamp(28px,9vw,36px)}
-  .home-lead{margin-top:20px;font-size:17px}
-  .home-meta{margin-top:16px}
-  .home-cta{padding-top:20px}
-}
+
 
 /* ── web-0.19 結果頁分區 ─────────────────────────────── */
 .r-cta{margin-top:30px}
@@ -599,3 +582,32 @@ body:has(.verse-bar.on) .toast{bottom:calc(150px + env(safe-area-inset-bottom))}
 .app-done p{margin:0 0 6px}
 .center{text-align:center}
 .seg button[aria-selected="true"]{background:var(--paper-hi);color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(23,64,42,.12)}
+
+/* ── web-0.47 首頁：Risograph 主插畫（手機直向、桌機橫向）─────── */
+.home{position:relative;display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"eyebrow" "title" "art" "lead" "cta" "meta" "app";align-content:start;padding-top:10px;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+.home-eyebrow{grid-area:eyebrow;position:relative;justify-self:start;padding-bottom:9px;font-size:14px;letter-spacing:.24em}
+.home-scribble{position:absolute;left:-2px;right:.1em;bottom:0;width:calc(100% - .1em);height:8px;color:var(--orange)}
+.home-title{grid-area:title;margin:10px 0 0;font-size:clamp(30px,8.6vw,40px);line-height:1.32;letter-spacing:.04em;text-shadow:3px 3px 0 var(--yellow)}
+.home-title mark{color:inherit;background:linear-gradient(transparent 62%,var(--yellow) 62%,var(--yellow) 92%,transparent 92%)}
+.home-art{grid-area:art;position:relative;margin:14px calc(var(--pad) * -1 + 8px) 0;display:flex;justify-content:center}
+.home-art::before{content:"";position:absolute;inset:8% 4% 2%;border-radius:50%;background:radial-gradient(closest-side,rgba(145,164,138,.20),rgba(145,164,138,0));pointer-events:none}
+.home-art picture{position:relative;display:block;max-width:100%}
+.home-art img{display:block;width:auto;max-width:100%;height:auto;max-height:max(200px,calc(100svh - 418px));object-fit:contain}
+.home-lead{grid-area:lead;margin:12px 0 0;font-family:var(--serif);font-size:17px;font-weight:500;line-height:1.8}
+.home-cta{grid-area:cta;padding-top:16px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.home-meta{grid-area:meta;list-style:none;margin:14px 0 0;padding:10px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font-size:13px;line-height:1.5;color:var(--soft);text-align:center}
+.home-meta li+li{border-left:2px solid var(--ink)}
+.home-app{grid-area:app}
+@media (min-width:768px){
+  body[data-view="home"] .topbar-inner{max-width:1200px;padding-left:48px;padding-right:36px}
+  .wrap.home{max-width:1200px;padding-left:48px;padding-right:48px;min-height:calc(100vh - 60px);min-height:calc(100dvh - 60px);grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);grid-template-rows:1fr auto auto auto auto auto auto 1fr;grid-template-areas:". art" "eyebrow art" "title art" "lead art" "cta art" "meta art" "app art" ". art";column-gap:clamp(24px,4vw,64px);align-items:start;padding-top:8px;padding-bottom:40px}
+  .home-title{margin-top:18px;font-size:clamp(36px,3.7vw,54px);line-height:1.3;white-space:nowrap;text-shadow:4px 4px 0 var(--yellow)}
+  .home-art{align-self:center;margin:0 -16px 0 0}
+  .home-art picture{width:100%}
+  .home-art img{width:100%;max-height:min(680px,calc(100dvh - 110px))}
+  .home-lead{margin-top:22px;font-size:clamp(18px,1.5vw,20px)}
+  .home-cta{padding-top:28px;align-items:flex-start}
+  .home-cta .btn-block{width:auto;min-width:240px;padding-left:36px;padding-right:32px}
+  .home-meta{margin-top:24px;max-width:440px}
+  .home-app{max-width:440px}
+}

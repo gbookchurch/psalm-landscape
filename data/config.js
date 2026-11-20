@@ -6,7 +6,7 @@ window.CONFIG = {
   /* Google Analytics 4 評估 ID（G- 開頭）。留空就不載入 GA、不送任何資料。會送哪些事件，見 js/analytics.js 開頭的說明。 */
   ga4Id: 'G-RGE6JCVBZJ',
 
-  version: 'web-0.45（新增「加到手機桌面」：manifest、service worker、#/app 說明頁與首頁提醒；首頁拱門維持原圖',
+  version: 'web-0.47（首頁改用正式 Risograph 主插畫：手機直向、桌機橫向，桌機改左右構圖',
 
   /* 八維距離權重：沿用 V2.44 原型與 V2.146/V2.147 模擬所用的既有距離函數，未新增規則。 */
   weights: { A: 1.3, B: 1.15, C: 0.65, D: 1.0, E: 0.85, F: 0.7, G: 1.3, H: 1.0 },
