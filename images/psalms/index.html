@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>你現在的光景，適合讀哪篇詩篇？｜教會小本本</title>
+<meta name="description" content="回答心情小問題，探索你正在經歷的生命季節，找到適合現在的詩篇。">
+<meta name="theme-color" content="#FFF7E8">
+<!-- 網址列小圖示 -->
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="詩篇光景">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<!-- 社群分享預覽（LINE、Facebook、Threads、X）。網址要用完整網址，換網域時這裡要一起改 -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="教會小本本">
+<meta property="og:url" content="https://gbookchurch.github.io/psalm-landscape/">
+<meta property="og:title" content="哪一篇適合你現在的光景？｜教會小本本">
+<meta property="og:description" content="回答心情小問題，探索你正在經歷的生命季節，找到適合現在的詩篇。">
+<meta name="twitter:description" content="回答心情小問題，探索你正在經歷的生命季節，找到適合現在的詩篇。">
+<meta property="og:image" content="https://gbookchurch.github.io/psalm-landscape/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="教會小本本詩篇測驗：哪一篇適合你現在的光景？">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://gbookchurch.github.io/psalm-landscape/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<!-- 每次更新網站時，把下面所有 ?v= 後面的版本號一起改掉（例如 0.18 改成 0.19），瀏覽器就會載入新版，不會用到快取的舊檔 -->
+<link rel="stylesheet" href="css/style.css?v=0.46">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要內容</a>
+
+<!-- 圖示 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 14v5h14v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="1.8" fill="currentColor"/><path d="M4 17l5-4.5 3.5 3 3-2.5L20 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5M12 6.5C14 5 17 4.5 20.5 5v13c-3.5-.5-6.5 0-8.5 1.5M12 6.5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.5a1.5 1.5 0 013 0V11m0-1.5a1.5 1.5 0 013 0V12m0-1a1.5 1.5 0 013 0v4c0 3-2 5.5-5.5 5.5-2.2 0-3.6-.9-4.8-2.6L5 15.2a1.5 1.5 0 012.4-1.8L9 15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 3.5h10a1 1 0 011 1v16l-6-4-6 4v-16a1 1 0 011-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 5.5v-1a1 1 0 00-1-1h-9a1 1 0 00-1 1v11a1 1 0 001 1h1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#/" aria-label="教會小本本，回首頁"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="brand-name">教會小本本</span></a>
+    <span class="brand-tag">Podcast 特別企劃</span>
+    <nav class="nav" id="nav" aria-label="主選單">
+      <a href="#/">詩篇測驗</a>
+      <a href="#/mine">我的詩篇</a>
+      <a href="#/app" class="nav-app">加到手機桌面</a>
+      <a href="#/about">關於網站</a>
+      <button type="button" class="nav-share" id="nav-share">分享給朋友</button>
+    </nav>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="開啟選單"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+  </div>
+</header>
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+<div class="verse-bar" id="verse-bar" aria-hidden="true" role="toolbar" aria-label="這一節經文">
+  <div class="verse-bar-inner">
+    <p class="vb-ref" id="vb-ref"></p>
+    <button class="icon-btn vb-close" id="vb-close" type="button" aria-label="取消選取"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    <div class="vb-actions">
+      <button class="vb-btn vb-keep" id="vb-keep" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-bookmark"/></svg><span>記住這節</span></button>
+      <button class="vb-btn" id="vb-copy" type="button"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span>複製</span></button>
+      <button class="vb-btn" id="vb-share" type="button"><svg class="ic" aria-hidden="true"><use href="#i-image"/></svg><span>分享圖</span></button>
+    </div>
+  </div>
+</div>
+
+<main id="main" tabindex="-1">
+
+  <!-- 首頁 -->
+  <section id="view-home" class="view view-home" data-view="home" hidden>
+    <div class="wrap home">
+      <div class="home-hero">
+        <div class="home-arch" id="home-arch">
+          <img src="assets/home-risograph-clean.webp" alt="孔版印刷風景：橘色圓日、綠色山丘、蜿蜒的河流與葉片" width="600" height="1000" fetchpriority="high">
+        </div>
+        <div class="home-side">
+          <h1 class="home-title">哪一篇適合<br>你現在的<mark>光景</mark>？</h1>
+          <p class="eyebrow">詩篇測驗</p>
+        </div>
+      </div>
+      <p class="home-lead">二十個關於「最近」的問題，<br>找到一篇此刻能陪你的詩篇。</p>
+      <ul class="home-meta" id="home-meta"></ul>
+      <div class="home-cta">
+        <button class="btn btn-primary btn-block" id="btn-start" type="button"><span id="start-label">開始測驗</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+        <button class="btn-link" id="btn-resume" type="button" hidden></button>
+        <a class="btn-link" id="home-mine" href="#/mine" hidden></a>
+      </div>
+      <a class="home-app" id="home-app" href="#/app"><span class="home-app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>加到手機桌面，每天打開讀一篇</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+    </div>
+  </section>
+
+  <!-- 答題 -->
+  <section id="view-quiz" class="view view-quiz" data-view="quiz" hidden>
+    <div class="wrap quiz">
+      <div class="quiz-top">
+        <a class="icon-btn" href="#/" aria-label="回首頁（作答會保留）"><svg aria-hidden="true"><use href="#i-close"/></svg></a>
+        <div class="progress" role="progressbar" aria-label="作答進度" aria-valuemin="0" aria-valuemax="20" id="progress"></div>
+        <p class="quiz-count"><span class="sr-only" id="quiz-sr" aria-live="polite"></span><span class="num" id="quiz-num" aria-hidden="true"></span><span class="of" id="quiz-of" aria-hidden="true"></span></p>
+      </div>
+      <figure class="quiz-art" id="quiz-art" aria-hidden="true" hidden><img id="quiz-art-img" alt="" decoding="async"></figure>
+      <p class="quiz-meta"><span class="eyebrow quiz-topic" id="quiz-topic"></span><span class="quiz-cheer" id="quiz-cheer"></span></p>
+      <h1 class="q-text" id="q-text" tabindex="-1"></h1>
+      <div class="options" id="options" role="radiogroup" aria-labelledby="q-text"></div>
+      <button class="btn-link btn-skip" id="btn-skip" type="button"></button>
+      <div class="quiz-nav">
+        <button class="btn-plain" id="btn-prev" type="button"><svg class="ic" aria-hidden="true"><use href="#i-chev-l"/></svg>上一題</button>
+        <button class="btn btn-primary" id="btn-next" type="button"><span id="next-label">下一題</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+      </div>
+      <p class="fine kbd-hint">鍵盤：按數字鍵選擇（選了會直接到下一題），← 上一題，0 略過</p>
+    </div>
+  </section>
+
+  <!-- 資訊不足 -->
+  <section id="view-insufficient" class="view" data-view="insufficient" hidden>
+    <div class="wrap page">
+      <h1 class="page-title" tabindex="-1">還差一點資訊</h1>
+      <p>目前回答到的面向少於五個，還不足以找出適合的詩篇。可以回去補答幾題，被略過的題目都還在。</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-back-fill" type="button">回去補答</button>
+        <button class="btn-link" id="btn-restart-ins" type="button">重新開始</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="view-result" class="view view-result" data-view="result" hidden>
+    <div class="result" id="result-root"></div>
+  </section>
+
+  <!-- 經文閱讀 -->
+  <section id="view-read" class="view" data-view="read" hidden>
+    <div class="reader-bar">
+      <div class="wrap reader-bar-inner">
+        <button class="btn-plain" id="btn-read-back" type="button"><svg class="ic" aria-hidden="true"><use href="#i-chev-l"/></svg><span>返回結果</span></button>
+        <div class="reader-tools" role="group" aria-label="閱讀設定">
+          <button class="tool" id="font-dec" type="button" aria-label="縮小字級">A−</button>
+          <button class="tool" id="font-inc" type="button" aria-label="放大字級">A＋</button>
+          <button class="tool tool-sm" id="toggle-vnum" type="button" aria-pressed="true">節數</button>
+        </div>
+      </div>
+    </div>
+    <article class="wrap reader" id="reader"></article>
+  </section>
+
+  <!-- 我的詩篇 -->
+  <section id="view-mine" class="view" data-view="mine" hidden>
+    <div class="wrap page mine" id="mine-root"></div>
+  </section>
+
+  <!-- 關於 -->
+  <!-- 加到手機桌面 -->
+  <section id="view-app" class="view" data-view="app" hidden>
+    <div class="wrap page app-page">
+      <div class="app-hero">
+        <span class="app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <div>
+          <h1 class="page-title" tabindex="-1">加到手機桌面</h1>
+          <p class="app-sub">像一個小 App，點一下就打開。每天睡前、通勤、心裡亂的時候，都可以回來讀一篇。</p>
+        </div>
+      </div>
+      <div id="app-body"></div>
+      <h2>放到桌面之後</h2>
+      <ul class="app-perks">
+        <li>桌面上會出現「詩篇光景」的圖示，打開是全螢幕，沒有網址列。</li>
+        <li>不用下載、不用註冊，也不佔什麼空間。</li>
+        <li>網站有更新時，打開就是最新版。</li>
+      </ul>
+      <div class="btn-row"><a class="btn btn-primary" href="#/">回到首頁</a></div>
+    </div>
+  </section>
+
+  <section id="view-about" class="view" data-view="about" hidden>
+    <div class="wrap page about">
+      <h1 class="page-title" tabindex="-1">關於這個網站</h1>
+      <p>這是《教會小本本》Podcast 做的一個小測驗。二十題都在問你「最近」過得怎麼樣，答完之後，我們會從 150 篇詩篇裡挑一篇，給現在的你讀。</p>
+      <h2>結果怎麼算出來的</h2>
+      <p id="about-dims"></p>
+      <h2>作答會不會被看到</h2>
+      <p>不會。計算全部在你的手機或電腦上完成，答案沒有傳到任何地方，分享圖上也不會出現你選了什麼。「我的詩篇」的紀錄只存在這台裝置的瀏覽器裡，清掉瀏覽資料就沒了。</p>
+      <p id="about-ga" hidden>我們有用 Google Analytics 看網站的使用狀況，像是多少人做完測驗、哪些詩篇最常被推薦、分享按鈕有沒有人按。不會記錄你每一題怎麼答，也看不到「我的詩篇」裡的內容。GA 會用到 Cookie，不想被記錄的話，可以在瀏覽器設定裡封鎖。</p>
+      <h2>先說清楚</h2>
+      <p data-copy="disclaimer"></p>
+      <p class="fine">經文：《和合本》1919 年版（神版），詩篇。已超過著作權保護期，屬公有領域。</p>
+      <div class="btn-row"><a class="btn btn-primary" href="#/">回到首頁</a></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 分享卡 -->
+<div class="sheet" id="share-sheet" role="dialog" aria-modal="true" aria-labelledby="share-title" hidden>
+  <div class="sheet-panel">
+    <div class="sheet-head">
+      <h2 id="share-title">製作分享圖</h2>
+      <button class="btn-link" id="share-close" type="button">關閉</button>
+    </div>
+    <div class="seg" role="radiogroup" aria-label="樣式">
+      <button type="button" role="radio" aria-checked="true" data-style="scene">風景版</button>
+      <button type="button" role="radio" aria-checked="false" data-style="data">數據版</button>
+    </div>
+    <div class="seg" role="radiogroup" aria-label="比例">
+      <button type="button" role="radio" aria-checked="true" data-ratio="story">限時動態 9:16</button>
+      <button type="button" role="radio" aria-checked="false" data-ratio="post">貼文 4:5</button>
+    </div>
+    <p class="fine" id="share-note">分享圖只包含詩篇與光景，不會出現你的作答內容。</p>
+    <p class="share-tip" id="share-tip"><svg class="ic" aria-hidden="true"><use href="#i-hand"/></svg><span>長按圖片，就能<b>儲存到相簿</b>或傳給朋友</span></p>
+    <div class="share-preview" id="share-preview" aria-busy="true">
+      <img id="share-img" alt="分享圖預覽" hidden>
+      <p class="share-loading" id="share-loading">圖片製作中…</p>
+      <canvas id="share-canvas" hidden></canvas>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="share-native" type="button" hidden><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg>分享或儲存</button>
+      <button class="btn btn-outline" id="share-save" type="button">下載圖片</button>
+    </div>
+    <button class="share-link" id="share-link" type="button" hidden>複製這篇詩篇的連結</button>
+  </div>
+</div>
+
+<script src="data/config.js?v=0.46"></script>
+<script src="data/copy.js?v=0.46"></script>
+<script src="data/stage-content.js?v=0.46"></script>
+<script src="data/sky.js?v=0.46"></script>
+<script src="data/psalms.js?v=0.46"></script>
+<script src="data/questions.js?v=0.46"></script>
+<script src="data/images.js?v=0.46"></script>
+<script src="data/illustration-notes.js?v=0.46"></script>
+<script src="data/scripture.js?v=0.46" defer></script>
+<script src="js/scoring.js?v=0.46"></script>
+<script src="js/text.js?v=0.46"></script>
+<script src="js/art.js?v=0.46"></script>
+<script src="js/share.js?v=0.46"></script>
+<script src="js/analytics.js?v=0.46"></script>
+<script src="js/install.js?v=0.46"></script>
+<script src="js/app.js?v=0.46"></script>
+</body>
+</html>
