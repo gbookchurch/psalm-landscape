@@ -552,7 +552,7 @@
       <p class="keep-hint">${icon('i-bookmark')}點一下任何一節，可以記住、複製或做成分享圖</p>
       <div class="verses" id="verses">${vhtml}</div>
       ${S.notes.length ? `<div class="footnotes">${S.notes.map((f) => `<p>${esc(f.ref)}　${esc(f.text)}</p>`).join('')}</div>` : ''}
-      <p class="source">經文：《新標點和合本》神版，詩篇。</p>`;
+      <p class="source">經文：《新標點和合本》神版 © 1988, 1989 香港聖經公會</p>`;
     illus($('read-book'), $('read-img'), n);
     applyReadPrefs();
     verseTools(n, S);

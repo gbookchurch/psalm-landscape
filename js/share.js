@@ -389,7 +389,7 @@
     // 頁尾：經文版本（左）、網址（右）
     const fs = story ? 24 : 22;
     c.textBaseline = 'alphabetic'; c.fillStyle = SOFT;
-    sans(c, 500, fs); c.textAlign = 'left'; c.fillText('經文：《新標點和合本》神版', M, footY);
+    sans(c, 500, fs); c.textAlign = 'left'; c.fillText('經文：《新標點和合本》© 香港聖經公會', M, footY);
     c.textAlign = 'right'; c.fillText(T().shareUrl || '', R, footY);
   }
 
@@ -399,7 +399,7 @@
     const off = document.createElement('canvas'); off.width = W; off.height = H;
     const c = off.getContext('2d');
     if (d.kind === 'verse') {
-      await fontsReady(T().brand + (T().verseShareTitle || '今天想記住的經文') + d.verse.text + d.verse.ref + '「經文：《新標點和合本》神版' + (T().shareUrl || '') + '0123456789:-');
+      await fontsReady(T().brand + (T().verseShareTitle || '今天想記住的經文') + d.verse.text + d.verse.ref + '「經文：《新標點和合本》© 香港聖經公會' + (T().shareUrl || '') + '0123456789:-');
       paper(c, H);
       await verseCard(c, d, H);
       return finish(off, my, H);
