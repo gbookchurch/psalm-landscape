@@ -35,7 +35,7 @@
   // 換頁由網站自己送（網站用 #/ 切換畫面，GA 預設抓不到）
   gtag('config', id, { send_page_view: false });
 
-  const titles = { '/': '首頁', '/quiz': '作答', '/result': '結果', '/mine': '我的詩篇', '/about': '關於網站', '/insufficient': '作答不足' };
+  const titles = { '/': '首頁', '/quiz': '作答', '/result': '結果', '/mine': '我的詩篇', '/about': '關於企劃', '/insufficient': '作答不足' };
   let lastPath = '';
   root.trackPage = function (path) {
     if (!path || path === lastPath) return;

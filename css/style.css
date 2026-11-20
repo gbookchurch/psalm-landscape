@@ -655,3 +655,24 @@ body[data-view="home"]{background-color:#F8F2E6;background-image:none}
   .home-art picture{position:static}
   .home-art img{width:100%;height:auto;max-width:none}
 }
+
+/* ── web-0.49 手機首頁：一屏放下全部內容 ─────── */
+@media (max-width:767px){
+  .home .only-d{display:none!important}
+  .home .home-lead,.home .home-meta{display:none}
+  .wrap.home{height:calc(100vh - 60px);height:calc(100svh - 60px);min-height:420px;padding-top:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  .home-title{font-size:clamp(30px,9.4vw,40px);line-height:1.25}
+  .home-title .only-m>span{display:block}
+  .home-art{flex:1 1 auto;height:auto;min-height:120px;margin-top:12px}
+  .home-art picture{position:absolute;top:0;bottom:0;left:-18%;right:-18%}
+  .home-art img{width:100%;height:100%;object-fit:contain;object-position:62% 50%}
+  .home-cta{padding-top:14px}
+  .home-start{width:100%;max-width:340px}
+  .home-app{margin-top:14px}
+}
+@media (min-width:768px){
+  .home .only-m{display:none!important}
+  .home-title .only-d{display:block}
+  .home-title .only-d>span:first-child{display:block}
+  .home-title .only-d>span+span{display:inline}
+}
