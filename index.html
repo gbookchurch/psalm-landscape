@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
 <!-- 每次更新網站時，把下面所有 ?v= 後面的版本號一起改掉（例如 0.18 改成 0.19），瀏覽器就會載入新版，不會用到快取的舊檔 -->
-<link rel="stylesheet" href="css/style.css?v=0.38">
+<link rel="stylesheet" href="css/style.css?v=0.40">
 </head>
 <body>
 <a class="skip-link" href="#main">跳到主要內容</a>
@@ -169,6 +169,7 @@
       <p id="about-dims"></p>
       <h2>你的作答去了哪裡</h2>
       <p>所有計算都在你的裝置上完成，作答不會傳到任何伺服器。分享圖也不會出現你的題目或選項。「我的詩篇」的紀錄也只存在你這台裝置的瀏覽器裡。</p>
+      <p id="about-ga" hidden>我們用 Google Analytics 匿名統計網站的使用情形，例如有多少人做完測驗、各種光景和推薦詩篇出現的次數、分享功能有沒有人用。不會記錄你每一題的作答，也不會記錄你在「我的詩篇」裡的內容。Google Analytics 會使用 Cookie，你可以在瀏覽器的設定裡封鎖。</p>
       <h2>請記得</h2>
       <p data-copy="disclaimer"></p>
       <p class="fine">經文：《和合本》1919 年版（神版），詩篇。已超過著作權保護期，屬公有領域。</p>
@@ -208,18 +209,19 @@
   </div>
 </div>
 
-<script src="data/config.js?v=0.38"></script>
-<script src="data/copy.js?v=0.38"></script>
-<script src="data/stage-content.js?v=0.38"></script>
-<script src="data/psalms.js?v=0.38"></script>
-<script src="data/questions.js?v=0.38"></script>
-<script src="data/images.js?v=0.38"></script>
-<script src="data/illustration-notes.js?v=0.38"></script>
-<script src="data/scripture.js?v=0.38" defer></script>
-<script src="js/scoring.js?v=0.38"></script>
-<script src="js/text.js?v=0.38"></script>
-<script src="js/art.js?v=0.38"></script>
-<script src="js/share.js?v=0.38"></script>
-<script src="js/app.js?v=0.38"></script>
+<script src="data/config.js?v=0.40"></script>
+<script src="data/copy.js?v=0.40"></script>
+<script src="data/stage-content.js?v=0.40"></script>
+<script src="data/psalms.js?v=0.40"></script>
+<script src="data/questions.js?v=0.40"></script>
+<script src="data/images.js?v=0.40"></script>
+<script src="data/illustration-notes.js?v=0.40"></script>
+<script src="data/scripture.js?v=0.40" defer></script>
+<script src="js/scoring.js?v=0.40"></script>
+<script src="js/text.js?v=0.40"></script>
+<script src="js/art.js?v=0.40"></script>
+<script src="js/share.js?v=0.40"></script>
+<script src="js/analytics.js?v=0.40"></script>
+<script src="js/app.js?v=0.40"></script>
 </body>
 </html>

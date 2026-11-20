@@ -31,6 +31,8 @@
   let prevView = '';
   function show(name) {
     prevView = document.body.dataset.view || '';
+    const rm = /^#\/read\/(\d{1,3})/.exec(location.hash);
+    track && trackPage(name === 'home' ? '/' : name === 'read' && rm ? `/read/${rm[1]}` : `/${name}`);
     document.querySelectorAll('.view').forEach((v) => (v.hidden = v.dataset.view !== name));
     document.body.dataset.view = name; // 樣式用：答題頁會收起頁首
     closeMenu();
@@ -74,8 +76,8 @@
     const url = onResult ? psalmLink(resultN) : siteBase();
     const data = onResult ? { title: T.siteTitle, text: `我現在的光景適合讀詩篇 ${resultN} 篇。${T.homeSub}`, url } : { title: T.siteTitle, text: T.homeSub, url };
     try {
-      if (navigator.share) { await navigator.share(data); return; }
-      await navigator.clipboard.writeText(url); toast('網址已複製，可以貼給朋友');
+      if (navigator.share) { await navigator.share(data); track('share_link', { method: 'native', page: onResult ? 'result' : 'site' }); return; }
+      await navigator.clipboard.writeText(url); toast('網址已複製，可以貼給朋友'); track('share_link', { method: 'copy', page: onResult ? 'result' : 'site' });
     } catch (e) { if (e && e.name !== 'AbortError') toast('請直接複製網址列分享'); }
   };
 
@@ -172,8 +174,10 @@
     if (advancing) return;
     const q = visibleQ[state.step];
     if (!q.options[i]) return;
+    const first = answeredCount() === 0;
     state.answers[q.id] = i;
     save();
+    if (first) track('quiz_start');
     $('options').querySelectorAll('.opt').forEach((b) => b.setAttribute('aria-checked', +b.dataset.i === i));
     $('btn-skip').setAttribute('aria-pressed', 'false');
     advancing = true;
@@ -366,6 +370,11 @@
     lastResult = res;
     const n = forcePsalm || res.best.psalm;
     resultN = n;
+    if (!forcePsalm) {
+      const key = 'psalm-ga-done:' + JSON.stringify(state.answers);
+      let seen = false; try { seen = sessionStorage.getItem('psalm-ga-done') === key; sessionStorage.setItem('psalm-ga-done', key); } catch (e) { /* 無法記錄就照常送 */ }
+      if (!seen) track('quiz_complete', { psalm: n, stage: stageName(byNum[n].stage) });
+    }
     const p = byNum[n];
     const st = T.stages[p.stage] || { line: '', color: '#FF8A1F' };
     const sc = (window.PSALM_STAGE_CONTENT && window.PSALM_STAGE_CONTENT.stagesByKey && window.PSALM_STAGE_CONTENT.stagesByKey[p.stage]) || {};
@@ -455,12 +464,13 @@
       ${pod ? `<aside class="podcast" aria-labelledby="h-pod">
         ${pod.kicker ? `<p class="kicker">${esc(pod.kicker)}</p>` : ''}
         <h2 id="h-pod">${pod.title.map(esc).join('<br>')}</h2>
-        <a class="btn" href="${esc(pod.url)}" target="_blank" rel="noopener">${esc(pod.cta)}${icon('i-arrow-r')}</a>
+        <a class="btn" id="btn-podcast" href="${esc(pod.url)}" target="_blank" rel="noopener">${esc(pod.cta)}${icon('i-arrow-r')}</a>
       </aside>` : ''}
       <div class="r-sticky" id="r-sticky" aria-hidden="true"><button class="btn btn-primary" id="btn-share-2" type="button" tabindex="-1">${icon('i-image')}製作分享圖</button></div>`;
 
     illus($('r-book'), $('r-img'), n);
     $('btn-read').onclick = () => go(`#/read/${n}`);
+    if ($('btn-podcast')) $('btn-podcast').addEventListener('click', () => track('podcast_click', { psalm: n }));
     const openShare = () => Share.open({ link: psalmLink(n), psalm: p, stage: p.stage, stageLine: st.line, stageColor: st.color, scores: res.scores, tags: tags.map((t) => t.text), verse: kv, img: C.illustration(n) });
     $('btn-share').onclick = openShare;
     $('btn-share-2').onclick = openShare;
@@ -613,6 +623,7 @@
       if (!verseSel) return;
       const v = verseSel.dataset.v, was = keptNow();
       const ok = setKeep(n, was === v ? null : v);
+      if (ok && was !== v) track('verse_keep', { psalm: n });
       if (!ok) return toast('這個瀏覽器目前無法保存紀錄');
       box.querySelectorAll('.verse.kept').forEach((x) => x.classList.remove('kept'));
       if (was !== v) verseSel.classList.add('kept');
@@ -624,6 +635,7 @@
       if (!verseSel) return;
       const v = verseSel.dataset.v;
       const ok = await copyText(`${verseText(S, v)}\n（詩篇 ${n}:${v}，和合本）`);
+      if (ok) track('verse_copy', { psalm: n });
       toast(ok ? '經文已複製' : '這個瀏覽器不能自動複製，請長按經文選取');
     };
     $('vb-share').onclick = () => {
@@ -801,6 +813,8 @@
 
   /* ---------- 啟動 ---------- */
   load();
+  if (sharedFrom()) track('shared_visit', { psalm: sharedFrom() });
+  if (window.CONFIG && /^G-/i.test(window.CONFIG.ga4Id || '') && $('about-ga')) $('about-ga').hidden = false;
   window.addEventListener('hashchange', route);
   document.addEventListener('DOMContentLoaded', route);
 })();

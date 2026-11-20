@@ -444,6 +444,7 @@
     $('share-note').textContent = verse ? '圖上只會有這一節經文和出處。'
       : opts.style === 'data' ? '數據版會顯示你和這篇詩在八個面向的大致位置，但不會出現題目或你的選項。' : '分享圖只包含詩篇與光景，不會出現你的作答內容。';
     $('share-sheet').hidden = false; tip(); loading(); $('share-close').focus(); draw(d);
+    if (root.track) root.track('share_open', { kind: verse ? 'verse' : 'result' });
   }
   function close() { $('share-sheet').hidden = true; if (lastFocus) lastFocus.focus(); }
   function setRadio(group, key, val) { group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-checked', b.dataset[key] === val)); }
@@ -463,10 +464,12 @@
     if (!lastBlob) return;
     const a = document.createElement('a'); a.href = URL.createObjectURL(lastBlob); a.download = fname();
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    imgEvent('download');
   };
+  const imgEvent = (method) => root.track && root.track('share_image', { method, kind: data.kind === 'verse' ? 'verse' : 'result', ratio: opts.ratio, style: data.kind === 'verse' ? 'verse' : opts.style });
   $('share-native').onclick = async () => {
     const msg = data.kind === 'verse' ? {} : { text: `我現在的光景適合讀詩篇 ${data.psalm.psalm} 篇，你也來測測看：${data.link || ''}` };
-    try { await navigator.share({ files: [new File([lastBlob], fname(), { type: 'image/png' })], title: T().shareTitle, ...msg }); } catch (e) { /* 使用者取消 */ }
+    try { await navigator.share({ files: [new File([lastBlob], fname(), { type: 'image/png' })], title: T().shareTitle, ...msg }); imgEvent('native'); } catch (e) { /* 使用者取消 */ }
   };
   // 複製這一篇的分享連結（LINE、FB 會顯示這一篇的預覽）
   $('share-link').onclick = async () => {
@@ -475,6 +478,7 @@
     try { await navigator.clipboard.writeText(url); ok = true; } catch (e) {
       try { const ta = document.createElement('textarea'); ta.value = url; ta.style.cssText = 'position:fixed;top:-1000px'; document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove(); } catch (e2) { /* 無法複製 */ }
     }
+    if (ok && root.track) root.track('share_link', { method: 'copy', page: 'share_sheet' });
     const b = $('share-link'); const old = b.textContent;
     b.textContent = ok ? '連結已複製' : '請長按網址列複製'; setTimeout(() => (b.textContent = old), 2000);
   };
